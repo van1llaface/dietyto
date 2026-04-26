@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dietyto — Eat for Longevity</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7f5;
+            color: #2d3436;
+            line-height: 1.6;
+        }
+
+        /* ── Header ── */
+        header {
+            background: linear-gradient(135deg, #2d5016, #4a7c2e);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+        header h1 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; }
+        header p { opacity: 0.85; font-size: 0.95rem; margin-top: 0.3rem; }
+
+        /* ── Navigation tabs ── */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            background: #fff;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #636e72;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .tab:hover { color: #2d5016; }
+        .tab.active { color: #2d5016; border-bottom-color: #4a7c2e; }
+
+        /* ── Main content ── */
+        main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* ── Filters ── */
+        .filters {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .filters select, .filters input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        /* ── Recipe cards ── */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+        .recipe-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .recipe-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; color: #2d5016; }
+        .recipe-card .meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #636e72;
+            margin-bottom: 0.5rem;
+        }
+        .recipe-card .description {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+        }
+        .tag-category { background: #e8f5e9; color: #2d5016; }
+        .tag-allergen { background: #fff3e0; color: #e65100; }
+        .macros-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+        .macro {
+            padding: 0.3rem 0.6rem;
+            background: #f0f4f0;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .macro span { display: block; font-weight: 700; color: #2d5016; }
+
+        /* ── Recipe detail modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: start;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #636e72;
+        }
+        .modal h2 { color: #2d5016; margin-bottom: 0.5rem; }
+        .modal h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: #2d5016; }
+        .modal ul { padding-left: 1.25rem; }
+        .modal li { margin-bottom: 0.3rem; }
+        .modal ol { padding-left: 1.25rem; }
+        .modal ol li { margin-bottom: 0.5rem; }
+
+        /* ── Meal Planner ── */
+        .planner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .day-card h4 {
+            text-transform: capitalize;
+            color: #2d5016;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+        .day-card label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #636e72;
+            margin-top: 0.5rem;
+        }
+        .day-card select {
+            width: 100%;
+            padding: 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .btn {
+            padding: 0.65rem 1.25rem;
+            background: #4a7c2e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #2d5016; }
+        .btn-outline {
+            padding: 0.65rem 1.25rem;
+            background: white;
+            color: #4a7c2e;
+            border: 2px solid #4a7c2e;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover { background: #f0f4f0; }
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+        /* ── Grocery List ── */
+        .grocery-list {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .grocery-list h3 { color: #2d5016; margin-bottom: 1rem; }
+        .grocery-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .grocery-item:last-child { border-bottom: none; }
+        .grocery-amount { font-weight: 600; color: #4a7c2e; }
+
+        /* ── Summary / Dashboard ── */
+        .summary-box, .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+        }
+        .summary-box h3, .dashboard-card h3 { color: #2d5016; margin-bottom: 1rem; }
+        .summary-stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+            padding: 1rem;
+            background: #f0f4f0;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+        .stat .number { font-size: 1.5rem; font-weight: 700; color: #2d5016; }
+        .stat .label { font-size: 0.8rem; color: #636e72; }
+
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #e65100;
+            padding: 0.75rem 1rem;
+            margin-top: 0.5rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #636e72;
+        }
+
+        /* ── Profile form ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #636e72;
+            margin-bottom: 0.3rem;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* ── Progress bars ── */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .progress-label {
+            width: 80px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #636e72;
+        }
+        .progress-bar-bg {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+        .progress-value {
+            width: 100px;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        /* ── Loading / toast ── */
+        .spinner {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #4a7c2e;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .toast.show { opacity: 1; }
+        .toast-success { background: #4a7c2e; }
+        .toast-error { background: #d63031; }
+
+        .if-info {
+            background: #e8f5e9;
+            border-left: 4px solid #4a7c2e;
+            padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* ── Auth screens ── */
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2d5016, #4a7c2e);
+            padding: 2rem;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .auth-card h2 {
+            color: #2d5016;
+            margin-bottom: 0.3rem;
+            font-size: 1.5rem;
+        }
+        .auth-card .subtitle {
+            color: #636e72;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .auth-card .form-group {
+            margin-bottom: 1rem;
+        }
+        .auth-card label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #636e72;
+            margin-bottom: 0.3rem;
+        }
+        .auth-card input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .auth-card input:focus {
+            outline: none;
+            border-color: #4a7c2e;
+            box-shadow: 0 0 0 2px rgba(74,124,46,0.15);
+        }
+        .auth-card .btn { width: 100%; margin-top: 0.5rem; }
+        .auth-card .link {
+            color: #4a7c2e;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-card .link:hover { text-decoration: underline; }
+        .auth-card .footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+        .auth-card .error-msg {
+            background: #ffeaea;
+            color: #d63031;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .auth-card .success-msg {
+            background: #e8f5e9;
+            color: #2d5016;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .auth-hidden { display: none !important; }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .logout-btn:hover { color: white; }
+
+        @media print {
+            header, .tabs, .btn, .btn-outline, .btn-row, .filters { display: none !important; }
+            .page { display: block !important; }
+            #page-recipes, #page-planner, #page-dashboard { display: none !important; }
+            .grocery-list { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════ AUTH SCREENS (shown when not logged in) ════════════ -->
+<div id="auth-section" class="auth-wrapper">
+
+    <!-- LOGIN -->
+    <div class="auth-card" id="auth-login">
+        <h2>Welcome to Dietyto</h2>
+        <p class="subtitle">Log in to plan your longevity meals</p>
+        <div class="error-msg" id="login-error"></div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="Your password">
+        </div>
+        <button class="btn" onclick="doLogin()">Log In</button>
+        <div class="footer">
+            <span class="link" onclick="showAuth('signup')">Create an account</span>
+            &nbsp;·&nbsp;
+            <span class="link" onclick="showAuth('forgot')">Forgot password?</span>
+        </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="auth-card auth-hidden" id="auth-signup">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join Dietyto — eat for longevity</p>
+        <div class="error-msg" id="signup-error"></div>
+        <div class="success-msg" id="signup-success"></div>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="signup-username" placeholder="Choose a username">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="signup-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signup-password" placeholder="At least 6 characters">
+        </div>
+        <button class="btn" onclick="doSignup()">Sign Up</button>
+        <div class="footer">
+            Already have an account? <span class="link" onclick="showAuth('login')">Log in</span>
+        </div>
+    </div>
+
+    <!-- VERIFY EMAIL -->
+    <div class="auth-card auth-hidden" id="auth-verify">
+        <h2>Verify Email</h2>
+        <p class="subtitle">Enter the 6-digit code sent to your email</p>
+        <div class="error-msg" id="verify-error"></div>
+        <div class="success-msg" id="verify-success"></div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="verify-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Verification Code</label>
+            <input type="text" id="verify-code" placeholder="6-digit code" maxlength="6">
+        </div>
+        <button class="btn" onclick="doVerify()">Verify</button>
+        <div class="footer">
+            <span class="link" onclick="showAuth('login')">Back to login</span>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="auth-card auth-hidden" id="auth-forgot">
+        <h2>Forgot Password</h2>
+        <p class="subtitle">Enter your email to receive a reset code</p>
+        <div class="error-msg" id="forgot-error"></div>
+        <div class="success-msg" id="forgot-success"></div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="forgot-email" placeholder="you@example.com">
+        </div>
+        <button class="btn" onclick="doForgotPassword()">Send Reset Code</button>
+        <div class="footer">
+            <span class="link" onclick="showAuth('reset')">I have a code</span>
+            &nbsp;·&nbsp;
+            <span class="link" onclick="showAuth('login')">Back to login</span>
+        </div>
+    </div>
+
+    <!-- RESET PASSWORD -->
+    <div class="auth-card auth-hidden" id="auth-reset">
+        <h2>Reset Password</h2>
+        <p class="subtitle">Enter the code and your new password</p>
+        <div class="error-msg" id="reset-error"></div>
+        <div class="success-msg" id="reset-success"></div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="reset-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label>Reset Code</label>
+            <input type="text" id="reset-code" placeholder="6-digit code" maxlength="6">
+        </div>
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="reset-password" placeholder="At least 6 characters">
+        </div>
+        <button class="btn" onclick="doResetPassword()">Reset Password</button>
+        <div class="footer">
+            <span class="link" onclick="showAuth('login')">Back to login</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- ════════════ MAIN APP (shown after login) ════════════ -->
+<div id="app-section" class="auth-hidden">
+
+<header>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <h1>Dietyto</h1>
+            <p>Eat for longevity</p>
+        </div>
+        <div style="text-align:right;">
+            <span id="header-user" style="font-size:0.9rem; opacity:0.9;"></span><br>
+            <button class="logout-btn" onclick="doLogout()">Log out</button>
+        </div>
+    </div>
+</header>
+
+<nav class="tabs">
+    <div class="tab active" data-page="recipes">Recipes</div>
+    <div class="tab" data-page="planner">Meal Planner</div>
+    <div class="tab" data-page="grocery">Grocery List</div>
+    <div class="tab" data-page="dashboard">Dashboard</div>
+    <div class="tab" data-page="profile">My Profile</div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<main>
+    <!-- ════════════ RECIPES PAGE ════════════ -->
+    <div class="page active" id="page-recipes">
+        <div class="filters">
+            <select id="filter-meal">
+                <option value="">All meals</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+            </select>
+            <select id="filter-category">
+                <option value="">All categories</option>
+                <option value="anti-inflammatory">Anti-inflammatory</option>
+                <option value="antioxidant-rich">Antioxidant-rich</option>
+                <option value="heart-healthy">Heart-healthy</option>
+                <option value="gut-friendly">Gut-friendly</option>
+            </select>
+            <select id="filter-allergen">
+                <option value="">No allergen filter</option>
+                <option value="gluten">Exclude gluten</option>
+                <option value="lactose">Exclude lactose</option>
+                <option value="gluten,lactose">Exclude both</option>
+            </select>
+        </div>
+        <div id="recipes-loading" class="empty-state"><span class="spinner"></span> Loading recipes...</div>
+        <div class="recipe-grid" id="recipe-grid"></div>
+    </div>
+
+    <!-- ════════════ MEAL PLANNER PAGE ════════════ -->
+    <div class="page" id="page-planner">
+        <h2 style="margin-bottom:1rem; color:#2d5016;">Plan Your Week</h2>
+        <div class="planner-grid" id="planner-grid"></div>
+        <div class="btn-row">
+            <button class="btn" onclick="saveMealPlan()">Save Plan</button>
+            <button class="btn" onclick="generateGroceryList()">Generate Grocery List</button>
+            <button class="btn" onclick="generateSummary()">View Weekly Summary</button>
+        </div>
+        <div id="summary-container"></div>
+    </div>
+
+    <!-- ════════════ GROCERY LIST PAGE ════════════ -->
+    <div class="page" id="page-grocery">
+        <div id="grocery-container">
+            <div class="empty-state">
+                <p>No grocery list yet.</p>
+                <p>Go to Meal Planner, assign recipes, then click "Generate Grocery List".</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ DASHBOARD PAGE ════════════ -->
+    <div class="page" id="page-dashboard">
+        <div id="dashboard-content">
+            <div class="empty-state">
+                <p>Set up your profile first, then plan your week to see your nutrition dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ PROFILE PAGE ════════════ -->
+    <div class="page" id="page-profile">
+        <div class="dashboard-card">
+            <h3>My Profile</h3>
+            <p style="color:#636e72; margin-bottom:1rem;">Your body stats determine your daily calorie and macro targets.</p>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="prof-gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="prof-age" min="10" max="120" value="30">
+                </div>
+                <div class="form-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" id="prof-weight" min="30" max="300" step="0.1" value="70">
+                </div>
+                <div class="form-group">
+                    <label>Height (cm)</label>
+                    <input type="number" id="prof-height" min="100" max="250" step="0.1" value="170">
+                </div>
+                <div class="form-group">
+                    <label>Activity Level</label>
+                    <select id="prof-activity">
+                        <option value="sedentary">Sedentary (desk job)</option>
+                        <option value="light">Light (1-3 days/week)</option>
+                        <option value="moderate" selected>Moderate (3-5 days/week)</option>
+                        <option value="active">Active (6-7 days/week)</option>
+                        <option value="very_active">Very Active (athlete)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Intermittent Fasting</label>
+                    <select id="prof-fasting">
+                        <option value="none">None</option>
+                        <option value="16_8">16:8 — 8h eating window</option>
+                        <option value="18_6">18:6 — 6h eating window</option>
+                        <option value="20_4">20:4 — 4h eating window</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Exclude Allergens</label>
+                    <div>
+                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="pref-gluten"> Gluten
+                        </label>
+                        &nbsp;&nbsp;
+                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="pref-lactose"> Lactose
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="btn" onclick="saveProfile()">Save Profile</button>
+            <button class="btn-outline" onclick="resetProfile()" style="margin-left:0.75rem;">Reset Profile</button>
+            <div id="profile-targets" style="margin-top:1.5rem;"></div>
+        </div>
+    </div>
+</main>
+
+<!-- ════════════ RECIPE DETAIL MODAL ════════════ -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+</div><!-- end #app-section -->
+
+<script>
+const API = "http://localhost:8000";
+let allRecipes = [];
+let userProfile = null;
+let authToken = localStorage.getItem("dietyto_token") || null;
+
+// ═══════════════════════════════════════════════
+// UTILITIES — toast notifications, error wrapper
+// ═══════════════════════════════════════════════
+
+function showToast(message, type = "success") {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.className = "toast show toast-" + type;
+    setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+async function apiCall(url, options = {}) {
+    try {
+        if (!options.headers) options.headers = {};
+        if (authToken) options.headers["Authorization"] = "Bearer " + authToken;
+
+        const res = await fetch(url, options);
+
+        if (res.status === 401) {
+            doLogout();
+            return null;
+        }
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.detail || "Server error: " + res.status);
+        }
+        return await res.json();
+    } catch (err) {
+        if (err.message.includes("Failed to fetch")) {
+            showToast("Cannot reach server. Is the backend running?", "error");
+        } else {
+            showToast(err.message, "error");
+        }
+        return null;
+    }
+}
+
+// ═══════════════════════════════════════════════
+// AUTH — signup, login, verify, reset, logout
+// ═══════════════════════════════════════════════
+
+function showAuth(screen) {
+    ["login", "signup", "verify", "forgot", "reset"].forEach(s => {
+        document.getElementById("auth-" + s).classList.add("auth-hidden");
+    });
+    document.getElementById("auth-" + screen).classList.remove("auth-hidden");
+}
+
+function showAuthError(screen, msg) {
+    const el = document.getElementById(screen + "-error");
+    el.textContent = msg;
+    el.style.display = "block";
+}
+
+function showAuthSuccess(screen, msg) {
+    const el = document.getElementById(screen + "-success");
+    el.textContent = msg;
+    el.style.display = "block";
+}
+
+function clearAuthMessages(screen) {
+    const err = document.getElementById(screen + "-error");
+    const suc = document.getElementById(screen + "-success");
+    if (err) err.style.display = "none";
+    if (suc) suc.style.display = "none";
+}
+
+async function doSignup() {
+    clearAuthMessages("signup");
+    const username = document.getElementById("signup-username").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+
+    if (!username || !email || !password) {
+        showAuthError("signup", "All fields are required");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/auth/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            showAuthError("signup", data.detail || "Signup failed");
+            return;
+        }
+
+        // Show the dev code (in production this would be emailed)
+        showAuthSuccess("signup", "Account created! Verification code: " + data.dev_code);
+        document.getElementById("verify-email").value = email;
+
+        setTimeout(() => showAuth("verify"), 2000);
+    } catch {
+        showAuthError("signup", "Cannot reach server");
+    }
+}
+
+async function doVerify() {
+    clearAuthMessages("verify");
+    const email = document.getElementById("verify-email").value.trim();
+    const code = document.getElementById("verify-code").value.trim();
+
+    if (!email || !code) {
+        showAuthError("verify", "Enter your email and the 6-digit code");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/auth/verify-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, code }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            showAuthError("verify", data.detail || "Verification failed");
+            return;
+        }
+
+        showAuthSuccess("verify", data.message);
+        document.getElementById("login-email").value = email;
+        setTimeout(() => showAuth("login"), 2000);
+    } catch {
+        showAuthError("verify", "Cannot reach server");
+    }
+}
+
+async function doLogin() {
+    clearAuthMessages("login");
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+
+    if (!email || !password) {
+        showAuthError("login", "Enter your email and password");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            showAuthError("login", data.detail || "Login failed");
+            return;
+        }
+
+        authToken = data.token;
+        localStorage.setItem("dietyto_token", data.token);
+        localStorage.setItem("dietyto_username", data.username);
+        enterApp(data.username);
+    } catch {
+        showAuthError("login", "Cannot reach server");
+    }
+}
+
+async function doForgotPassword() {
+    clearAuthMessages("forgot");
+    const email = document.getElementById("forgot-email").value.trim();
+
+    if (!email) {
+        showAuthError("forgot", "Enter your email");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/auth/forgot-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        if (data.dev_code) {
+            showAuthSuccess("forgot", "Reset code: " + data.dev_code);
+        } else {
+            showAuthSuccess("forgot", data.message);
+        }
+        document.getElementById("reset-email").value = email;
+    } catch {
+        showAuthError("forgot", "Cannot reach server");
+    }
+}
+
+async function doResetPassword() {
+    clearAuthMessages("reset");
+    const email = document.getElementById("reset-email").value.trim();
+    const code = document.getElementById("reset-code").value.trim();
+    const newPassword = document.getElementById("reset-password").value;
+
+    if (!email || !code || !newPassword) {
+        showAuthError("reset", "All fields are required");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/auth/reset-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, code, new_password: newPassword }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            showAuthError("reset", data.detail || "Reset failed");
+            return;
+        }
+
+        showAuthSuccess("reset", data.message);
+        document.getElementById("login-email").value = email;
+        setTimeout(() => showAuth("login"), 2000);
+    } catch {
+        showAuthError("reset", "Cannot reach server");
+    }
+}
+
+function doLogout() {
+    authToken = null;
+    userProfile = null;
+    localStorage.removeItem("dietyto_token");
+    localStorage.removeItem("dietyto_username");
+    document.getElementById("auth-section").classList.remove("auth-hidden");
+    document.getElementById("app-section").classList.add("auth-hidden");
+    showAuth("login");
+}
+
+function enterApp(username) {
+    document.getElementById("auth-section").classList.add("auth-hidden");
+    document.getElementById("app-section").classList.remove("auth-hidden");
+    document.getElementById("header-user").textContent = username;
+    initApp();
+}
+
+// ═══════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════
+
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("page-" + tab.dataset.page).classList.add("active");
+
+        if (tab.dataset.page === "dashboard") renderDashboard();
+    });
+});
+
+function switchTab(name) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelector('[data-page="' + name + '"]').classList.add("active");
+    document.getElementById("page-" + name).classList.add("active");
+}
+
+// ═══════════════════════════════════════════════
+// RECIPES — fetch, render, filter
+// ═══════════════════════════════════════════════
+
+async function fetchRecipes() {
+    const meal = document.getElementById("filter-meal").value;
+    const category = document.getElementById("filter-category").value;
+    const allergen = document.getElementById("filter-allergen").value;
+
+    document.getElementById("recipes-loading").style.display = "block";
+    document.getElementById("recipe-grid").innerHTML = "";
+
+    let url = API + "/recipes?";
+    if (meal) url += "meal_type=" + encodeURIComponent(meal) + "&";
+    if (category) url += "category=" + encodeURIComponent(category) + "&";
+    if (allergen) url += "exclude_allergens=" + encodeURIComponent(allergen) + "&";
+
+    const recipes = await apiCall(url);
+    document.getElementById("recipes-loading").style.display = "none";
+
+    if (!recipes) return;
+    allRecipes = recipes;
+    renderRecipes(recipes);
+    populatePlannerDropdowns(recipes);
+}
+
+function renderRecipes(recipes) {
+    const grid = document.getElementById("recipe-grid");
+    if (recipes.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><p>No recipes match your filters.</p></div>';
+        return;
+    }
+    grid.innerHTML = recipes.map(r => `
+        <div class="recipe-card" onclick="openRecipe(${r.id})">
+            <h3>${esc(r.name)}</h3>
+            <div class="meta">
+                <span>${r.calories} cal</span>
+                <span>${r.prep_time_min} min</span>
+                <span>${r.servings} serving${r.servings > 1 ? 's' : ''}</span>
+            </div>
+            <p class="description">${esc(r.description)}</p>
+            <div>
+                <span class="tag tag-category">${esc(r.category)}</span>
+                <span class="tag tag-category">${esc(r.meal_type)}</span>
+                ${r.allergens.map(a => `<span class="tag tag-allergen">${esc(a)}</span>`).join("")}
+            </div>
+            <div class="macros-bar">
+                <div class="macro"><span>${r.macros.protein_g}g</span>protein</div>
+                <div class="macro"><span>${r.macros.carbs_g}g</span>carbs</div>
+                <div class="macro"><span>${r.macros.fat_g}g</span>fat</div>
+                <div class="macro"><span>${r.macros.fiber_g}g</span>fiber</div>
+            </div>
+        </div>
+    `).join("");
+}
+
+function esc(str) {
+    const d = document.createElement("div");
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+// ═══════════════════════════════════════════════
+// RECIPE DETAIL MODAL
+// ═══════════════════════════════════════════════
+
+async function openRecipe(id) {
+    const r = await apiCall(API + "/recipes/" + id);
+    if (!r) return;
+
+    document.getElementById("modal-body").innerHTML = `
+        <h2>${esc(r.name)}</h2>
+        <p style="color:#636e72; margin-bottom:0.5rem;">${esc(r.description)}</p>
+        <div class="meta" style="display:flex; gap:1rem; font-size:0.9rem; color:#636e72; margin-bottom:1rem;">
+            <span>${r.calories} cal/serving</span>
+            <span>${r.prep_time_min} min prep</span>
+            <span>${r.servings} serving${r.servings > 1 ? 's' : ''}</span>
+        </div>
+        <div style="margin-bottom:1rem;">
+            <span class="tag tag-category">${esc(r.category)}</span>
+            <span class="tag tag-category">${esc(r.meal_type)}</span>
+            ${r.allergens.map(a => `<span class="tag tag-allergen">${esc(a)}</span>`).join("")}
+        </div>
+
+        <h4>Ingredients</h4>
+        <ul>
+            ${r.ingredients.map(i => `<li>${i.amount} ${esc(i.unit)} — ${esc(i.name)}</li>`).join("")}
+        </ul>
+
+        <h4>Instructions</h4>
+        <ol>
+            ${r.instructions.map(s => `<li>${esc(s)}</li>`).join("")}
+        </ol>
+
+        <h4>Macros (per serving)</h4>
+        <div class="macros-bar">
+            <div class="macro"><span>${r.macros.protein_g}g</span>protein</div>
+            <div class="macro"><span>${r.macros.carbs_g}g</span>carbs</div>
+            <div class="macro"><span>${r.macros.fat_g}g</span>fat</div>
+            <div class="macro"><span>${r.macros.fiber_g}g</span>fiber</div>
+        </div>
+
+        <h4>Health Benefits</h4>
+        <div>${r.health_benefits.map(b => `<span class="tag tag-category">${esc(b)}</span>`).join("")}</div>
+    `;
+    document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal() {
+    document.getElementById("modal-overlay").classList.remove("open");
+}
+document.getElementById("modal-overlay").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// ═══════════════════════════════════════════════
+// MEAL PLANNER — build, populate, save/load
+// ═══════════════════════════════════════════════
+
+const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+const MEALS = ["breakfast", "lunch", "dinner", "snack"];
+
+function buildPlanner() {
+    const grid = document.getElementById("planner-grid");
+    grid.innerHTML = DAYS.map(day => `
+        <div class="day-card">
+            <h4>${day}</h4>
+            ${MEALS.map(meal => `
+                <label>${meal}</label>
+                <select id="plan-${day}-${meal}" data-day="${day}" data-meal="${meal}">
+                    <option value="">— pick —</option>
+                </select>
+            `).join("")}
+        </div>
+    `).join("");
+}
+
+function populatePlannerDropdowns(recipes) {
+    DAYS.forEach(day => {
+        MEALS.forEach(meal => {
+            const select = document.getElementById(`plan-${day}-${meal}`);
+            if (!select) return;
+            const current = select.value;
+            const optionsHtml = '<option value="">— pick —</option>' +
+                recipes
+                    .filter(r => meal === "snack" ? r.meal_type === "snack" : r.meal_type === meal || r.meal_type === "snack")
+                    .map(r => `<option value="${r.id}" ${r.id == current ? 'selected' : ''}>${esc(r.name)} (${r.calories} cal)</option>`)
+                    .join("");
+            select.innerHTML = optionsHtml;
+        });
+    });
+}
+
+function getWeekPlan() {
+    const days = [];
+    const allergens = userProfile ? userProfile.exclude_allergens : [];
+    for (const day of DAYS) {
+        const breakfast = document.getElementById(`plan-${day}-breakfast`).value;
+        const lunch = document.getElementById(`plan-${day}-lunch`).value;
+        const dinner = document.getElementById(`plan-${day}-dinner`).value;
+        const snack = document.getElementById(`plan-${day}-snack`).value;
+
+        if (breakfast && lunch && dinner) {
+            const dayPlan = {
+                day: day,
+                breakfast_id: parseInt(breakfast),
+                lunch_id: parseInt(lunch),
+                dinner_id: parseInt(dinner),
+            };
+            if (snack) dayPlan.snack_id = parseInt(snack);
+            days.push(dayPlan);
+        }
+    }
+    return { days, exclude_allergens: allergens };
+}
+
+// Save meal plan to database
+async function saveMealPlan() {
+    const slots = [];
+    DAYS.forEach(day => {
+        MEALS.forEach(meal => {
+            const val = document.getElementById(`plan-${day}-${meal}`).value;
+            if (val) slots.push({ day, meal, recipe_id: parseInt(val) });
+        });
+    });
+
+    if (slots.length === 0) {
+        showToast("Pick at least one recipe first!", "error");
+        return;
+    }
+
+    const res = await apiCall(API + "/meal-plan/saved", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slots }),
+    });
+    if (res) showToast("Meal plan saved!");
+}
+
+// Load saved meal plan from database
+async function loadMealPlan() {
+    const data = await apiCall(API + "/meal-plan/saved");
+    if (!data || !data.slots || data.slots.length === 0) return;
+
+    for (const slot of data.slots) {
+        const select = document.getElementById(`plan-${slot.day}-${slot.meal}`);
+        if (select) select.value = slot.recipe_id;
+    }
+}
+
+// ═══════════════════════════════════════════════
+// GROCERY LIST — generate + print
+// ═══════════════════════════════════════════════
+
+async function generateGroceryList() {
+    const plan = getWeekPlan();
+    if (plan.days.length === 0) {
+        showToast("Pick at least breakfast, lunch, and dinner for one day!", "error");
+        return;
+    }
+
+    const data = await apiCall(API + "/meal-plan/grocery-list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(plan),
+    });
+    if (!data) return;
+
+    const container = document.getElementById("grocery-container");
+    container.innerHTML = `
+        <div class="grocery-list">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 style="margin:0;">Shopping List (${data.items.length} items)</h3>
+                <div>
+                    <button class="btn-outline" onclick="copyGroceryList()">Copy</button>
+                    <button class="btn-outline" onclick="window.print()" style="margin-left:0.5rem;">Print</button>
+                </div>
+            </div>
+            ${data.items.map(item => `
+                <div class="grocery-item">
+                    <span>${esc(item.name)}</span>
+                    <span class="grocery-amount">${item.total_amount} ${esc(item.unit)}</span>
+                </div>
+            `).join("")}
+        </div>
+    `;
+    lastGroceryItems = data.items;
+    switchTab("grocery");
+}
+
+let lastGroceryItems = [];
+
+function copyGroceryList() {
+    if (!lastGroceryItems.length) return;
+    const text = lastGroceryItems.map(i => `${i.name}: ${i.total_amount} ${i.unit}`).join("\n");
+    navigator.clipboard.writeText(text).then(() => {
+        showToast("Grocery list copied to clipboard!");
+    });
+}
+
+// ═══════════════════════════════════════════════
+// WEEKLY SUMMARY
+// ═══════════════════════════════════════════════
+
+async function generateSummary() {
+    const plan = getWeekPlan();
+    if (plan.days.length === 0) {
+        showToast("Pick at least breakfast, lunch, and dinner for one day!", "error");
+        return;
+    }
+
+    const data = await apiCall(API + "/meal-plan/summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(plan),
+    });
+    if (!data) return;
+
+    const avgCal = Math.round(data.total_calories / plan.days.length);
+
+    document.getElementById("summary-container").innerHTML = `
+        <div class="summary-box">
+            <h3>Weekly Summary (${plan.days.length} days planned)</h3>
+            <div class="summary-stats">
+                <div class="stat">
+                    <div class="number">${data.total_calories}</div>
+                    <div class="label">Total Calories</div>
+                </div>
+                <div class="stat">
+                    <div class="number">${avgCal}</div>
+                    <div class="label">Avg Cal/Day</div>
+                </div>
+                <div class="stat">
+                    <div class="number">${data.total_macros.protein_g}g</div>
+                    <div class="label">Total Protein</div>
+                </div>
+                <div class="stat">
+                    <div class="number">${data.total_macros.carbs_g}g</div>
+                    <div class="label">Total Carbs</div>
+                </div>
+                <div class="stat">
+                    <div class="number">${data.total_macros.fat_g}g</div>
+                    <div class="label">Total Fat</div>
+                </div>
+                <div class="stat">
+                    <div class="number">${data.total_macros.fiber_g}g</div>
+                    <div class="label">Total Fiber</div>
+                </div>
+            </div>
+            ${data.allergen_warnings.length > 0 ? `
+                <h4 style="margin-top:1rem; color:#e65100;">Allergen Warnings</h4>
+                ${data.allergen_warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("")}
+            ` : ''}
+        </div>
+    `;
+}
+
+// ═══════════════════════════════════════════════
+// USER PROFILE — load, save, calorie targets
+// ═══════════════════════════════════════════════
+
+async function loadProfile() {
+    const data = await apiCall(API + "/profile");
+    if (!data) return;
+    userProfile = data;
+
+    document.getElementById("prof-gender").value = data.gender;
+    document.getElementById("prof-age").value = data.age;
+    document.getElementById("prof-weight").value = data.weight_kg;
+    document.getElementById("prof-height").value = data.height_cm;
+    document.getElementById("prof-activity").value = data.activity_level;
+    document.getElementById("prof-fasting").value = data.intermittent_fasting;
+    document.getElementById("pref-gluten").checked = data.exclude_allergens.includes("gluten");
+    document.getElementById("pref-lactose").checked = data.exclude_allergens.includes("lactose");
+
+    renderProfileTargets(data);
+}
+
+function renderProfileTargets(data) {
+    const fastingLabels = {
+        "none": "",
+        "16_8": "16:8 fasting — eat your meals within an 8-hour window (e.g. 12:00–20:00)",
+        "18_6": "18:6 fasting — eat within a 6-hour window (e.g. 13:00–19:00)",
+        "20_4": "20:4 fasting — eat within a 4-hour window (e.g. 14:00–18:00)",
+    };
+    const ifNote = fastingLabels[data.intermittent_fasting] || "";
+
+    document.getElementById("profile-targets").innerHTML = `
+        <div class="summary-stats">
+            <div class="stat">
+                <div class="number">${data.daily_calories}</div>
+                <div class="label">Daily Calories</div>
+            </div>
+            <div class="stat">
+                <div class="number">${data.protein_target_g}g</div>
+                <div class="label">Protein Target</div>
+            </div>
+            <div class="stat">
+                <div class="number">${data.carbs_target_g}g</div>
+                <div class="label">Carbs Target</div>
+            </div>
+            <div class="stat">
+                <div class="number">${data.fat_target_g}g</div>
+                <div class="label">Fat Target</div>
+            </div>
+        </div>
+        ${ifNote ? `<div class="if-info" style="margin-top:1rem;">${esc(ifNote)}</div>` : ''}
+    `;
+}
+
+async function saveProfile() {
+    const allergens = [];
+    if (document.getElementById("pref-gluten").checked) allergens.push("gluten");
+    if (document.getElementById("pref-lactose").checked) allergens.push("lactose");
+
+    const profile = {
+        gender: document.getElementById("prof-gender").value,
+        age: parseInt(document.getElementById("prof-age").value),
+        weight_kg: parseFloat(document.getElementById("prof-weight").value),
+        height_cm: parseFloat(document.getElementById("prof-height").value),
+        activity_level: document.getElementById("prof-activity").value,
+        intermittent_fasting: document.getElementById("prof-fasting").value,
+        exclude_allergens: allergens,
+    };
+
+    const data = await apiCall(API + "/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+    });
+    if (!data) return;
+
+    userProfile = data;
+    renderProfileTargets(data);
+    showToast("Profile saved! Daily target: " + data.daily_calories + " cal");
+}
+
+async function resetProfile() {
+    const profile = {
+        gender: "male", age: 30, weight_kg: 70, height_cm: 170,
+        activity_level: "moderate", intermittent_fasting: "none", exclude_allergens: [],
+    };
+    const data = await apiCall(API + "/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+    });
+    if (!data) return;
+
+    userProfile = data;
+    document.getElementById("prof-gender").value = "male";
+    document.getElementById("prof-age").value = 30;
+    document.getElementById("prof-weight").value = 70;
+    document.getElementById("prof-height").value = 170;
+    document.getElementById("prof-activity").value = "moderate";
+    document.getElementById("prof-fasting").value = "none";
+    document.getElementById("pref-gluten").checked = false;
+    document.getElementById("pref-lactose").checked = false;
+    document.getElementById("profile-targets").innerHTML = "";
+    showToast("Profile reset to defaults");
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD — nutrition vs targets
+// ═══════════════════════════════════════════════
+
+async function renderDashboard() {
+    const container = document.getElementById("dashboard-content");
+
+    if (!userProfile) {
+        container.innerHTML = '<div class="empty-state"><p>Set up your profile first to see your targets.</p></div>';
+        return;
+    }
+
+    if (userProfile.weight_kg === 70 && userProfile.height_cm === 170 && userProfile.age === 30) {
+        container.innerHTML = `
+            <div class="dashboard-card">
+                <h3>Complete Your Profile</h3>
+                <p style="margin-bottom:1rem;">Your profile still has default values. For accurate calorie targets, fill in your real weight, height, and age.</p>
+                <a href="#" class="btn" onclick="switchTab('profile'); return false;">Go to My Profile</a>
+            </div>
+        `;
+        return;
+    }
+
+    const plan = getWeekPlan();
+    if (plan.days.length === 0) {
+        container.innerHTML = `
+            <div class="dashboard-card">
+                <h3>Your Daily Targets</h3>
+                <div class="summary-stats">
+                    <div class="stat"><div class="number">${userProfile.daily_calories}</div><div class="label">Calories/day</div></div>
+                    <div class="stat"><div class="number">${userProfile.protein_target_g}g</div><div class="label">Protein</div></div>
+                    <div class="stat"><div class="number">${userProfile.carbs_target_g}g</div><div class="label">Carbs</div></div>
+                    <div class="stat"><div class="number">${userProfile.fat_target_g}g</div><div class="label">Fat</div></div>
+                </div>
+                ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info" style="margin-top:1rem;">Intermittent fasting active</div>` : ''}
+            </div>
+            <div class="empty-state"><p>Plan some meals to see how they compare to your targets.</p></div>
+        `;
+        return;
+    }
+
+    const data = await apiCall(API + "/meal-plan/summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(plan),
+    });
+    if (!data) return;
+
+    const numDays = plan.days.length;
+    const avgCal = Math.round(data.total_calories / numDays);
+    const avgProtein = Math.round(data.total_macros.protein_g / numDays * 10) / 10;
+    const avgCarbs = Math.round(data.total_macros.carbs_g / numDays * 10) / 10;
+    const avgFat = Math.round(data.total_macros.fat_g / numDays * 10) / 10;
+    const avgFiber = Math.round(data.total_macros.fiber_g / numDays * 10) / 10;
+
+    const calPct = Math.min(Math.round((avgCal / userProfile.daily_calories) * 100), 150);
+    const protPct = Math.min(Math.round((avgProtein / userProfile.protein_target_g) * 100), 150);
+    const carbPct = Math.min(Math.round((avgCarbs / userProfile.carbs_target_g) * 100), 150);
+    const fatPct = Math.min(Math.round((avgFat / userProfile.fat_target_g) * 100), 150);
+
+    function barColor(pct) {
+        if (pct < 70) return "#f39c12";
+        if (pct <= 110) return "#4a7c2e";
+        return "#d63031";
+    }
+
+    function barHtml(label, actual, target, unit, pct) {
+        return `
+            <div class="progress-row">
+                <span class="progress-label">${label}</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width:${Math.min(pct, 100)}%; background:${barColor(pct)};"></div>
+                </div>
+                <span class="progress-value">${actual}${unit} / ${target}${unit}</span>
+            </div>
+        `;
+    }
+
+    const fastingInfo = {
+        "none": "",
+        "16_8": "16:8 fasting — pack your meals into an 8-hour eating window",
+        "18_6": "18:6 fasting — pack your meals into a 6-hour eating window",
+        "20_4": "20:4 fasting — pack your meals into a 4-hour eating window",
+    };
+
+    container.innerHTML = `
+        <div class="dashboard-card">
+            <h3>Daily Average vs Targets (${numDays} days planned)</h3>
+            ${barHtml("Calories", avgCal, userProfile.daily_calories, " cal", calPct)}
+            ${barHtml("Protein", avgProtein, userProfile.protein_target_g, "g", protPct)}
+            ${barHtml("Carbs", avgCarbs, userProfile.carbs_target_g, "g", carbPct)}
+            ${barHtml("Fat", avgFat, userProfile.fat_target_g, "g", fatPct)}
+            <div class="progress-row">
+                <span class="progress-label">Fiber</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width:${Math.min(avgFiber / 30 * 100, 100)}%; background:${avgFiber >= 25 ? '#4a7c2e' : '#f39c12'};"></div>
+                </div>
+                <span class="progress-value">${avgFiber}g / 30g</span>
+            </div>
+            ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info">${fastingInfo[userProfile.intermittent_fasting]}</div>` : ''}
+        </div>
+        <div class="dashboard-card">
+            <h3>Weekly Totals</h3>
+            <div class="summary-stats">
+                <div class="stat"><div class="number">${data.total_calories}</div><div class="label">Total Calories</div></div>
+                <div class="stat"><div class="number">${data.total_macros.protein_g}g</div><div class="label">Protein</div></div>
+                <div class="stat"><div class="number">${data.total_macros.carbs_g}g</div><div class="label">Carbs</div></div>
+                <div class="stat"><div class="number">${data.total_macros.fat_g}g</div><div class="label">Fat</div></div>
+                <div class="stat"><div class="number">${data.total_macros.fiber_g}g</div><div class="label">Fiber</div></div>
+            </div>
+        </div>
+        ${data.allergen_warnings.length > 0 ? `
+            <div class="dashboard-card">
+                <h3 style="color:#e65100;">Allergen Warnings</h3>
+                ${data.allergen_warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("")}
+            </div>
+        ` : ''}
+    `;
+}
+
+// ═══════════════════════════════════════════════
+// FILTER LISTENERS
+// ═══════════════════════════════════════════════
+
+document.getElementById("filter-meal").addEventListener("change", fetchRecipes);
+document.getElementById("filter-category").addEventListener("change", fetchRecipes);
+document.getElementById("filter-allergen").addEventListener("change", fetchRecipes);
+
+// ═══════════════════════════════════════════════
+// INIT — load everything on startup
+// ═══════════════════════════════════════════════
+
+async function initApp() {
+    buildPlanner();
+    await loadProfile();
+    await fetchRecipes();
+    await loadMealPlan();
+}
+
+// On page load: check if we have a saved token
+(async function checkSavedLogin() {
+    if (authToken) {
+        // Verify the token still works
+        try {
+            const res = await fetch(API + "/auth/me", {
+                headers: { "Authorization": "Bearer " + authToken },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                enterApp(data.username);
+                return;
+            }
+        } catch {}
+        // Token invalid — clear it
+        localStorage.removeItem("dietyto_token");
+        localStorage.removeItem("dietyto_username");
+        authToken = null;
+    }
+    // Show login screen
+    document.getElementById("auth-section").classList.remove("auth-hidden");
+})();
+</script>
+
+</body>
+</html>
