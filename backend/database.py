@@ -15,13 +15,16 @@ SQLite is a file-based database — no server needed.
 The file `longevity.db` will appear in your backend folder.
 """
 
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 # The database URL — "sqlite:///longevity.db" means:
 # - sqlite = use SQLite (file-based, no install needed)
 # - longevity.db = the filename (created automatically)
-DATABASE_URL = "sqlite:///longevity.db"
+# Use absolute path so it works regardless of which directory the server starts from
+_db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "longevity.db")
+DATABASE_URL = f"sqlite:///{_db_path}"
 
 # Engine = the connection to the database
 # connect_args is SQLite-specific (allows multiple threads)

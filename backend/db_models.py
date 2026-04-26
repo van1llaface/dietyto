@@ -21,8 +21,9 @@ The "link" between tables is called a FOREIGN KEY.
 """
 
 import json
+from typing import Optional
 from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from database import Base
 
 
@@ -40,21 +41,23 @@ class UserDB(Base):
       during local development).
     - auth_token: a random string that acts like a "key card" — the frontend
       sends it with every request to prove the user is logged in.
+
+    NEW CONCEPT — Mapped[]:
+    Instead of Column(String), we write: name: Mapped[str] = mapped_column(String)
+    This tells both SQLAlchemy AND the type checker what type each field is.
     """
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    username = Column(String, unique=True, nullable=False, index=True)
-    email = Column(String, unique=True, nullable=False, index=True)
-    password_hash = Column(String, nullable=False)
-    email_verified = Column(Boolean, default=False)
-    verify_code = Column(String, nullable=True)          # 6-digit email verification code
-    reset_code = Column(String, nullable=True)           # 6-digit password reset code
-    auth_token = Column(String, nullable=True, index=True)  # session token
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    password_hash: Mapped[str] = mapped_column(String, nullable=False)
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    verify_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
+    reset_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
+    auth_token: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True, default=None)
 
-    # Relationship: one user has one profile
     profile = relationship("UserProfileDB", back_populates="user", uselist=False, cascade="all, delete-orphan")
-    # Relationship: one user has many meal plan slots
     meal_plans = relationship("MealPlanDB", back_populates="user", cascade="all, delete-orphan")
 
 
@@ -65,11 +68,11 @@ class MealPlanDB(Base):
     """
     __tablename__ = "meal_plans"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    day = Column(String, nullable=False)
-    meal = Column(String, nullable=False)
-    recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    day: Mapped[str] = mapped_column(String, nullable=False)
+    meal: Mapped[str] = mapped_column(String, nullable=False)
+    recipe_id: Mapped[int] = mapped_column(Integer, ForeignKey("recipes.id"), nullable=False)
 
     user = relationship("UserDB", back_populates="meal_plans")
 
@@ -81,15 +84,15 @@ class UserProfileDB(Base):
     """
     __tablename__ = "user_profiles"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
-    gender = Column(String, default="male")
-    age = Column(Integer, default=30)
-    weight_kg = Column(Float, default=70)
-    height_cm = Column(Float, default=170)
-    activity_level = Column(String, default="moderate")
-    intermittent_fasting = Column(String, default="none")
-    exclude_allergens = Column(Text, default="[]")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    gender: Mapped[str] = mapped_column(String, default="male")
+    age: Mapped[int] = mapped_column(Integer, default=30)
+    weight_kg: Mapped[float] = mapped_column(Float, default=70)
+    height_cm: Mapped[float] = mapped_column(Float, default=170)
+    activity_level: Mapped[str] = mapped_column(String, default="moderate")
+    intermittent_fasting: Mapped[str] = mapped_column(String, default="none")
+    exclude_allergens: Mapped[str] = mapped_column(Text, default="[]")
 
     user = relationship("UserDB", back_populates="profile")
 
@@ -99,37 +102,28 @@ class RecipeDB(Base):
     The 'recipes' table in the database.
 
     __tablename__ = the actual table name in SQLite
-    Each Column(...) = one column in the table
+    Each mapped_column(...) = one column in the table
     """
     __tablename__ = "recipes"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    description = Column(String, default="")
-    category = Column(String, nullable=False)
-    meal_type = Column(String, nullable=False)
-    servings = Column(Integer, default=1)
-    prep_time_min = Column(Integer, default=0)
-    calories = Column(Integer, default=0)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String, default="")
+    category: Mapped[str] = mapped_column(String, nullable=False)
+    meal_type: Mapped[str] = mapped_column(String, nullable=False)
+    servings: Mapped[int] = mapped_column(Integer, default=1)
+    prep_time_min: Mapped[int] = mapped_column(Integer, default=0)
+    calories: Mapped[int] = mapped_column(Integer, default=0)
 
-    # Macros stored directly on recipe (simpler than separate table)
-    protein_g = Column(Float, default=0)
-    carbs_g = Column(Float, default=0)
-    fat_g = Column(Float, default=0)
-    fiber_g = Column(Float, default=0)
+    protein_g: Mapped[float] = mapped_column(Float, default=0)
+    carbs_g: Mapped[float] = mapped_column(Float, default=0)
+    fat_g: Mapped[float] = mapped_column(Float, default=0)
+    fiber_g: Mapped[float] = mapped_column(Float, default=0)
 
-    # Nutrients stored as JSON string (flexible, no extra table needed)
-    # We'll convert to/from dict in Python
-    nutrients_json = Column(Text, default="{}")
-
-    # Instructions stored as JSON array string
-    instructions_json = Column(Text, default="[]")
-
-    # Health benefits stored as JSON array string
-    health_benefits_json = Column(Text, default="[]")
-
-    # Allergens stored as JSON array string
-    allergens_json = Column(Text, default="[]")
+    nutrients_json: Mapped[str] = mapped_column(Text, default="{}")
+    instructions_json: Mapped[str] = mapped_column(Text, default="[]")
+    health_benefits_json: Mapped[str] = mapped_column(Text, default="[]")
+    allergens_json: Mapped[str] = mapped_column(Text, default="[]")
 
     # Relationship: one recipe has many ingredients
     # This tells SQLAlchemy: "when I load a recipe, also load its ingredients"
@@ -193,11 +187,11 @@ class IngredientDB(Base):
     """
     __tablename__ = "ingredients"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=False)
-    name = Column(String, nullable=False)
-    amount = Column(Float, nullable=False)
-    unit = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    recipe_id: Mapped[int] = mapped_column(Integer, ForeignKey("recipes.id"), nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    unit: Mapped[str] = mapped_column(String, nullable=False)
 
     # Relationship back to recipe
     recipe = relationship("RecipeDB", back_populates="ingredients")
