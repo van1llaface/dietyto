@@ -56,6 +56,7 @@ class UserDB(Base):
     verify_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     reset_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     auth_token: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True, default=None)
+    role: Mapped[str] = mapped_column(String, default="user")  # "admin" or "user"
 
     profile = relationship("UserProfileDB", back_populates="user", uselist=False, cascade="all, delete-orphan")
     meal_plans = relationship("MealPlanDB", back_populates="user", cascade="all, delete-orphan")
@@ -73,6 +74,7 @@ class MealPlanDB(Base):
     day: Mapped[str] = mapped_column(String, nullable=False)
     meal: Mapped[str] = mapped_column(String, nullable=False)
     recipe_id: Mapped[int] = mapped_column(Integer, ForeignKey("recipes.id"), nullable=False)
+    servings: Mapped[float] = mapped_column(Float, default=1.0)
 
     user = relationship("UserDB", back_populates="meal_plans")
 
@@ -89,8 +91,10 @@ class UserProfileDB(Base):
     gender: Mapped[str] = mapped_column(String, default="male")
     age: Mapped[int] = mapped_column(Integer, default=30)
     weight_kg: Mapped[float] = mapped_column(Float, default=70)
+    target_weight_kg: Mapped[float] = mapped_column(Float, default=70)
     height_cm: Mapped[float] = mapped_column(Float, default=170)
     activity_level: Mapped[str] = mapped_column(String, default="moderate")
+    weight_rate: Mapped[str] = mapped_column(String, default="maintain")
     intermittent_fasting: Mapped[str] = mapped_column(String, default="none")
     exclude_allergens: Mapped[str] = mapped_column(Text, default="[]")
 
