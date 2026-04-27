@@ -57,6 +57,15 @@ def get_current_user(
     return user
 
 
+def require_admin(
+    user: UserDB = Depends(get_current_user),
+) -> UserDB:
+    """Dependency that ensures the user is an admin."""
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
+
 def generate_code() -> str:
     """Generate a random 6-digit verification code."""
     return str(random.randint(100000, 999999))
@@ -127,9 +136,13 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     The token is like a wristband at a festival — show it to get access.
     The frontend stores it and sends it with every request.
     """
-    user = db.query(UserDB).filter(UserDB.email == req.email.lower()).first()
+    # Allow login with username or email
+    identifier = req.email.strip()
+    user = db.query(UserDB).filter(
+        (UserDB.email == identifier.lower()) | (UserDB.username == identifier)
+    ).first()
     if not user or not bcrypt.verify(req.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
+        raise HTTPException(status_code=401, detail="Incorrect username/email or password")
 
     if not user.email_verified:
         raise HTTPException(status_code=403, detail="Email not verified. Check your inbox for the code.")
@@ -139,7 +152,7 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     user.auth_token = token
     db.commit()
 
-    return LoginResponse(token=token, username=user.username, message="Welcome back!")
+    return LoginResponse(token=token, username=user.username, role=user.role, message="Welcome back!")
 
 
 @app.post("/auth/forgot-password")
@@ -179,7 +192,7 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
 @app.get("/auth/me")
 def get_me(user: UserDB = Depends(get_current_user)):
     """Returns the currently logged-in user's info."""
-    return {"username": user.username, "email": user.email}
+    return {"username": user.username, "email": user.email, "role": user.role}
 
 
 # ──────────────────────────────────────────────
@@ -297,11 +310,58 @@ def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db)):
 @app.post("/meal-plan/grocery-list", response_model=GroceryList)
 def generate_grocery_list(week_plan: WeekPlanCreate, db: Session = Depends(get_db)):
     """Send a week plan, get a combined grocery list from the database."""
+    import re as _re
 
     TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cups": 240}
     TO_G = {"g": 1, "kg": 1000}
 
-    def normalize(amount: float, unit: str) -> tuple[float, str]:
+    # ── Ingredient name normalization ──
+    # Strips prep notes like "(cubed)", "(chopped)", "(quartered)" etc.
+    # Merges plurals: "carrots"→"carrot", "potatoes"→"potato"
+    # Explicit synonyms for names that can't be auto-resolved.
+    SYNONYMS = {
+        "cooked beet": "beet",
+        "young potato with skin": "potato",
+        "plum tomatoes": "tomato",
+        "plum tomato": "tomato",
+        "fresh rosemary sprig": "fresh rosemary",
+        "fresh rosemary sprigs": "fresh rosemary",
+        "fresh thyme sprigs": "fresh thyme",
+        "celery stalks": "celery",
+        "celery stalk": "celery",
+        "garlic cloves": "garlic",
+        "garlic clove": "garlic",
+        "sweet potatoes": "sweet potato",
+        "date syrup or raw honey": "honey / date syrup",
+        "eggs (hard-boiled)": "egg",
+    }
+    # Last word of ingredient kept plural (these are always plural in recipes)
+    KEEP_PLURAL = {
+        "oats", "lentils", "beans", "peas", "chickpeas", "seeds", "berries",
+        "sprouts", "groats", "nuts", "raisins", "hummus",
+    }
+
+    def normalize_name(raw: str) -> str:
+        n = raw.lower().strip()
+        # Strip parenthetical prep notes: "beets (cubed)" → "beets"
+        n = _re.sub(r"\s*\(.*?\)", "", n).strip()
+        # Check synonyms first (after stripping parens)
+        if n in SYNONYMS:
+            return SYNONYMS[n]
+        # If the last word is a known always-plural noun, keep as-is
+        last_word = n.split()[-1]
+        if last_word in KEEP_PLURAL:
+            return n
+        # Deplural: handle English plural patterns
+        if n.endswith("oes"):
+            return n[:-2]           # potatoes→potato, tomatoes→tomato
+        if n.endswith(("shes", "ches", "xes", "zes")):
+            return n[:-2]           # radishes→radish
+        if n.endswith("s") and not n.endswith("ss"):
+            return n[:-1]           # carrots→carrot, walnuts→walnut
+        return n
+
+    def normalize_unit(amount: float, unit: str) -> tuple[float, str]:
         unit_lower = unit.lower()
         if unit_lower in TO_ML:
             return amount * TO_ML[unit_lower], "ml"
@@ -333,8 +393,8 @@ def generate_grocery_list(week_plan: WeekPlanCreate, db: Session = Depends(get_d
 
         for ing in recipe["ingredients"]:
             per_serving = ing["amount"] / servings
-            normalized_amount, base_unit = normalize(per_serving, ing["unit"])
-            key = ing["name"].lower()
+            normalized_amount, base_unit = normalize_unit(per_serving, ing["unit"])
+            key = normalize_name(ing["name"])
 
             if key in grocery:
                 if grocery[key]["unit"] == base_unit:
@@ -345,13 +405,13 @@ def generate_grocery_list(week_plan: WeekPlanCreate, db: Session = Depends(get_d
                         grocery[alt_key]["total_amount"] += normalized_amount
                     else:
                         grocery[alt_key] = {
-                            "name": ing["name"],
+                            "name": key,
                             "total_amount": normalized_amount,
                             "unit": base_unit,
                         }
             else:
                 grocery[key] = {
-                    "name": ing["name"],
+                    "name": key,
                     "total_amount": normalized_amount,
                     "unit": base_unit,
                 }
@@ -432,7 +492,7 @@ def get_meal_plan_summary(week_plan: WeekPlanCreate, db: Session = Depends(get_d
 def load_meal_plan(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
     """Load the saved meal plan for the logged-in user."""
     rows = db.query(MealPlanDB).filter(MealPlanDB.user_id == user.id).all()
-    slots = [MealSlot(day=r.day, meal=r.meal, recipe_id=r.recipe_id) for r in rows]
+    slots = [MealSlot(day=r.day, meal=r.meal, recipe_id=r.recipe_id, servings=r.servings) for r in rows]
     return SavedMealPlan(slots=slots)
 
 
@@ -443,9 +503,150 @@ def save_meal_plan(plan: SavedMealPlan, user: UserDB = Depends(get_current_user)
     """
     db.query(MealPlanDB).filter(MealPlanDB.user_id == user.id).delete()
     for slot in plan.slots:
-        db.add(MealPlanDB(user_id=user.id, day=slot.day, meal=slot.meal, recipe_id=slot.recipe_id))
+        db.add(MealPlanDB(user_id=user.id, day=slot.day, meal=slot.meal, recipe_id=slot.recipe_id, servings=slot.servings))
     db.commit()
     return {"message": "Meal plan saved", "slots": len(plan.slots)}
+
+
+# ──────────────────────────────────────────────
+# Auto-generate week plan based on user's targets
+# ──────────────────────────────────────────────
+
+import random
+
+@app.post("/meal-plan/generate", response_model=SavedMealPlan)
+def generate_meal_plan(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Auto-generate a 7-day meal plan that fits the user's calorie & macro targets.
+
+    Algorithm:
+    1. Load user profile → calculate daily calorie/macro targets.
+    2. Load all recipes, filter out excluded allergens.
+    3. For each day, pick breakfast + lunch + dinner (+ snack if needed)
+       that best match the daily targets, with variety across the week.
+    """
+    # 1. Load profile & targets
+    row = db.query(UserProfileDB).filter(UserProfileDB.user_id == user.id).first()
+    if not row:
+        row = UserProfileDB(user_id=user.id)
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+
+    profile = UserProfile(
+        gender=row.gender, age=row.age, weight_kg=row.weight_kg,
+        target_weight_kg=row.target_weight_kg, height_cm=row.height_cm,
+        activity_level=row.activity_level, weight_rate=row.weight_rate,
+        intermittent_fasting=row.intermittent_fasting,
+        exclude_allergens=json.loads(row.exclude_allergens) if row.exclude_allergens else [],
+    )
+    targets = calculate_calories(profile)
+    daily_cal = targets["daily_calories"]
+    target_protein = targets["protein_target_g"]
+    target_carbs = targets["carbs_target_g"]
+    target_fat = targets["fat_target_g"]
+
+    # 2. Load recipes, exclude allergens
+    all_recipes = [r.to_dict() for r in db.query(RecipeDB).all()]
+    excluded = [a.lower() for a in profile.exclude_allergens]
+    if excluded:
+        all_recipes = [
+            r for r in all_recipes
+            if not any(a.lower() in excluded for a in r.get("allergens", []))
+        ]
+
+    # Group by meal type
+    by_type = {"breakfast": [], "lunch": [], "dinner": [], "snack": []}
+    for r in all_recipes:
+        mt = r["meal_type"]
+        if mt in by_type:
+            by_type[mt].append(r)
+
+    # If a meal type has no recipes, allow any recipe for that slot
+    for mt in ["breakfast", "lunch", "dinner"]:
+        if not by_type[mt]:
+            by_type[mt] = all_recipes
+
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    meals_order = ["breakfast", "lunch", "dinner", "snack"]
+
+    # Calorie distribution across meals (% of daily target)
+    MEAL_SHARE = {"breakfast": 0.25, "lunch": 0.35, "dinner": 0.30, "snack": 0.10}
+
+    def round_servings(s):
+        """Round to nearest 0.5, min 0.5"""
+        return max(0.5, round(s * 2) / 2)
+
+    # 3. For each day, pick recipes then calculate servings to hit targets
+    slots = []
+    usage_count = {}
+
+    for day in days:
+        best_combo = None
+        best_score = float("inf")
+
+        for _ in range(200):
+            combo = {}
+            for meal in ["breakfast", "lunch", "dinner"]:
+                pool = by_type[meal]
+                if not pool:
+                    continue
+                weights = [1.0 / (1 + usage_count.get(r["id"], 0)) for r in pool]
+                total_w = sum(weights)
+                weights = [w / total_w for w in weights]
+                combo[meal] = random.choices(pool, weights=weights, k=1)[0]
+
+            # Always try to include a snack
+            if by_type["snack"]:
+                snack_weights = [1.0 / (1 + usage_count.get(r["id"], 0)) for r in by_type["snack"]]
+                total_sw = sum(snack_weights)
+                snack_weights = [w / total_sw for w in snack_weights]
+                combo["snack"] = random.choices(by_type["snack"], weights=snack_weights, k=1)[0]
+
+            # Calculate servings per meal to hit calorie share
+            combo_servings = {}
+            total_cal = 0
+            total_protein = 0
+            total_carbs = 0
+            total_fat = 0
+            for meal in combo:
+                meal_target_cal = daily_cal * MEAL_SHARE[meal]
+                recipe_cal = combo[meal]["calories"]
+                if recipe_cal > 0:
+                    s = round_servings(meal_target_cal / recipe_cal)
+                else:
+                    s = 1.0
+                combo_servings[meal] = s
+                total_cal += recipe_cal * s
+                total_protein += combo[meal]["macros"]["protein_g"] * s
+                total_carbs += combo[meal]["macros"]["carbs_g"] * s
+                total_fat += combo[meal]["macros"]["fat_g"] * s
+
+            # Score
+            cal_diff = abs(total_cal - daily_cal) / max(daily_cal, 1)
+            protein_diff = abs(total_protein - target_protein) / max(target_protein, 1)
+            carbs_diff = abs(total_carbs - target_carbs) / max(target_carbs, 1)
+            fat_diff = abs(total_fat - target_fat) / max(target_fat, 1)
+
+            score = cal_diff * 0.50 + protein_diff * 0.25 + carbs_diff * 0.15 + fat_diff * 0.10
+
+            repeat_penalty = sum(usage_count.get(combo[m]["id"], 0) * 0.05 for m in combo)
+            score += repeat_penalty
+
+            if score < best_score:
+                best_score = score
+                best_combo = combo
+                best_servings = combo_servings
+
+        if best_combo:
+            for meal in meals_order:
+                if meal in best_combo:
+                    rid = best_combo[meal]["id"]
+                    s = best_servings.get(meal, 1.0)
+                    slots.append(MealSlot(day=day, meal=meal, recipe_id=rid, servings=s))
+                    usage_count[rid] = usage_count.get(rid, 0) + 1
+
+    return SavedMealPlan(slots=slots)
 
 
 # ──────────────────────────────────────────────
@@ -462,15 +663,34 @@ ACTIVITY_FACTORS = {
 
 IF_LABELS = {
     "none": "No fasting",
+    "12_12": "12:12 (12h eating window)",
+    "14_10": "14:10 (10h eating window)",
     "16_8": "16:8 (8h eating window)",
     "18_6": "18:6 (6h eating window)",
     "20_4": "20:4 (4h eating window)",
 }
 
 
+# Calorie adjustment per kg/week: 1 kg body fat ≈ 7700 cal
+# 0.25 kg/week = 275 cal/day, 0.5 kg/week = 550 cal/day
+RATE_ADJUSTMENTS = {
+    "lose_0.5": -550,
+    "lose_0.25": -275,
+    "maintain": 0,
+    "gain_0.25": 275,
+    "gain_0.5": 550,
+}
+
+
 def calculate_calories(profile: UserProfile) -> dict:
     """
     Mifflin-St Jeor equation for BMR then multiply by activity level.
+    Then adjust based on weight rate:
+      - lose_0.5:  −550 cal/day (~0.5 kg loss/week)
+      - lose_0.25: −275 cal/day (~0.25 kg loss/week)
+      - maintain:  no change
+      - gain_0.25: +275 cal/day (~0.25 kg gain/week)
+      - gain_0.5:  +550 cal/day (~0.5 kg gain/week)
 
     Male:   BMR = 10 × weight(kg) + 6.25 × height(cm) – 5 × age + 5
     Female: BMR = 10 × weight(kg) + 6.25 × height(cm) – 5 × age – 161
@@ -481,15 +701,42 @@ def calculate_calories(profile: UserProfile) -> dict:
         bmr = 10 * profile.weight_kg + 6.25 * profile.height_cm - 5 * profile.age - 161
 
     factor = ACTIVITY_FACTORS.get(profile.activity_level, 1.55)
-    daily_cal = int(bmr * factor)
+    maintenance_cal = int(bmr * factor)
 
-    # Macro split: 30% protein, 40% carbs, 30% fat
-    protein_g = int((daily_cal * 0.30) / 4)   # 4 cal per gram protein
-    carbs_g = int((daily_cal * 0.40) / 4)     # 4 cal per gram carbs
-    fat_g = int((daily_cal * 0.30) / 9)       # 9 cal per gram fat
+    # Apply rate adjustment
+    adjustment = RATE_ADJUSTMENTS.get(profile.weight_rate, 0)
+    daily_cal = max(1200, maintenance_cal + adjustment)  # never go below 1200
+
+    # Calculate weeks to reach target weight
+    weight_diff = abs(profile.target_weight_kg - profile.weight_kg)
+    weeks_to_goal = None
+    if profile.weight_rate != "maintain" and weight_diff > 0:
+        rate_kg = 0.5 if "0.5" in profile.weight_rate else 0.25
+        weeks_to_goal = int(weight_diff / rate_kg) if rate_kg > 0 else None
+
+    # ── Longevity macro split (age-dependent) ──
+    # Protein: 1.4 g/kg baseline for muscle maintenance & satiety.
+    #   65 and over: bumped to 1.6 g/kg to prevent sarcopenia.
+    # Remaining calories split: ~55-60% carbs (complex), ~25-35% fat (healthy)
+
+    if profile.age >= 65:
+        # Elderly: prioritize muscle maintenance
+        protein_g = int(profile.weight_kg * 1.6)
+    else:
+        protein_g = int(profile.weight_kg * 1.4)
+
+    protein_cal = protein_g * 4
+    remaining_cal = daily_cal - protein_cal
+
+    # Remaining split: ~60% carbs, ~40% fat (of remaining calories)
+    carbs_g = int((remaining_cal * 0.60) / 4)
+    fat_g = int((remaining_cal * 0.40) / 9)
 
     return {
         "daily_calories": daily_cal,
+        "maintenance_calories": maintenance_cal,
+        "calorie_adjustment": adjustment,
+        "weeks_to_goal": weeks_to_goal,
         "protein_target_g": protein_g,
         "carbs_target_g": carbs_g,
         "fat_target_g": fat_g,
@@ -510,8 +757,10 @@ def get_profile(user: UserDB = Depends(get_current_user), db: Session = Depends(
         gender=row.gender,
         age=row.age,
         weight_kg=row.weight_kg,
+        target_weight_kg=row.target_weight_kg,
         height_cm=row.height_cm,
         activity_level=row.activity_level,
+        weight_rate=row.weight_rate,
         intermittent_fasting=row.intermittent_fasting,
         exclude_allergens=json.loads(row.exclude_allergens) if row.exclude_allergens else [],
     )
@@ -530,14 +779,140 @@ def update_profile(profile: UserProfile, user: UserDB = Depends(get_current_user
     row.gender = profile.gender
     row.age = profile.age
     row.weight_kg = profile.weight_kg
+    row.target_weight_kg = profile.target_weight_kg
     row.height_cm = profile.height_cm
     row.activity_level = profile.activity_level
+    row.weight_rate = profile.weight_rate
     row.intermittent_fasting = profile.intermittent_fasting
     row.exclude_allergens = json.dumps(profile.exclude_allergens)
     db.commit()
 
     targets = calculate_calories(profile)
     return UserProfileResponse(**profile.model_dump(), **targets)
+
+
+# ──────────────────────────────────────────────
+# Admin endpoints
+# ──────────────────────────────────────────────
+
+@app.get("/admin/users")
+def admin_list_users(admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """List all users (admin only)."""
+    users = db.query(UserDB).all()
+    return [
+        {
+            "id": u.id,
+            "username": u.username,
+            "email": u.email,
+            "role": u.role,
+            "email_verified": u.email_verified,
+        }
+        for u in users
+    ]
+
+
+@app.delete("/admin/users/{user_id}")
+def admin_delete_user(user_id: int, admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """Delete a user (admin only). Cannot delete yourself."""
+    if user_id == admin.id:
+        raise HTTPException(status_code=400, detail="Cannot delete yourself")
+    user = db.query(UserDB).filter(UserDB.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"message": f"User {user.username} deleted"}
+
+
+@app.put("/admin/users/{user_id}/role")
+def admin_change_role(user_id: int, role: str, admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """Change a user's role (admin only)."""
+    if role not in ("admin", "user"):
+        raise HTTPException(status_code=400, detail="Role must be 'admin' or 'user'")
+    if user_id == admin.id:
+        raise HTTPException(status_code=400, detail="Cannot change your own role")
+    user = db.query(UserDB).filter(UserDB.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.role = role
+    db.commit()
+    return {"message": f"{user.username} is now {role}"}
+
+
+@app.post("/admin/recipes", response_model=RecipeResponse)
+def admin_create_recipe(recipe: RecipeCreate, admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """Create a recipe (admin only)."""
+    db_recipe = RecipeDB(
+        name=recipe.name,
+        description=recipe.description,
+        category=recipe.category,
+        meal_type=recipe.meal_type,
+        servings=recipe.servings,
+        prep_time_min=recipe.prep_time_min,
+        calories=recipe.calories,
+        protein_g=recipe.macros.protein_g,
+        carbs_g=recipe.macros.carbs_g,
+        fat_g=recipe.macros.fat_g,
+        fiber_g=recipe.macros.fiber_g,
+        nutrients_json=json.dumps(recipe.nutrients.model_dump(exclude_none=True)),
+        instructions_json=json.dumps(recipe.instructions),
+        health_benefits_json=json.dumps(recipe.health_benefits),
+        allergens_json=json.dumps(recipe.allergens),
+    )
+    for ing in recipe.ingredients:
+        db_recipe.ingredients.append(
+            IngredientDB(name=ing.name, amount=ing.amount, unit=ing.unit)
+        )
+    db.add(db_recipe)
+    db.commit()
+    db.refresh(db_recipe)
+    return db_recipe.to_dict()
+
+
+@app.put("/admin/recipes/{recipe_id}", response_model=RecipeResponse)
+def admin_update_recipe(recipe_id: int, recipe: RecipeCreate, admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """Update a recipe (admin only)."""
+    db_recipe = db.query(RecipeDB).filter(RecipeDB.id == recipe_id).first()
+    if not db_recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db_recipe.name = recipe.name
+    db_recipe.description = recipe.description
+    db_recipe.category = recipe.category
+    db_recipe.meal_type = recipe.meal_type
+    db_recipe.servings = recipe.servings
+    db_recipe.prep_time_min = recipe.prep_time_min
+    db_recipe.calories = recipe.calories
+    db_recipe.protein_g = recipe.macros.protein_g
+    db_recipe.carbs_g = recipe.macros.carbs_g
+    db_recipe.fat_g = recipe.macros.fat_g
+    db_recipe.fiber_g = recipe.macros.fiber_g
+    db_recipe.nutrients_json = json.dumps(recipe.nutrients.model_dump(exclude_none=True))
+    db_recipe.instructions_json = json.dumps(recipe.instructions)
+    db_recipe.health_benefits_json = json.dumps(recipe.health_benefits)
+    db_recipe.allergens_json = json.dumps(recipe.allergens)
+
+    # Replace ingredients
+    for old_ing in db_recipe.ingredients:
+        db.delete(old_ing)
+    for ing in recipe.ingredients:
+        db_recipe.ingredients.append(
+            IngredientDB(name=ing.name, amount=ing.amount, unit=ing.unit)
+        )
+    db.commit()
+    db.refresh(db_recipe)
+    return db_recipe.to_dict()
+
+
+@app.delete("/admin/recipes/{recipe_id}")
+def admin_delete_recipe(recipe_id: int, admin: UserDB = Depends(require_admin), db: Session = Depends(get_db)):
+    """Delete a recipe (admin only)."""
+    db_recipe = db.query(RecipeDB).filter(RecipeDB.id == recipe_id).first()
+    if not db_recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    db.delete(db_recipe)
+    db.commit()
+    return {"message": f"Recipe '{db_recipe.name}' deleted"}
 
 
 # This lets you run the file directly with: python app.py

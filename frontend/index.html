@@ -4,51 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dietyto — Eat for Longevity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /*
+            JAPANDI THEME — Scandinavian × Japanese minimalism
+            Palette:
+              --sand:     #E8E0D5   warm beige background
+              --cream:    #F5F1EB   lighter variant
+              --clay:     #C4A882   warm clay accent
+              --terracotta: #B07B5F terracotta / earth
+              --moss:     #7A8B6F   muted sage green
+              --moss-dark:#5C6B52   darker moss for hover
+              --charcoal: #3A3A38   near-black text
+              --stone:    #8C8578   muted stone grey
+              --linen:    #FAF8F5   card backgrounds
+              --ink:      #2C2C2A   darkest text
+        */
+        :root {
+            --sand: #E8E0D5;
+            --cream: #F5F1EB;
+            --clay: #C4A882;
+            --terracotta: #B07B5F;
+            --moss: #7A8B6F;
+            --moss-dark: #5C6B52;
+            --charcoal: #3A3A38;
+            --stone: #8C8578;
+            --linen: #FAF8F5;
+            --ink: #2C2C2A;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7f5;
-            color: #2d3436;
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ── Header ── */
         header {
-            background: linear-gradient(135deg, #2d5016, #4a7c2e);
-            color: white;
+            background: var(--ink);
+            color: var(--sand);
             padding: 1.5rem 2rem;
             text-align: center;
         }
-        header h1 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; }
-        header p { opacity: 0.85; font-size: 0.95rem; margin-top: 0.3rem; }
+        header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        header p {
+            opacity: 0.6;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
 
         /* ── Navigation tabs ── */
         .tabs {
             display: flex;
             justify-content: center;
             gap: 0;
-            background: #fff;
-            border-bottom: 2px solid #e0e0e0;
+            background: var(--linen);
+            border-bottom: 1px solid var(--sand);
             position: sticky;
             top: 0;
             z-index: 10;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .tab {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             cursor: pointer;
-            font-weight: 600;
-            color: #636e72;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--stone);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.78rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        .tab:hover { color: #2d5016; }
-        .tab.active { color: #2d5016; border-bottom-color: #4a7c2e; }
+        .tab:hover { color: var(--charcoal); }
+        .tab.active { color: var(--ink); border-bottom-color: var(--terracotta); }
 
         /* ── Main content ── */
-        main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+        main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
         .page { display: none; }
         .page.active { display: block; }
 
@@ -57,78 +107,109 @@
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
         .filters select, .filters input {
-            padding: 0.5rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: white;
+            padding: 0.55rem 1rem;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--linen);
+            color: var(--charcoal);
+            transition: border-color 0.2s;
+        }
+        .filters select:focus, .filters input:focus {
+            outline: none;
+            border-color: var(--clay);
         }
 
         /* ── Recipe cards ── */
         .recipe-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.25rem;
+            gap: 1.5rem;
         }
         .recipe-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--linen);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--sand);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
         .recipe-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 24px rgba(58,58,56,0.08);
         }
-        .recipe-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; color: #2d5016; }
+        .recipe-card h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+            font-weight: 600;
+        }
         .recipe-card .meta {
             display: flex;
             gap: 0.75rem;
-            font-size: 0.8rem;
-            color: #636e72;
+            font-size: 0.78rem;
+            color: var(--stone);
             margin-bottom: 0.5rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
         }
         .recipe-card .description {
-            font-size: 0.9rem;
-            color: #555;
+            font-size: 0.88rem;
+            color: var(--stone);
             margin-bottom: 0.75rem;
+            line-height: 1.6;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         .tag {
             display: inline-block;
             padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            border-radius: 3px;
+            font-size: 0.72rem;
+            font-weight: 500;
             margin-right: 0.3rem;
             margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
-        .tag-category { background: #e8f5e9; color: #2d5016; }
-        .tag-allergen { background: #fff3e0; color: #e65100; }
+        .tag-category { background: rgba(122,139,111,0.15); color: var(--moss-dark); }
+        .tag-allergen { background: rgba(176,123,95,0.15); color: var(--terracotta); }
         .macros-bar {
             display: flex;
             gap: 0.5rem;
             margin-top: 0.75rem;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
         .macro {
-            padding: 0.3rem 0.6rem;
-            background: #f0f4f0;
-            border-radius: 6px;
+            flex: 1 1 0;
+            min-width: 0;
+            padding: 0.3rem 0.4rem;
+            background: var(--sand);
+            border-radius: 4px;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .macro span { display: block; font-weight: 700; color: #2d5016; }
+        .macro span { display: block; font-weight: 600; color: var(--ink); }
 
         /* ── Recipe detail modal ── */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(44,44,42,0.4);
+            backdrop-filter: blur(4px);
             z-index: 100;
             justify-content: center;
             align-items: start;
@@ -137,145 +218,280 @@
         }
         .modal-overlay.open { display: flex; }
         .modal {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
+            background: var(--linen);
+            border-radius: 12px;
+            padding: 2.5rem;
             max-width: 650px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
+            border: 1px solid var(--sand);
         }
         .modal-close {
             position: absolute;
-            top: 1rem; right: 1rem;
+            top: 1rem; right: 1.25rem;
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #636e72;
+            color: var(--stone);
+            transition: color 0.2s;
         }
-        .modal h2 { color: #2d5016; margin-bottom: 0.5rem; }
-        .modal h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: #2d5016; }
+        .modal-close:hover { color: var(--ink); }
+        .modal h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+        .modal h4 {
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
         .modal ul { padding-left: 1.25rem; }
-        .modal li { margin-bottom: 0.3rem; }
+        .modal li { margin-bottom: 0.3rem; color: var(--charcoal); }
         .modal ol { padding-left: 1.25rem; }
         .modal ol li { margin-bottom: 0.5rem; }
 
         /* ── Meal Planner ── */
+        .auto-generate-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--linen);
+            border: 1px solid var(--sand);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .auto-generate-info {
+            flex: 1;
+            font-size: 0.82rem;
+            color: var(--stone);
+            min-width: 200px;
+        }
+        .auto-generate-info .target-values {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .auto-generate-info .target-values span {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 0.8rem;
+        }
+        .planner-day-totals {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .day-total-card {
+            background: var(--linen);
+            border: 1px solid var(--sand);
+            border-radius: 8px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.72rem;
+        }
+        .day-total-card h5 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.82rem;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            color: var(--ink);
+            text-transform: capitalize;
+        }
+        .day-total-card .day-macros {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .day-total-card .dm {
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            background: var(--sand);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .day-total-card .dm.over { background: rgba(176,123,95,0.2); color: var(--terracotta); }
+        .day-total-card .dm.under { background: rgba(122,139,111,0.15); color: var(--moss-dark); }
+        .day-total-card .dm.ok { background: rgba(122,139,111,0.25); color: var(--moss-dark); }
         .planner-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
         .day-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--linen);
+            border-radius: 8px;
             padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--sand);
         }
         .day-card h4 {
             text-transform: capitalize;
-            color: #2d5016;
+            color: var(--ink);
             margin-bottom: 0.75rem;
             text-align: center;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.95rem;
+            white-space: nowrap;
         }
         .day-card label {
             display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #636e72;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--stone);
             margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
         .day-card select {
             width: 100%;
             padding: 0.4rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
+            font-size: 0.75rem;
             margin-top: 0.2rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: var(--charcoal);
+            text-overflow: ellipsis;
+        }
+        .servings-row {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.15rem;
+            margin-bottom: 0.3rem;
+        }
+        .servings-label {
+            font-size: 0.68rem;
+            color: var(--stone);
+            white-space: nowrap;
+        }
+        .servings-input {
+            width: 3.2rem;
+            padding: 0.2rem 0.3rem;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            background: white;
+            color: var(--charcoal);
         }
         .btn {
-            padding: 0.65rem 1.25rem;
-            background: #4a7c2e;
+            padding: 0.7rem 1.4rem;
+            background: var(--moss);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 500;
             cursor: pointer;
             transition: background 0.2s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
-        .btn:hover { background: #2d5016; }
+        .btn:hover { background: var(--moss-dark); }
         .btn-outline {
-            padding: 0.65rem 1.25rem;
-            background: white;
-            color: #4a7c2e;
-            border: 2px solid #4a7c2e;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            padding: 0.7rem 1.4rem;
+            background: transparent;
+            color: var(--moss);
+            border: 1.5px solid var(--moss);
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
-        .btn-outline:hover { background: #f0f4f0; }
+        .btn-outline:hover { background: rgba(122,139,111,0.08); }
         .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 
         /* ── Grocery List ── */
         .grocery-list {
-            background: white;
-            border-radius: 12px;
+            background: var(--linen);
+            border-radius: 8px;
             padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--sand);
         }
-        .grocery-list h3 { color: #2d5016; margin-bottom: 1rem; }
+        .grocery-list h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
         .grocery-item {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f0f0f0;
+            align-items: baseline;
+            gap: 1rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--sand);
         }
         .grocery-item:last-child { border-bottom: none; }
-        .grocery-amount { font-weight: 600; color: #4a7c2e; }
+        .grocery-amount { font-weight: 600; color: var(--terracotta); white-space: nowrap; }
 
         /* ── Summary / Dashboard ── */
         .summary-box, .dashboard-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--linen);
+            border-radius: 8px;
             padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--sand);
             margin-bottom: 1.5rem;
         }
-        .summary-box h3, .dashboard-card h3 { color: #2d5016; margin-bottom: 1rem; }
+        .summary-box h3, .dashboard-card h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
         .summary-stats {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             flex-wrap: wrap;
         }
         .stat {
+            flex: 1 1 80px;
+            min-width: 80px;
             text-align: center;
-            padding: 1rem;
-            background: #f0f4f0;
-            border-radius: 8px;
-            min-width: 100px;
+            padding: 0.75rem 0.5rem;
+            background: var(--sand);
+            border-radius: 6px;
+            white-space: nowrap;
+            overflow: hidden;
         }
-        .stat .number { font-size: 1.5rem; font-weight: 700; color: #2d5016; }
-        .stat .label { font-size: 0.8rem; color: #636e72; }
+        .stat .number { font-size: 1.4rem; font-weight: 600; color: var(--ink); }
+        .stat .label { font-size: 0.72rem; color: var(--stone); letter-spacing: 0.3px; overflow: hidden; text-overflow: ellipsis; }
 
         .warning {
-            background: #fff3e0;
-            border-left: 4px solid #e65100;
+            background: rgba(176,123,95,0.1);
+            border-left: 3px solid var(--terracotta);
             padding: 0.75rem 1rem;
             margin-top: 0.5rem;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 4px 4px 0;
             font-size: 0.9rem;
+            color: var(--charcoal);
         }
 
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: #636e72;
+            color: var(--stone);
         }
 
         /* ── Profile form ── */
@@ -287,17 +503,27 @@
         }
         .form-group label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #636e72;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--stone);
             margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .form-group select, .form-group input {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 0.55rem;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
             font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: var(--charcoal);
+            transition: border-color 0.2s;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: var(--clay);
         }
 
         /* ── Progress bars ── */
@@ -308,35 +534,42 @@
             margin-bottom: 0.75rem;
         }
         .progress-label {
-            width: 80px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #636e72;
+            min-width: 90px;
+            width: auto;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--stone);
+            white-space: nowrap;
         }
         .progress-bar-bg {
             flex: 1;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
+            height: 8px;
+            background: var(--sand);
+            border-radius: 4px;
             overflow: hidden;
         }
         .progress-bar-fill {
             height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s;
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
         .progress-value {
-            width: 100px;
-            font-size: 0.85rem;
+            min-width: 100px;
+            width: auto;
+            flex-shrink: 0;
+            font-size: 0.82rem;
             text-align: right;
+            color: var(--charcoal);
+            white-space: nowrap;
         }
 
         /* ── Loading / toast ── */
         .spinner {
             display: inline-block;
-            width: 20px; height: 20px;
-            border: 3px solid #e0e0e0;
-            border-top-color: #4a7c2e;
+            width: 18px; height: 18px;
+            border: 2px solid var(--sand);
+            border-top-color: var(--moss);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin-right: 0.5rem;
@@ -350,24 +583,28 @@
             left: 50%;
             transform: translateX(-50%);
             padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            border-radius: 4px;
             color: white;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 200;
             opacity: 0;
             transition: opacity 0.3s;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
         }
         .toast.show { opacity: 1; }
-        .toast-success { background: #4a7c2e; }
-        .toast-error { background: #d63031; }
+        .toast-success { background: var(--moss); }
+        .toast-error { background: #C0392B; }
+        .toast { max-width: 90vw; text-align: center; }
 
         .if-info {
-            background: #e8f5e9;
-            border-left: 4px solid #4a7c2e;
+            background: rgba(122,139,111,0.1);
+            border-left: 3px solid var(--moss);
             padding: 0.75rem 1rem;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 4px 4px 0;
             font-size: 0.9rem;
             margin-top: 1rem;
+            color: var(--charcoal);
         }
 
         /* ── Auth screens ── */
@@ -376,77 +613,84 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #2d5016, #4a7c2e);
+            background: var(--ink);
             padding: 2rem;
         }
         .auth-card {
-            background: white;
-            border-radius: 16px;
+            background: var(--linen);
+            border-radius: 8px;
             padding: 2.5rem;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            max-width: 400px;
+            border: 1px solid var(--sand);
         }
         .auth-card h2 {
-            color: #2d5016;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: var(--ink);
             margin-bottom: 0.3rem;
             font-size: 1.5rem;
         }
         .auth-card .subtitle {
-            color: #636e72;
+            color: var(--stone);
             margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .auth-card .form-group {
             margin-bottom: 1rem;
         }
         .auth-card label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #636e72;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--stone);
             margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .auth-card input {
             width: 100%;
-            padding: 0.6rem 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: var(--charcoal);
+            transition: border-color 0.2s;
         }
         .auth-card input:focus {
             outline: none;
-            border-color: #4a7c2e;
-            box-shadow: 0 0 0 2px rgba(74,124,46,0.15);
+            border-color: var(--clay);
+            box-shadow: none;
         }
         .auth-card .btn { width: 100%; margin-top: 0.5rem; }
         .auth-card .link {
-            color: #4a7c2e;
+            color: var(--terracotta);
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             text-decoration: none;
         }
         .auth-card .link:hover { text-decoration: underline; }
         .auth-card .footer {
             text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #636e72;
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--stone);
         }
         .auth-card .error-msg {
-            background: #ffeaea;
-            color: #d63031;
+            background: rgba(192,57,43,0.08);
+            color: #C0392B;
             padding: 0.5rem 0.75rem;
-            border-radius: 8px;
+            border-radius: 4px;
             font-size: 0.85rem;
             margin-bottom: 1rem;
             display: none;
         }
         .auth-card .success-msg {
-            background: #e8f5e9;
-            color: #2d5016;
+            background: rgba(122,139,111,0.1);
+            color: var(--moss-dark);
             padding: 0.5rem 0.75rem;
-            border-radius: 8px;
+            border-radius: 4px;
             font-size: 0.85rem;
             margin-bottom: 1rem;
             display: none;
@@ -455,18 +699,165 @@
         .logout-btn {
             background: none;
             border: none;
-            color: rgba(255,255,255,0.8);
+            color: var(--clay);
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+        .logout-btn:hover { color: var(--sand); }
+
+        /* ── Language switcher ── */
+        .lang-switch {
+            display: inline-flex;
+            gap: 0;
+            border: 1px solid var(--clay);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--clay);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background: var(--clay);
+            color: white;
+        }
+        .lang-btn:not(.active):hover {
+            background: rgba(196,168,130,0.15);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .tab { padding: 0.7rem 0.8rem; font-size: 0.72rem; letter-spacing: 0.3px; }
+            main { padding: 1rem 0.75rem; }
+            .recipe-grid { grid-template-columns: 1fr; }
+            .planner-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .form-grid { grid-template-columns: 1fr; }
+            .summary-stats { gap: 0.5rem; overflow-x: auto; flex-wrap: nowrap; }
+            .stat { flex: 0 0 auto; min-width: 90px; padding: 0.6rem 0.5rem; }
+            .stat .number { font-size: 1.1rem; }
+            .btn-row { flex-direction: column; }
+            .btn-row .btn, .btn-row .btn-outline { width: 100%; text-align: center; }
+            .modal { padding: 1.5rem; margin: 0.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.3rem; letter-spacing: 1px; }
+            header p { font-size: 0.75rem; letter-spacing: 1.5px; }
+            .auth-card { padding: 1.5rem; }
+            .planner-grid { grid-template-columns: 1fr 1fr; }
+            .macros-bar { font-size: 0.7rem; }
+            .macro { padding: 0.25rem 0.3rem; }
+        }
+
+        /* ── Fasting timeline ── */
+        .ft-protocol {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .ft-protocol strong { font-size: 1.1rem; color: var(--ink); }
+        .ft-bar-wrap {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            height: 28px;
+            margin-bottom: 1.25rem;
+            font-size: 0.72rem;
             font-weight: 600;
         }
-        .logout-btn:hover { color: white; }
+        .ft-bar-eat {
+            background: var(--moss);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ft-bar-fast {
+            background: var(--terracotta);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ft-steps { list-style: none; padding: 0; margin: 0; }
+        .ft-step {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--sand);
+        }
+        .ft-step:last-child { border-bottom: none; }
+        .ft-hour-badge {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .ft-hour-badge.unlocked {
+            background: var(--moss);
+            color: #fff;
+        }
+        .ft-hour-badge.locked {
+            background: var(--sand);
+            color: var(--stone);
+        }
+        .ft-step-info { flex: 1; min-width: 0; }
+        .ft-step-title {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--ink);
+            margin-bottom: 0.15rem;
+        }
+        .ft-step-desc {
+            font-size: 0.8rem;
+            color: var(--stone);
+            line-height: 1.45;
+        }
+        .ft-step-status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+        .ft-step-status.unlocked { color: var(--moss); }
+        .ft-step-status.locked { color: var(--stone); opacity: 0.6; }
+
+        /* ── Admin table responsive ── */
+        .admin-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .admin-table-wrap table {
+            min-width: 500px;
+        }
 
         @media print {
             header, .tabs, .btn, .btn-outline, .btn-row, .filters { display: none !important; }
             .page { display: block !important; }
             #page-recipes, #page-planner, #page-dashboard { display: none !important; }
-            .grocery-list { box-shadow: none; }
+            .grocery-list { box-shadow: none; border: none; }
         }
     </style>
 </head>
@@ -475,110 +866,118 @@
 <!-- ════════════ AUTH SCREENS (shown when not logged in) ════════════ -->
 <div id="auth-section" class="auth-wrapper">
 
+    <!-- Language switcher on auth screen -->
+    <div style="position:fixed; top:1rem; right:1.5rem; z-index:50;">
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('lt')">LT</button>
+        </div>
+    </div>
+
     <!-- LOGIN -->
     <div class="auth-card" id="auth-login">
-        <h2>Welcome to Dietyto</h2>
-        <p class="subtitle">Log in to plan your longevity meals</p>
+        <h2 data-i18n="auth.welcome">Welcome to Dietyto</h2>
+        <p class="subtitle" data-i18n="auth.loginSubtitle">Log in to plan your longevity meals</p>
         <div class="error-msg" id="login-error"></div>
         <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="login-email" placeholder="you@example.com">
+            <label data-i18n="auth.usernameOrEmail">Username or Email</label>
+            <input type="text" id="login-email" data-i18n-placeholder="auth.usernameOrEmailPlaceholder" placeholder="username or email">
         </div>
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="login-password" placeholder="Your password">
+            <label data-i18n="auth.password">Password</label>
+            <input type="password" id="login-password" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Your password">
         </div>
-        <button class="btn" onclick="doLogin()">Log In</button>
+        <button class="btn" onclick="doLogin()" data-i18n="auth.login">Log In</button>
         <div class="footer">
-            <span class="link" onclick="showAuth('signup')">Create an account</span>
+            <span class="link" onclick="showAuth('signup')" data-i18n="auth.createAccount">Create an account</span>
             &nbsp;·&nbsp;
-            <span class="link" onclick="showAuth('forgot')">Forgot password?</span>
+            <span class="link" onclick="showAuth('forgot')" data-i18n="auth.forgotPassword">Forgot password?</span>
         </div>
     </div>
 
     <!-- SIGNUP -->
     <div class="auth-card auth-hidden" id="auth-signup">
-        <h2>Create Account</h2>
-        <p class="subtitle">Join Dietyto — eat for longevity</p>
+        <h2 data-i18n="auth.createAccountTitle">Create Account</h2>
+        <p class="subtitle" data-i18n="auth.signupSubtitle">Join Dietyto — eat for longevity</p>
         <div class="error-msg" id="signup-error"></div>
         <div class="success-msg" id="signup-success"></div>
         <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="signup-username" placeholder="Choose a username">
+            <label data-i18n="auth.username">Username</label>
+            <input type="text" id="signup-username" data-i18n-placeholder="auth.chooseUsername" placeholder="Choose a username">
         </div>
         <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="auth.email">Email</label>
             <input type="email" id="signup-email" placeholder="you@example.com">
         </div>
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="signup-password" placeholder="At least 6 characters">
+            <label data-i18n="auth.password">Password</label>
+            <input type="password" id="signup-password" data-i18n-placeholder="auth.minChars" placeholder="At least 6 characters">
         </div>
-        <button class="btn" onclick="doSignup()">Sign Up</button>
+        <button class="btn" onclick="doSignup()" data-i18n="auth.signup">Sign Up</button>
         <div class="footer">
-            Already have an account? <span class="link" onclick="showAuth('login')">Log in</span>
+            <span data-i18n="auth.haveAccount">Already have an account?</span> <span class="link" onclick="showAuth('login')" data-i18n="auth.loginLink">Log in</span>
         </div>
     </div>
 
     <!-- VERIFY EMAIL -->
     <div class="auth-card auth-hidden" id="auth-verify">
-        <h2>Verify Email</h2>
-        <p class="subtitle">Enter the 6-digit code sent to your email</p>
+        <h2 data-i18n="auth.verifyTitle">Verify Email</h2>
+        <p class="subtitle" data-i18n="auth.verifySubtitle">Enter the 6-digit code sent to your email</p>
         <div class="error-msg" id="verify-error"></div>
         <div class="success-msg" id="verify-success"></div>
         <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="auth.email">Email</label>
             <input type="email" id="verify-email" placeholder="you@example.com">
         </div>
         <div class="form-group">
-            <label>Verification Code</label>
-            <input type="text" id="verify-code" placeholder="6-digit code" maxlength="6">
+            <label data-i18n="auth.verifyCode">Verification Code</label>
+            <input type="text" id="verify-code" data-i18n-placeholder="auth.digitCode" placeholder="6-digit code" maxlength="6">
         </div>
-        <button class="btn" onclick="doVerify()">Verify</button>
+        <button class="btn" onclick="doVerify()" data-i18n="auth.verify">Verify</button>
         <div class="footer">
-            <span class="link" onclick="showAuth('login')">Back to login</span>
+            <span class="link" onclick="showAuth('login')" data-i18n="auth.backToLogin">Back to login</span>
         </div>
     </div>
 
     <!-- FORGOT PASSWORD -->
     <div class="auth-card auth-hidden" id="auth-forgot">
-        <h2>Forgot Password</h2>
-        <p class="subtitle">Enter your email to receive a reset code</p>
+        <h2 data-i18n="auth.forgotTitle">Forgot Password</h2>
+        <p class="subtitle" data-i18n="auth.forgotSubtitle">Enter your email to receive a reset code</p>
         <div class="error-msg" id="forgot-error"></div>
         <div class="success-msg" id="forgot-success"></div>
         <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="auth.email">Email</label>
             <input type="email" id="forgot-email" placeholder="you@example.com">
         </div>
-        <button class="btn" onclick="doForgotPassword()">Send Reset Code</button>
+        <button class="btn" onclick="doForgotPassword()" data-i18n="auth.sendResetCode">Send Reset Code</button>
         <div class="footer">
-            <span class="link" onclick="showAuth('reset')">I have a code</span>
+            <span class="link" onclick="showAuth('reset')" data-i18n="auth.haveCode">I have a code</span>
             &nbsp;·&nbsp;
-            <span class="link" onclick="showAuth('login')">Back to login</span>
+            <span class="link" onclick="showAuth('login')" data-i18n="auth.backToLogin">Back to login</span>
         </div>
     </div>
 
     <!-- RESET PASSWORD -->
     <div class="auth-card auth-hidden" id="auth-reset">
-        <h2>Reset Password</h2>
-        <p class="subtitle">Enter the code and your new password</p>
+        <h2 data-i18n="auth.resetTitle">Reset Password</h2>
+        <p class="subtitle" data-i18n="auth.resetSubtitle">Enter the code and your new password</p>
         <div class="error-msg" id="reset-error"></div>
         <div class="success-msg" id="reset-success"></div>
         <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="auth.email">Email</label>
             <input type="email" id="reset-email" placeholder="you@example.com">
         </div>
         <div class="form-group">
-            <label>Reset Code</label>
-            <input type="text" id="reset-code" placeholder="6-digit code" maxlength="6">
+            <label data-i18n="auth.resetCode">Reset Code</label>
+            <input type="text" id="reset-code" data-i18n-placeholder="auth.digitCode" placeholder="6-digit code" maxlength="6">
         </div>
         <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="reset-password" placeholder="At least 6 characters">
+            <label data-i18n="auth.newPassword">New Password</label>
+            <input type="password" id="reset-password" data-i18n-placeholder="auth.minChars" placeholder="At least 6 characters">
         </div>
-        <button class="btn" onclick="doResetPassword()">Reset Password</button>
+        <button class="btn" onclick="doResetPassword()" data-i18n="auth.resetPassword">Reset Password</button>
         <div class="footer">
-            <span class="link" onclick="showAuth('login')">Back to login</span>
+            <span class="link" onclick="showAuth('login')" data-i18n="auth.backToLogin">Back to login</span>
         </div>
     </div>
 
@@ -589,23 +988,65 @@
 
 <header>
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
-            <h1>Dietyto</h1>
-            <p>Eat for longevity</p>
+        <div style="cursor:pointer; line-height:0;" onclick="location.reload(true)">
+            <svg width="210" height="64" viewBox="0 0 210 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <!-- FISH -->
+              <!-- Body -->
+              <ellipse cx="24" cy="36" rx="13" ry="7" fill="#7A8B6F"/>
+              <!-- Tail -->
+              <path d="M11 36 L4 29 L4 43 Z" fill="#7A8B6F"/>
+              <!-- Belly highlight -->
+              <ellipse cx="25" cy="37.5" rx="8" ry="4" fill="#FAF8F5" opacity="0.18"/>
+              <!-- Eye -->
+              <circle cx="33" cy="34" r="2" fill="#FAF8F5"/>
+              <circle cx="33.6" cy="33.4" r="0.7" fill="#2C2C2A"/>
+              <!-- Fin top -->
+              <path d="M22 29 C24 24 28 25 28 29" stroke="#C4A882" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <!-- Mouth -->
+              <path d="M37 36 Q39 35 37 34" stroke="#C4A882" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+              <!-- RUNNING FIGURE -->
+              <!-- Head -->
+              <circle cx="56" cy="18" r="4.5" fill="#E8E0D5"/>
+              <!-- Body torso -->
+              <path d="M56 22 L53 34" stroke="#E8E0D5" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Left arm (forward) -->
+              <path d="M55 26 L47 22" stroke="#C4A882" stroke-width="2" stroke-linecap="round"/>
+              <!-- Right arm (back) -->
+              <path d="M54 27 L60 30" stroke="#C4A882" stroke-width="2" stroke-linecap="round"/>
+              <!-- Left leg (forward stride) -->
+              <path d="M53 34 L47 42 L44 48" stroke="#E8E0D5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Right leg (back stride) -->
+              <path d="M53 34 L58 42 L62 47" stroke="#E8E0D5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Divider line -->
+              <line x1="76" y1="14" x2="76" y2="52" stroke="#C4A882" stroke-width="1" opacity="0.5"/>
+
+              <!-- WORDMARK -->
+              <text x="86" y="32" font-family="Georgia, serif" font-size="22" font-weight="700" letter-spacing="2" fill="#FAF8F5">DIETYTO</text>
+              <text x="87" y="48" font-family="Georgia, serif" font-size="8.5" letter-spacing="3.5" fill="#C4A882" opacity="0.9">EAT FOR LONGEVITY</text>
+            </svg>
         </div>
         <div style="text-align:right;">
-            <span id="header-user" style="font-size:0.9rem; opacity:0.9;"></span><br>
-            <button class="logout-btn" onclick="doLogout()">Log out</button>
+            <span id="header-user" style="font-size:0.9rem; opacity:0.9;"></span>
+            <div class="lang-switch" style="margin-left:0.5rem;">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('lt')">LT</button>
+            </div>
+            <br>
+            <button class="logout-btn" onclick="doLogout()" data-i18n="header.logout">Log out</button>
         </div>
     </div>
 </header>
 
 <nav class="tabs">
-    <div class="tab active" data-page="recipes">Recipes</div>
-    <div class="tab" data-page="planner">Meal Planner</div>
-    <div class="tab" data-page="grocery">Grocery List</div>
-    <div class="tab" data-page="dashboard">Dashboard</div>
-    <div class="tab" data-page="profile">My Profile</div>
+    <div class="tab active" data-page="recipes" data-i18n="nav.recipes">Recipes</div>
+    <div class="tab" data-page="planner" data-i18n="nav.planner">Meal Planner</div>
+    <div class="tab" data-page="grocery" data-i18n="nav.grocery">Grocery List</div>
+    <div class="tab" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</div>
+    <div class="tab" data-page="profile" data-i18n="nav.profile">My Profile</div>
+    <div class="tab admin-only" data-page="admin" style="display:none;" data-i18n="nav.admin">Admin</div>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -615,38 +1056,50 @@
     <div class="page active" id="page-recipes">
         <div class="filters">
             <select id="filter-meal">
-                <option value="">All meals</option>
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
+                <option value="" data-i18n="filter.allMeals">All meals</option>
+                <option value="breakfast" data-i18n="meal.breakfast">Breakfast</option>
+                <option value="lunch" data-i18n="meal.lunch">Lunch</option>
+                <option value="dinner" data-i18n="meal.dinner">Dinner</option>
+                <option value="snack" data-i18n="meal.snack">Snack</option>
             </select>
             <select id="filter-category">
-                <option value="">All categories</option>
-                <option value="anti-inflammatory">Anti-inflammatory</option>
-                <option value="antioxidant-rich">Antioxidant-rich</option>
-                <option value="heart-healthy">Heart-healthy</option>
-                <option value="gut-friendly">Gut-friendly</option>
+                <option value="" data-i18n="filter.allCategories">All categories</option>
+                <option value="anti-inflammatory" data-i18n="cat.antiInflammatory">Anti-inflammatory</option>
+                <option value="antioxidant-rich" data-i18n="cat.antioxidantRich">Antioxidant-rich</option>
+                <option value="heart-healthy" data-i18n="cat.heartHealthy">Heart-healthy</option>
+                <option value="gut-friendly" data-i18n="cat.gutFriendly">Gut-friendly</option>
             </select>
             <select id="filter-allergen">
-                <option value="">No allergen filter</option>
-                <option value="gluten">Exclude gluten</option>
-                <option value="lactose">Exclude lactose</option>
-                <option value="gluten,lactose">Exclude both</option>
+                <option value="" data-i18n="filter.noAllergen">No allergen filter</option>
+                <option value="fish" data-i18n="filter.excludeFish">Exclude fish</option>
+                <option value="meat" data-i18n="filter.excludeMeat">Exclude meat</option>
+                <option value="gluten" data-i18n="filter.excludeGluten">Exclude gluten</option>
+                <option value="lactose" data-i18n="filter.excludeLactose">Exclude lactose</option>
             </select>
         </div>
-        <div id="recipes-loading" class="empty-state"><span class="spinner"></span> Loading recipes...</div>
+        <div id="recipes-loading" class="empty-state"><span class="spinner"></span> <span data-i18n="recipes.loading">Loading recipes...</span></div>
         <div class="recipe-grid" id="recipe-grid"></div>
     </div>
 
     <!-- ════════════ MEAL PLANNER PAGE ════════════ -->
     <div class="page" id="page-planner">
-        <h2 style="margin-bottom:1rem; color:#2d5016;">Plan Your Week</h2>
+        <h2 style="margin-bottom:1rem; color:var(--ink); font-family:'Playfair Display',Georgia,serif;" data-i18n="planner.title">Plan Your Week</h2>
+
+        <!-- Auto-generate bar -->
+        <div class="auto-generate-bar" id="auto-generate-bar">
+            <div class="auto-generate-info" id="auto-generate-info"></div>
+            <button class="btn" onclick="autoGeneratePlan()" id="btn-auto-generate" data-i18n="planner.autoGenerate">Auto-Generate Plan</button>
+        </div>
+
         <div class="planner-grid" id="planner-grid"></div>
+
+        <!-- Day totals strip -->
+        <div id="planner-day-totals"></div>
+
         <div class="btn-row">
-            <button class="btn" onclick="saveMealPlan()">Save Plan</button>
-            <button class="btn" onclick="generateGroceryList()">Generate Grocery List</button>
-            <button class="btn" onclick="generateSummary()">View Weekly Summary</button>
+            <button class="btn" onclick="saveMealPlan()" data-i18n="planner.save">Save Plan</button>
+            <button class="btn" onclick="generateGroceryList()" data-i18n="planner.generateGrocery">Generate Grocery List</button>
+            <button class="btn" onclick="generateSummary()" data-i18n="planner.viewSummary">View Weekly Summary</button>
         </div>
         <div id="summary-container"></div>
     </div>
@@ -655,8 +1108,8 @@
     <div class="page" id="page-grocery">
         <div id="grocery-container">
             <div class="empty-state">
-                <p>No grocery list yet.</p>
-                <p>Go to Meal Planner, assign recipes, then click "Generate Grocery List".</p>
+                <p data-i18n="grocery.empty">No grocery list yet.</p>
+                <p data-i18n="grocery.emptyHint">Go to Meal Planner, assign recipes, then click "Generate Grocery List".</p>
             </div>
         </div>
     </div>
@@ -665,7 +1118,7 @@
     <div class="page" id="page-dashboard">
         <div id="dashboard-content">
             <div class="empty-state">
-                <p>Set up your profile first, then plan your week to see your nutrition dashboard.</p>
+                <p data-i18n="dashboard.empty">Set up your profile first, then plan your week to see your nutrition dashboard.</p>
             </div>
         </div>
     </div>
@@ -673,65 +1126,208 @@
     <!-- ════════════ PROFILE PAGE ════════════ -->
     <div class="page" id="page-profile">
         <div class="dashboard-card">
-            <h3>My Profile</h3>
-            <p style="color:#636e72; margin-bottom:1rem;">Your body stats determine your daily calorie and macro targets.</p>
+            <h3 data-i18n="profile.title">My Profile</h3>
+            <p style="color:var(--stone); margin-bottom:1rem;" data-i18n="profile.subtitle">Your body stats determine your daily calorie and macro targets.</p>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Gender</label>
+                    <label data-i18n="profile.gender">Gender</label>
                     <select id="prof-gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="male" data-i18n="profile.male">Male</option>
+                        <option value="female" data-i18n="profile.female">Female</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Age</label>
+                    <label data-i18n="profile.age">Age</label>
                     <input type="number" id="prof-age" min="10" max="120" value="30">
                 </div>
                 <div class="form-group">
-                    <label>Weight (kg)</label>
+                    <label data-i18n="profile.weight">Weight (kg)</label>
                     <input type="number" id="prof-weight" min="30" max="300" step="0.1" value="70">
                 </div>
                 <div class="form-group">
-                    <label>Height (cm)</label>
+                    <label data-i18n="profile.height">Height (cm)</label>
                     <input type="number" id="prof-height" min="100" max="250" step="0.1" value="170">
                 </div>
                 <div class="form-group">
-                    <label>Activity Level</label>
+                    <label data-i18n="profile.activity">Activity Level</label>
                     <select id="prof-activity">
-                        <option value="sedentary">Sedentary (desk job)</option>
-                        <option value="light">Light (1-3 days/week)</option>
-                        <option value="moderate" selected>Moderate (3-5 days/week)</option>
-                        <option value="active">Active (6-7 days/week)</option>
-                        <option value="very_active">Very Active (athlete)</option>
+                        <option value="sedentary" data-i18n="activity.sedentary">Sedentary (desk job)</option>
+                        <option value="light" data-i18n="activity.light">Light (1-3 days/week)</option>
+                        <option value="moderate" selected data-i18n="activity.moderate">Moderate (3-5 days/week)</option>
+                        <option value="active" data-i18n="activity.active">Active (6-7 days/week)</option>
+                        <option value="very_active" data-i18n="activity.veryActive">Very Active (athlete)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Intermittent Fasting</label>
+                    <label data-i18n="profile.targetWeight">Target Weight (kg)</label>
+                    <input type="number" id="prof-target-weight" min="30" max="300" step="0.5" value="70">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="profile.weeklyRate">Weekly Rate</label>
+                    <select id="prof-rate">
+                        <option value="lose_0.5" data-i18n="rate.lose05">Lose 0.5 kg/week</option>
+                        <option value="lose_0.25" data-i18n="rate.lose025">Lose 0.25 kg/week</option>
+                        <option value="maintain" selected data-i18n="rate.maintain">Maintain weight</option>
+                        <option value="gain_0.25" data-i18n="rate.gain025">Gain 0.25 kg/week</option>
+                        <option value="gain_0.5" data-i18n="rate.gain05">Gain 0.5 kg/week</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="profile.fasting">Intermittent Fasting</label>
                     <select id="prof-fasting">
-                        <option value="none">None</option>
-                        <option value="16_8">16:8 — 8h eating window</option>
-                        <option value="18_6">18:6 — 6h eating window</option>
-                        <option value="20_4">20:4 — 4h eating window</option>
+                        <option value="none" data-i18n="fasting.none">None</option>
+                        <option value="12_12" data-i18n="fasting.1212">12:12 — 12h eating window</option>
+                        <option value="14_10" data-i18n="fasting.1410">14:10 — 10h eating window</option>
+                        <option value="16_8" data-i18n="fasting.168">16:8 — 8h eating window</option>
+                        <option value="18_6" data-i18n="fasting.186">18:6 — 6h eating window</option>
+                        <option value="20_4" data-i18n="fasting.204">20:4 — 4h eating window</option>
                     </select>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Exclude Allergens</label>
+                    <label data-i18n="profile.excludeAllergens">Exclude Allergens</label>
                     <div>
                         <label style="display:inline; font-weight:400; cursor:pointer;">
-                            <input type="checkbox" id="pref-gluten"> Gluten
+                            <input type="checkbox" id="pref-fish"> <span data-i18n="allergen.fish">Fish</span>
                         </label>
                         &nbsp;&nbsp;
                         <label style="display:inline; font-weight:400; cursor:pointer;">
-                            <input type="checkbox" id="pref-lactose"> Lactose
+                            <input type="checkbox" id="pref-meat"> <span data-i18n="allergen.meat">Meat</span>
+                        </label>
+                        &nbsp;&nbsp;
+                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="pref-gluten"> <span data-i18n="allergen.gluten">Gluten</span>
+                        </label>
+                        &nbsp;&nbsp;
+                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="pref-lactose"> <span data-i18n="allergen.lactose">Lactose</span>
                         </label>
                     </div>
                 </div>
             </div>
-            <button class="btn" onclick="saveProfile()">Save Profile</button>
-            <button class="btn-outline" onclick="resetProfile()" style="margin-left:0.75rem;">Reset Profile</button>
+            <button class="btn" onclick="saveProfile()" data-i18n="profile.save">Save Profile</button>
+            <button class="btn-outline" onclick="resetProfile()" style="margin-left:0.75rem;" data-i18n="profile.reset">Reset Profile</button>
             <div id="profile-targets" style="margin-top:1.5rem;"></div>
+        </div>
+    </div>
+
+    <!-- ════════════ ADMIN PAGE ════════════ -->
+    <div class="page" id="page-admin">
+        <!-- Users Management -->
+        <div class="dashboard-card">
+            <h3 data-i18n="admin.users">Users</h3>
+            <div id="admin-users-list">
+                <div class="empty-state"><span class="spinner"></span> <span data-i18n="admin.loadingUsers">Loading users...</span></div>
+            </div>
+        </div>
+
+        <!-- Recipe Management -->
+        <div class="dashboard-card">
+            <h3 data-i18n="admin.manageRecipes">Manage Recipes</h3>
+            <button class="btn" onclick="showRecipeForm()" style="margin-bottom:1rem;" data-i18n="admin.addRecipe">+ Add New Recipe</button>
+            <div id="admin-recipes-list"></div>
+        </div>
+
+        <!-- Recipe Form (hidden by default) -->
+        <div class="dashboard-card" id="recipe-form-card" style="display:none;">
+            <h3 id="recipe-form-title" data-i18n="admin.addRecipeTitle">Add Recipe</h3>
+            <input type="hidden" id="rf-id" value="">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-i18n="recipe.name">Name</label>
+                    <input type="text" id="rf-name" data-i18n-placeholder="recipe.namePlaceholder" placeholder="Recipe name">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="recipe.mealType">Meal Type</label>
+                    <select id="rf-meal-type">
+                        <option value="breakfast" data-i18n="meal.breakfast">Breakfast</option>
+                        <option value="lunch" data-i18n="meal.lunch">Lunch</option>
+                        <option value="dinner" data-i18n="meal.dinner">Dinner</option>
+                        <option value="snack" data-i18n="meal.snack">Snack</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="recipe.category">Category</label>
+                    <select id="rf-category">
+                        <option value="anti-inflammatory" data-i18n="cat.antiInflammatory">Anti-inflammatory</option>
+                        <option value="antioxidant-rich" data-i18n="cat.antioxidantRich">Antioxidant-rich</option>
+                        <option value="heart-healthy" data-i18n="cat.heartHealthy">Heart-healthy</option>
+                        <option value="gut-friendly" data-i18n="cat.gutFriendly">Gut-friendly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="recipe.servings">Servings</label>
+                    <input type="number" id="rf-servings" value="2" min="1">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="recipe.prepTime">Prep Time (min)</label>
+                    <input type="number" id="rf-prep" value="15" min="1">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="recipe.caloriesPerServing">Calories (per serving)</label>
+                    <input type="number" id="rf-calories" value="300" min="0">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.description">Description</label>
+                <textarea id="rf-description" rows="2" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;"></textarea>
+            </div>
+            <h4 style="margin-bottom:0.5rem; color:var(--ink); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.5px;" data-i18n="recipe.macrosTitle">Macros (per serving)</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-i18n="macro.protein">Protein (g)</label>
+                    <input type="number" id="rf-protein" value="20" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="macro.carbs">Carbs (g)</label>
+                    <input type="number" id="rf-carbs" value="30" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="macro.fat">Fat (g)</label>
+                    <input type="number" id="rf-fat" value="10" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="macro.fiber">Fiber (g)</label>
+                    <input type="number" id="rf-fiber" value="5" min="0" step="0.1">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.ingredientsLabel">Ingredients (one per line: amount unit name — e.g. "200 g salmon fillet")</label>
+                <textarea id="rf-ingredients" rows="5" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="200 g salmon fillet&#10;1 tbsp olive oil&#10;100 g broccoli"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.instructionsLabel">Instructions (one step per line)</label>
+                <textarea id="rf-instructions" rows="4" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="Preheat oven to 200°C&#10;Season the salmon&#10;Bake for 15 minutes"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.benefitsLabel">Health Benefits (one per line)</label>
+                <textarea id="rf-benefits" rows="2" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="Rich in omega-3&#10;Anti-inflammatory"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.allergens">Allergens</label>
+                <div>
+                    <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <input type="checkbox" id="rf-allergen-fish"> <span data-i18n="allergen.fish">Fish</span>
+                    </label>
+                    &nbsp;&nbsp;
+                    <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <input type="checkbox" id="rf-allergen-meat"> <span data-i18n="allergen.meat">Meat</span>
+                    </label>
+                    &nbsp;&nbsp;
+                    <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <input type="checkbox" id="rf-allergen-gluten"> <span data-i18n="allergen.gluten">Gluten</span>
+                    </label>
+                    &nbsp;&nbsp;
+                    <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <input type="checkbox" id="rf-allergen-lactose"> <span data-i18n="allergen.lactose">Lactose</span>
+                    </label>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn" onclick="saveRecipeForm()" data-i18n="recipe.save">Save Recipe</button>
+                <button class="btn-outline" onclick="hideRecipeForm()" data-i18n="common.cancel">Cancel</button>
+            </div>
         </div>
     </div>
 </main>
@@ -747,10 +1343,677 @@
 </div><!-- end #app-section -->
 
 <script>
-const API = "http://localhost:8000";
+const API = window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : window.location.origin + "/api";
 let allRecipes = [];
 let userProfile = null;
 let authToken = localStorage.getItem("dietyto_token") || null;
+let currentLang = localStorage.getItem("dietyto_lang") || "en";
+
+// ═══════════════════════════════════════════════
+// i18n — TRANSLATIONS
+// ═══════════════════════════════════════════════
+
+const translations = {
+  en: {
+    // Header
+    "header.subtitle": "Eat for longevity",
+    "header.logout": "Log out",
+
+    // Nav
+    "nav.recipes": "Recipes",
+    "nav.planner": "Meal Planner",
+    "nav.grocery": "Grocery List",
+    "nav.dashboard": "Dashboard",
+    "nav.profile": "My Profile",
+    "nav.admin": "Admin",
+
+    // Auth
+    "auth.welcome": "Welcome to Dietyto",
+    "auth.loginSubtitle": "Log in to plan your longevity meals",
+    "auth.usernameOrEmail": "Username or Email",
+    "auth.usernameOrEmailPlaceholder": "username or email",
+    "auth.password": "Password",
+    "auth.passwordPlaceholder": "Your password",
+    "auth.login": "Log In",
+    "auth.createAccount": "Create an account",
+    "auth.forgotPassword": "Forgot password?",
+    "auth.createAccountTitle": "Create Account",
+    "auth.signupSubtitle": "Join Dietyto — eat for longevity",
+    "auth.username": "Username",
+    "auth.chooseUsername": "Choose a username",
+    "auth.email": "Email",
+    "auth.minChars": "At least 6 characters",
+    "auth.signup": "Sign Up",
+    "auth.haveAccount": "Already have an account?",
+    "auth.loginLink": "Log in",
+    "auth.verifyTitle": "Verify Email",
+    "auth.verifySubtitle": "Enter the 6-digit code sent to your email",
+    "auth.verifyCode": "Verification Code",
+    "auth.digitCode": "6-digit code",
+    "auth.verify": "Verify",
+    "auth.backToLogin": "Back to login",
+    "auth.forgotTitle": "Forgot Password",
+    "auth.forgotSubtitle": "Enter your email to receive a reset code",
+    "auth.sendResetCode": "Send Reset Code",
+    "auth.haveCode": "I have a code",
+    "auth.resetTitle": "Reset Password",
+    "auth.resetSubtitle": "Enter the code and your new password",
+    "auth.resetCode": "Reset Code",
+    "auth.newPassword": "New Password",
+    "auth.resetPassword": "Reset Password",
+
+    // Auth messages
+    "msg.allFieldsRequired": "All fields are required",
+    "msg.enterUsernamePassword": "Enter your username/email and password",
+    "msg.enterEmail": "Enter your email",
+    "msg.enterEmailAndCode": "Enter your email and the 6-digit code",
+    "msg.cannotReachServer": "Cannot reach server",
+    "msg.verifyAutoFilled": "Verification code has been auto-filled. Click Verify to continue.",
+    "msg.profileSaved": "Profile saved! Daily target: {0} cal",
+    "msg.profileReset": "Profile reset to defaults",
+    "msg.mealPlanSaved": "Meal plan saved!",
+    "msg.pickRecipeFirst": "Pick at least one recipe first!",
+    "msg.pickOneDayFirst": "Pick at least breakfast, lunch, and dinner for one day!",
+    "msg.groceryCopied": "Grocery list copied to clipboard!",
+    "msg.recipeNameRequired": "Recipe name is required",
+    "msg.addIngredient": "Add at least one ingredient (format: amount unit name)",
+    "msg.recipeCreated": "Recipe created!",
+    "msg.recipeUpdated": "Recipe updated!",
+    "msg.recipeDeleted": "Recipe deleted",
+    "msg.userDeleted": "User {0} deleted",
+    "msg.deleteUserConfirm": "Delete user {0}? This cannot be undone.",
+    "msg.deleteRecipeConfirm": "Delete recipe \"{0}\"? This cannot be undone.",
+    "msg.serverError": "Cannot reach server. Is the backend running?",
+
+    // Filters
+    "filter.allMeals": "All meals",
+    "filter.allCategories": "All categories",
+    "filter.noAllergen": "No allergen filter",
+    "filter.excludeGluten": "Exclude gluten",
+    "filter.excludeLactose": "Exclude lactose",
+    "filter.excludeFish": "Exclude fish",
+    "filter.excludeMeat": "Exclude meat",
+
+    // Meals
+    "meal.breakfast": "Breakfast",
+    "meal.lunch": "Lunch",
+    "meal.dinner": "Dinner",
+    "meal.snack": "Snack",
+
+    // Categories
+    "cat.antiInflammatory": "Anti-inflammatory",
+    "cat.antioxidantRich": "Antioxidant-rich",
+    "cat.heartHealthy": "Heart-healthy",
+    "cat.gutFriendly": "Gut-friendly",
+
+    // Recipes
+    "recipes.loading": "Loading recipes...",
+    "recipes.noMatch": "No recipes match your filters.",
+
+    // Units
+    "unit.handful": "handful",
+    "unit.handfuls": "handfuls",
+    "unit.pcs": "",
+    "unit.tbsp": "tbsp",
+    "unit.tsp": "tsp",
+    "unit.g": "g",
+    "unit.ml": "ml",
+
+    // Recipe detail
+    "recipe.calServing": "cal/serving",
+    "recipe.minPrep": "min prep",
+    "recipe.serving": "serving",
+    "recipe.servings": "Servings",
+    "recipe.ingredients": "Ingredients",
+    "recipe.instructions": "Instructions",
+    "recipe.macros": "Macros (per serving)",
+    "recipe.healthBenefits": "Health Benefits",
+    "recipe.name": "Name",
+    "recipe.namePlaceholder": "Recipe name",
+    "recipe.mealType": "Meal Type",
+    "recipe.category": "Category",
+    "recipe.prepTime": "Prep Time (min)",
+    "recipe.caloriesPerServing": "Calories (per serving)",
+    "recipe.description": "Description",
+    "recipe.macrosTitle": "Macros (per serving)",
+    "recipe.ingredientsLabel": "Ingredients (one per line: amount unit name — e.g. \"200 g salmon fillet\")",
+    "recipe.instructionsLabel": "Instructions (one step per line)",
+    "recipe.benefitsLabel": "Health Benefits (one per line)",
+    "recipe.allergens": "Allergens",
+    "recipe.save": "Save Recipe",
+
+    // Macros
+    "macro.protein": "Protein (g)",
+    "macro.carbs": "Carbs (g)",
+    "macro.fat": "Fat (g)",
+    "macro.fiber": "Fiber (g)",
+    "macro.proteinShort": "protein",
+    "macro.carbsShort": "carbs",
+    "macro.fatShort": "fat",
+    "macro.fiberShort": "fiber",
+
+    // Allergens
+    "allergen.gluten": "Gluten",
+    "allergen.lactose": "Lactose",
+    "allergen.fish": "Fish",
+    "allergen.meat": "Meat",
+
+    // Planner
+    "planner.title": "Plan Your Week",
+    "planner.save": "Save Plan",
+    "planner.generateGrocery": "Generate Grocery List",
+    "planner.viewSummary": "View Weekly Summary",
+    "planner.pick": "— pick —",
+    "planner.autoGenerate": "Auto-Generate Plan",
+    "planner.setupProfile": "Set up your profile first to auto-generate a plan.",
+    "planner.yourTargets": "Your daily targets:",
+    "planner.servings": "×",
+    "msg.planGenerated": "Week plan generated based on your targets!",
+    "msg.generateFailed": "Could not generate plan. Check your profile.",
+
+    // Days
+    "day.monday": "Monday",
+    "day.tuesday": "Tuesday",
+    "day.wednesday": "Wednesday",
+    "day.thursday": "Thursday",
+    "day.friday": "Friday",
+    "day.saturday": "Saturday",
+    "day.sunday": "Sunday",
+
+    // Grocery
+    "grocery.empty": "No grocery list yet.",
+    "grocery.emptyHint": "Go to Meal Planner, assign recipes, then click \"Generate Grocery List\".",
+    "grocery.shoppingList": "Shopping List ({0} items)",
+    "grocery.copy": "Copy",
+    "grocery.print": "Print",
+
+    // Dashboard
+    "dashboard.empty": "Set up your profile first, then plan your week to see your nutrition dashboard.",
+    "dashboard.completeProfile": "Complete Your Profile",
+    "dashboard.completeProfileHint": "Your profile still has default values. For accurate calorie targets, fill in your real weight, height, and age.",
+    "dashboard.goToProfile": "Go to My Profile",
+    "dashboard.yourTargets": "Your Daily Targets",
+    "dashboard.caloriesDay": "Calories/day",
+    "dashboard.planMealsHint": "Plan some meals to see how they compare to your targets.",
+    "dashboard.fastingActive": "Intermittent fasting active",
+    "dashboard.dailyAvg": "Daily Average vs Targets ({0} days planned)",
+    "dashboard.weeklyTotals": "Weekly Totals",
+    "dashboard.allergenWarnings": "Allergen Warnings",
+    "dashboard.calories": "Calories",
+    "dashboard.totalCalories": "Total Calories",
+    "dashboard.totalProtein": "Protein",
+    "dashboard.totalCarbs": "Carbs",
+    "dashboard.totalFat": "Fat",
+    "dashboard.totalFiber": "Fiber",
+    "dashboard.avgCalDay": "Avg Cal/Day",
+
+    // Profile
+    "profile.title": "My Profile",
+    "profile.subtitle": "Your body stats determine your daily calorie and macro targets.",
+    "profile.gender": "Gender",
+    "profile.male": "Male",
+    "profile.female": "Female",
+    "profile.age": "Age",
+    "profile.weight": "Weight (kg)",
+    "profile.height": "Height (cm)",
+    "profile.activity": "Activity Level",
+    "profile.targetWeight": "Target Weight (kg)",
+    "profile.weeklyRate": "Weekly Rate",
+    "profile.fasting": "Intermittent Fasting",
+    "profile.excludeAllergens": "Exclude Allergens",
+    "profile.save": "Save Profile",
+    "profile.reset": "Reset Profile",
+    "profile.dailyCalories": "Daily Calories",
+    "profile.proteinTarget": "Protein Target",
+    "profile.carbsTarget": "Carbs Target",
+    "profile.fatTarget": "Fat Target",
+    "profile.now": "Now",
+    "profile.goal": "Goal",
+    "profile.weeks": "≈ {0} weeks",
+
+    // Activity levels
+    "activity.sedentary": "Sedentary (desk job)",
+    "activity.light": "Light (1-3 days/week)",
+    "activity.moderate": "Moderate (3-5 days/week)",
+    "activity.active": "Active (6-7 days/week)",
+    "activity.veryActive": "Very Active (athlete)",
+
+    // Rate
+    "rate.lose05": "Lose 0.5 kg/week",
+    "rate.lose025": "Lose 0.25 kg/week",
+    "rate.maintain": "Maintain weight",
+    "rate.gain025": "Gain 0.25 kg/week",
+    "rate.gain05": "Gain 0.5 kg/week",
+
+    // Rate labels (profile targets)
+    "rateLabel.lose_0.5": "Losing 0.5 kg/week",
+    "rateLabel.lose_0.25": "Losing 0.25 kg/week",
+    "rateLabel.maintain": "Maintaining weight",
+    "rateLabel.gain_0.25": "Gaining 0.25 kg/week",
+    "rateLabel.gain_0.5": "Gaining 0.5 kg/week",
+
+    // Fasting
+    "fasting.none": "None",
+    "fasting.1212": "12:12 — 12h eating window",
+    "fasting.1410": "14:10 — 10h eating window",
+    "fasting.168": "16:8 — 8h eating window",
+    "fasting.186": "18:6 — 6h eating window",
+    "fasting.204": "20:4 — 4h eating window",
+    "fastingTip.12_12": "12:12 fasting — eat within a 12-hour window (e.g. 8:00–20:00). Dr. Longo's recommended minimum.",
+    "fastingTip.14_10": "14:10 fasting — eat within a 10-hour window (e.g. 9:00–19:00)",
+    "fastingTip.16_8": "16:8 fasting — eat your meals within an 8-hour window (e.g. 12:00–20:00)",
+    "fastingTip.18_6": "18:6 fasting — eat within a 6-hour window (e.g. 13:00–19:00)",
+    "fastingTip.20_4": "20:4 fasting — eat within a 4-hour window (e.g. 14:00–18:00)",
+    "fastingDash.12_12": "12:12 fasting — Dr. Longo's recommended 12-hour eating window",
+    "fastingDash.14_10": "14:10 fasting — pack your meals into a 10-hour eating window",
+    "fastingDash.16_8": "16:8 fasting — pack your meals into an 8-hour eating window",
+    "fastingDash.18_6": "18:6 fasting — pack your meals into a 6-hour eating window",
+    "fastingDash.20_4": "20:4 fasting — pack your meals into a 4-hour eating window",
+
+    // Fasting timeline
+    "ft.title": "Your Fasting Timeline",
+    "ft.protocol": "Protocol",
+    "ft.eating": "Eating",
+    "ft.fasting": "Fasting",
+    "ft.hour": "h",
+    "ft.benefitsTitle": "What happens during your fast",
+    "ft.h0": "Last meal digested",
+    "ft.h0desc": "Blood sugar returns to baseline. Insulin starts dropping.",
+    "ft.h4": "Fat burning begins",
+    "ft.h4desc": "Insulin low enough for body to start using fat stores for energy.",
+    "ft.h8": "Liver glycogen depleting",
+    "ft.h8desc": "Stored sugar running low. Body switches deeper into fat oxidation.",
+    "ft.h12": "Autophagy activates",
+    "ft.h12desc": "Cells start recycling damaged proteins and organelles. Key longevity mechanism.",
+    "ft.h14": "Growth hormone rises",
+    "ft.h14desc": "HGH increases to preserve muscle mass. Fat burning accelerates.",
+    "ft.h16": "Deep ketosis begins",
+    "ft.h16desc": "Ketone bodies fuel the brain. Mental clarity improves. mTOR suppressed.",
+    "ft.h18": "AMPK pathway active",
+    "ft.h18desc": "Cellular energy sensor activated. Enhances mitochondrial function and stress resistance.",
+    "ft.h20": "Peak autophagy",
+    "ft.h20desc": "Maximum cellular cleanup. Sirtuins highly active. Strong anti-aging effect.",
+    "ft.unlocked": "Unlocked",
+    "ft.needsMore": "Needs longer fast",
+    "ft.noFasting": "Select a fasting protocol in your profile to see the timeline.",
+
+    // Admin
+    "admin.users": "Users",
+    "admin.loadingUsers": "Loading users...",
+    "admin.manageRecipes": "Manage Recipes",
+    "admin.addRecipe": "+ Add New Recipe",
+    "admin.addRecipeTitle": "Add Recipe",
+    "admin.editRecipeTitle": "Edit Recipe",
+    "admin.noUsers": "No users yet.",
+    "admin.noRecipes": "No recipes yet. Add one above.",
+    "admin.id": "ID",
+    "admin.username": "Username",
+    "admin.email": "Email",
+    "admin.role": "Role",
+    "admin.verified": "Verified",
+    "admin.actions": "Actions",
+    "admin.makeAdmin": "Make Admin",
+    "admin.delete": "Delete",
+    "admin.edit": "Edit",
+    "admin.type": "Type",
+    "admin.category": "Category",
+    "admin.cal": "Cal",
+
+    // Common
+    "common.cancel": "Cancel",
+    "common.cal": "cal",
+    "common.min": "min",
+
+    // Summary
+    "summary.title": "Weekly Summary ({0} days planned)",
+  },
+  lt: {
+    // Header
+    "header.subtitle": "Valgyk ilgaamžiškumui",
+    "header.logout": "Atsijungti",
+
+    // Nav
+    "nav.recipes": "Receptai",
+    "nav.planner": "Savaitės planas",
+    "nav.grocery": "Pirkinių sąrašas",
+    "nav.dashboard": "Suvestinė",
+    "nav.profile": "Mano profilis",
+    "nav.admin": "Administravimas",
+
+    // Auth
+    "auth.welcome": "Sveiki atvykę į Dietyto",
+    "auth.loginSubtitle": "Prisijunkite ir planuokite ilgaamžiškumo patiekalus",
+    "auth.usernameOrEmail": "Vartotojo vardas arba el. paštas",
+    "auth.usernameOrEmailPlaceholder": "vartotojo vardas arba el. paštas",
+    "auth.password": "Slaptažodis",
+    "auth.passwordPlaceholder": "Jūsų slaptažodis",
+    "auth.login": "Prisijungti",
+    "auth.createAccount": "Sukurti paskyrą",
+    "auth.forgotPassword": "Pamiršote slaptažodį?",
+    "auth.createAccountTitle": "Sukurti paskyrą",
+    "auth.signupSubtitle": "Prisijunkite prie Dietyto — valgykite ilgaamžiškumui",
+    "auth.username": "Vartotojo vardas",
+    "auth.chooseUsername": "Pasirinkite vartotojo vardą",
+    "auth.email": "El. paštas",
+    "auth.minChars": "Mažiausiai 6 simboliai",
+    "auth.signup": "Registruotis",
+    "auth.haveAccount": "Jau turite paskyrą?",
+    "auth.loginLink": "Prisijungti",
+    "auth.verifyTitle": "Patvirtinti el. paštą",
+    "auth.verifySubtitle": "Įveskite 6 skaitmenų kodą, atsiųstą į jūsų el. paštą",
+    "auth.verifyCode": "Patvirtinimo kodas",
+    "auth.digitCode": "6 skaitmenų kodas",
+    "auth.verify": "Patvirtinti",
+    "auth.backToLogin": "Grįžti prie prisijungimo",
+    "auth.forgotTitle": "Pamirštas slaptažodis",
+    "auth.forgotSubtitle": "Įveskite el. paštą, kad gautumėte atkūrimo kodą",
+    "auth.sendResetCode": "Siųsti atkūrimo kodą",
+    "auth.haveCode": "Turiu kodą",
+    "auth.resetTitle": "Atkurti slaptažodį",
+    "auth.resetSubtitle": "Įveskite kodą ir naują slaptažodį",
+    "auth.resetCode": "Atkūrimo kodas",
+    "auth.newPassword": "Naujas slaptažodis",
+    "auth.resetPassword": "Atkurti slaptažodį",
+
+    // Auth messages
+    "msg.allFieldsRequired": "Visi laukai privalomi",
+    "msg.enterUsernamePassword": "Įveskite vartotojo vardą/el. paštą ir slaptažodį",
+    "msg.enterEmail": "Įveskite el. paštą",
+    "msg.enterEmailAndCode": "Įveskite el. paštą ir 6 skaitmenų kodą",
+    "msg.cannotReachServer": "Nepavyko prisijungti prie serverio",
+    "msg.verifyAutoFilled": "Patvirtinimo kodas automatiškai užpildytas. Spauskite Patvirtinti.",
+    "msg.profileSaved": "Profilis išsaugotas! Dienos norma: {0} kal",
+    "msg.profileReset": "Profilis atstatytas į numatytąsias reikšmes",
+    "msg.mealPlanSaved": "Savaitės planas išsaugotas!",
+    "msg.pickRecipeFirst": "Pirmiausia pasirinkite bent vieną receptą!",
+    "msg.pickOneDayFirst": "Pasirinkite bent pusryčius, pietus ir vakarienę vienai dienai!",
+    "msg.groceryCopied": "Pirkinių sąrašas nukopijuotas!",
+    "msg.recipeNameRequired": "Recepto pavadinimas privalomas",
+    "msg.addIngredient": "Pridėkite bent vieną ingredientą (formatas: kiekis vnt pavadinimas)",
+    "msg.recipeCreated": "Receptas sukurtas!",
+    "msg.recipeUpdated": "Receptas atnaujintas!",
+    "msg.recipeDeleted": "Receptas ištrintas",
+    "msg.userDeleted": "Vartotojas {0} ištrintas",
+    "msg.deleteUserConfirm": "Ištrinti vartotoją {0}? Tai negrįžtama.",
+    "msg.deleteRecipeConfirm": "Ištrinti receptą \"{0}\"? Tai negrįžtama.",
+    "msg.serverError": "Nepavyko prisijungti prie serverio. Ar veikia serveris?",
+
+    // Filters
+    "filter.allMeals": "Visi patiekalai",
+    "filter.allCategories": "Visos kategorijos",
+    "filter.noAllergen": "Be alergenų filtro",
+    "filter.excludeGluten": "Be gliuteno",
+    "filter.excludeLactose": "Be laktozės",
+    "filter.excludeFish": "Be žuvies",
+    "filter.excludeMeat": "Be mėsos",
+
+    // Meals
+    "meal.breakfast": "Pusryčiai",
+    "meal.lunch": "Pietūs",
+    "meal.dinner": "Vakarienė",
+    "meal.snack": "Užkandis",
+
+    // Categories
+    "cat.antiInflammatory": "Priešuždegiminis",
+    "cat.antioxidantRich": "Antioksidantinis",
+    "cat.heartHealthy": "Širdžiai naudingas",
+    "cat.gutFriendly": "Žarnynui draugiškas",
+
+    // Recipes
+    "recipes.loading": "Kraunami receptai...",
+    "recipes.noMatch": "Joks receptas neatitinka filtrų.",
+
+    // Units
+    "unit.handful": "sauja",
+    "unit.handfuls": "saujos",
+    "unit.pcs": "",
+    "unit.tbsp": "v.š.",
+    "unit.tsp": "a.š.",
+    "unit.g": "g",
+    "unit.ml": "ml",
+
+    // Recipe detail
+    "recipe.calServing": "kal/porc.",
+    "recipe.minPrep": "min ruoš.",
+    "recipe.serving": "porcija",
+    "recipe.servings": "Porcijos",
+    "recipe.ingredients": "Ingredientai",
+    "recipe.instructions": "Gaminimo eiga",
+    "recipe.macros": "Maistinės medžiagos (porcijai)",
+    "recipe.healthBenefits": "Nauda sveikatai",
+    "recipe.name": "Pavadinimas",
+    "recipe.namePlaceholder": "Recepto pavadinimas",
+    "recipe.mealType": "Patiekalo tipas",
+    "recipe.category": "Kategorija",
+    "recipe.prepTime": "Ruošimo laikas (min)",
+    "recipe.caloriesPerServing": "Kalorijos (porcijai)",
+    "recipe.description": "Aprašymas",
+    "recipe.macrosTitle": "Maistinės medžiagos (porcijai)",
+    "recipe.ingredientsLabel": "Ingredientai (po vieną eilutėje: kiekis vnt pavadinimas — pvz. '200 g lašišos filė')",
+    "recipe.instructionsLabel": "Gaminimo eiga (po vieną žingsnį eilutėje)",
+    "recipe.benefitsLabel": "Nauda sveikatai (po vieną eilutėje)",
+    "recipe.allergens": "Alergenai",
+    "recipe.save": "Išsaugoti receptą",
+
+    // Macros
+    "macro.protein": "Baltymai (g)",
+    "macro.carbs": "Angliavandeniai (g)",
+    "macro.fat": "Riebalai (g)",
+    "macro.fiber": "Skaidulinės medžiagos (g)",
+    "macro.proteinShort": "baltymai",
+    "macro.carbsShort": "angliavandeniai",
+    "macro.fatShort": "riebalai",
+    "macro.fiberShort": "skaidulos",
+
+    // Allergens
+    "allergen.gluten": "Gliutenas",
+    "allergen.lactose": "Laktozė",
+    "allergen.fish": "Žuvis",
+    "allergen.meat": "Mėsa",
+
+    // Planner
+    "planner.title": "Planuokite savaitę",
+    "planner.save": "Išsaugoti planą",
+    "planner.generateGrocery": "Generuoti pirkinių sąrašą",
+    "planner.viewSummary": "Savaitės suvestinė",
+    "planner.pick": "— pasirinkti —",
+    "planner.autoGenerate": "Automatiškai generuoti",
+    "planner.setupProfile": "Pirmiausia užpildykite profilį, kad sugeneruotumėte planą.",
+    "planner.yourTargets": "Jūsų dienos tikslai:",
+    "planner.servings": "×",
+    "msg.planGenerated": "Savaitės planas sugeneruotas pagal jūsų tikslus!",
+    "msg.generateFailed": "Nepavyko sugeneruoti plano. Patikrinkite profilį.",
+
+    // Days
+    "day.monday": "Pirmadienis",
+    "day.tuesday": "Antradienis",
+    "day.wednesday": "Trečiadienis",
+    "day.thursday": "Ketvirtadienis",
+    "day.friday": "Penktadienis",
+    "day.saturday": "Šeštadienis",
+    "day.sunday": "Sekmadienis",
+
+    // Grocery
+    "grocery.empty": "Pirkinių sąrašo dar nėra.",
+    "grocery.emptyHint": "Eikite į Savaitės planą, priskirkite receptus, tada spauskite 'Generuoti pirkinių sąrašą'.",
+    "grocery.shoppingList": "Pirkinių sąrašas ({0} prekių)",
+    "grocery.copy": "Kopijuoti",
+    "grocery.print": "Spausdinti",
+
+    // Dashboard
+    "dashboard.empty": "Pirmiausia nustatykite profilį, tada suplanuokite savaitę, kad matytumėte mitybos suvestinę.",
+    "dashboard.completeProfile": "Užpildykite profilį",
+    "dashboard.completeProfileHint": "Jūsų profilyje dar yra numatytosios reikšmės. Tikslesnėms kalorijų normoms įveskite tikrą svorį, ūgį ir amžių.",
+    "dashboard.goToProfile": "Eiti į profilį",
+    "dashboard.yourTargets": "Jūsų dienos normos",
+    "dashboard.caloriesDay": "Kalorijos/dieną",
+    "dashboard.planMealsHint": "Suplanuokite patiekalus, kad palygintumėte su savo normomis.",
+    "dashboard.fastingActive": "Protarpinis badavimas aktyvus",
+    "dashboard.dailyAvg": "Dienos vidurkis vs Normos ({0} d. suplanuota)",
+    "dashboard.weeklyTotals": "Savaitės sumos",
+    "dashboard.allergenWarnings": "Alergenų įspėjimai",
+    "dashboard.calories": "Kalorijos",
+    "dashboard.totalCalories": "Iš viso kalorijų",
+    "dashboard.totalProtein": "Baltymai",
+    "dashboard.totalCarbs": "Angliavandeniai",
+    "dashboard.totalFat": "Riebalai",
+    "dashboard.totalFiber": "Skaidulos",
+    "dashboard.avgCalDay": "Vid. kal/dieną",
+
+    // Profile
+    "profile.title": "Mano profilis",
+    "profile.subtitle": "Jūsų kūno parametrai nustato dienos kalorijų ir maistinių medžiagų normas.",
+    "profile.gender": "Lytis",
+    "profile.male": "Vyras",
+    "profile.female": "Moteris",
+    "profile.age": "Amžius",
+    "profile.weight": "Svoris (kg)",
+    "profile.height": "Ūgis (cm)",
+    "profile.activity": "Aktyvumo lygis",
+    "profile.targetWeight": "Tikslinis svoris (kg)",
+    "profile.weeklyRate": "Savaitinis tempas",
+    "profile.fasting": "Protarpinis badavimas",
+    "profile.excludeAllergens": "Neįtraukti alergenų",
+    "profile.save": "Išsaugoti profilį",
+    "profile.reset": "Atstatyti profilį",
+    "profile.dailyCalories": "Dienos kalorijos",
+    "profile.proteinTarget": "Baltymų norma",
+    "profile.carbsTarget": "Angliav. norma",
+    "profile.fatTarget": "Riebalų norma",
+    "profile.now": "Dabar",
+    "profile.goal": "Tikslas",
+    "profile.weeks": "≈ {0} sav.",
+
+    // Activity levels
+    "activity.sedentary": "Sėdimas (biuro darbas)",
+    "activity.light": "Lengvas (1-3 d./sav.)",
+    "activity.moderate": "Vidutinis (3-5 d./sav.)",
+    "activity.active": "Aktyvus (6-7 d./sav.)",
+    "activity.veryActive": "Labai aktyvus (sportininkas)",
+
+    // Rate
+    "rate.lose05": "Mesti 0,5 kg/sav.",
+    "rate.lose025": "Mesti 0,25 kg/sav.",
+    "rate.maintain": "Palaikyti svorį",
+    "rate.gain025": "Priaugti 0,25 kg/sav.",
+    "rate.gain05": "Priaugti 0,5 kg/sav.",
+
+    // Rate labels
+    "rateLabel.lose_0.5": "Metama 0,5 kg/sav.",
+    "rateLabel.lose_0.25": "Metama 0,25 kg/sav.",
+    "rateLabel.maintain": "Svoris palaikomas",
+    "rateLabel.gain_0.25": "Priaugama 0,25 kg/sav.",
+    "rateLabel.gain_0.5": "Priaugama 0,5 kg/sav.",
+
+    // Fasting
+    "fasting.none": "Nėra",
+    "fasting.1212": "12:12 — 12 val. valgymo langas",
+    "fasting.1410": "14:10 — 10 val. valgymo langas",
+    "fasting.168": "16:8 — 8 val. valgymo langas",
+    "fasting.186": "18:6 — 6 val. valgymo langas",
+    "fasting.204": "20:4 — 4 val. valgymo langas",
+    "fastingTip.12_12": "12:12 badavimas — valgykite per 12 val. langą (pvz. 8:00–20:00). Dr. Longo rekomenduojamas minimumas.",
+    "fastingTip.14_10": "14:10 badavimas — valgykite per 10 val. langą (pvz. 9:00–19:00)",
+    "fastingTip.16_8": "16:8 badavimas — valgykite per 8 val. langą (pvz. 12:00–20:00)",
+    "fastingTip.18_6": "18:6 badavimas — valgykite per 6 val. langą (pvz. 13:00–19:00)",
+    "fastingTip.20_4": "20:4 badavimas — valgykite per 4 val. langą (pvz. 14:00–18:00)",
+    "fastingDash.12_12": "12:12 badavimas — Dr. Longo rekomenduojamas 12 val. valgymo langas",
+    "fastingDash.14_10": "14:10 badavimas — sutalpinkite patiekalus į 10 val. valgymo langą",
+    "fastingDash.16_8": "16:8 badavimas — sutalpinkite patiekalus į 8 val. valgymo langą",
+    "fastingDash.18_6": "18:6 badavimas — sutalpinkite patiekalus į 6 val. valgymo langą",
+    "fastingDash.20_4": "20:4 badavimas — sutalpinkite patiekalus į 4 val. valgymo langą",
+
+    // Fasting timeline
+    "ft.title": "Jūsų badavimo laiko juosta",
+    "ft.protocol": "Protokolas",
+    "ft.eating": "Valgymas",
+    "ft.fasting": "Badavimas",
+    "ft.hour": "val.",
+    "ft.benefitsTitle": "Kas vyksta badavimo metu",
+    "ft.h0": "Paskutinis valgis suvirškintas",
+    "ft.h0desc": "Cukraus kiekis kraujyje grįžta į normą. Insulinas pradeda kristi.",
+    "ft.h4": "Prasideda riebalų deginimas",
+    "ft.h4desc": "Insulinas pakankamai žemas, kad organizmas pradėtų naudoti riebalų atsargas.",
+    "ft.h8": "Kepenų glikogenas senka",
+    "ft.h8desc": "Cukraus atsargos baigiasi. Organizmas giliau pereina prie riebalų oksidacijos.",
+    "ft.h12": "Autofagija aktyvuojasi",
+    "ft.h12desc": "Ląstelės pradeda perdirbti pažeistus baltymus ir organeles. Pagrindinis ilgaamžiškumo mechanizmas.",
+    "ft.h14": "Augimo hormonas kyla",
+    "ft.h14desc": "Augimo hormonas didėja raumenų masės išsaugojimui. Riebalų deginimas spartėja.",
+    "ft.h16": "Prasideda gili ketozė",
+    "ft.h16desc": "Ketonai maitina smegenis. Psichinis aiškumas gerėja. mTOR slopinamas.",
+    "ft.h18": "AMPK kelias aktyvus",
+    "ft.h18desc": "Ląstelių energijos jutiklis aktyvuotas. Gerina mitochondrijų funkciją ir atsparumą stresui.",
+    "ft.h20": "Maksimali autofagija",
+    "ft.h20desc": "Maksimalus ląstelių valymas. Sirtuinai labai aktyvūs. Stiprus anti-senėjimo efektas.",
+    "ft.unlocked": "Pasiekta",
+    "ft.needsMore": "Reikia ilgesnio badavimo",
+    "ft.noFasting": "Pasirinkite badavimo protokolą profilyje, kad matytumėte laiko juostą.",
+
+    // Admin
+    "admin.users": "Vartotojai",
+    "admin.loadingUsers": "Kraunami vartotojai...",
+    "admin.manageRecipes": "Tvarkyti receptus",
+    "admin.addRecipe": "+ Pridėti naują receptą",
+    "admin.addRecipeTitle": "Pridėti receptą",
+    "admin.editRecipeTitle": "Redaguoti receptą",
+    "admin.noUsers": "Vartotojų dar nėra.",
+    "admin.noRecipes": "Receptų dar nėra. Pridėkite aukščiau.",
+    "admin.id": "ID",
+    "admin.username": "Vartotojo vardas",
+    "admin.email": "El. paštas",
+    "admin.role": "Rolė",
+    "admin.verified": "Patvirtintas",
+    "admin.actions": "Veiksmai",
+    "admin.makeAdmin": "Padaryti admin",
+    "admin.delete": "Ištrinti",
+    "admin.edit": "Redaguoti",
+    "admin.type": "Tipas",
+    "admin.category": "Kategorija",
+    "admin.cal": "Kal",
+
+    // Common
+    "common.cancel": "Atšaukti",
+    "common.cal": "kal",
+    "common.min": "min",
+
+    // Summary
+    "summary.title": "Savaitės suvestinė ({0} d. suplanuota)",
+  }
+};
+
+function t(key, ...args) {
+    let str = (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+    args.forEach((val, i) => { str = str.replace("{" + i + "}", val); });
+    return str;
+}
+
+function applyTranslations() {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+    });
+    // Update lang buttons
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.textContent.trim().toLowerCase() === currentLang);
+    });
+}
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem("dietyto_lang", lang);
+    applyTranslations();
+    // Re-render dynamic content if loaded
+    if (allRecipes.length) renderRecipes(allRecipes);
+    if (userProfile) renderProfileTargets(userProfile);
+    // Re-build planner with translated days/meals
+    buildPlanner();
+    if (allRecipes.length) populatePlannerDropdowns(allRecipes);
+}
 
 // ═══════════════════════════════════════════════
 // UTILITIES — toast notifications, error wrapper
@@ -782,7 +2045,7 @@ async function apiCall(url, options = {}) {
         return await res.json();
     } catch (err) {
         if (err.message.includes("Failed to fetch")) {
-            showToast("Cannot reach server. Is the backend running?", "error");
+            showToast(t("msg.serverError"), "error");
         } else {
             showToast(err.message, "error");
         }
@@ -827,7 +2090,7 @@ async function doSignup() {
     const password = document.getElementById("signup-password").value;
 
     if (!username || !email || !password) {
-        showAuthError("signup", "All fields are required");
+        showAuthError("signup", t("msg.allFieldsRequired"));
         return;
     }
 
@@ -844,13 +2107,13 @@ async function doSignup() {
             return;
         }
 
-        // Show the dev code (in production this would be emailed)
-        showAuthSuccess("signup", "Account created! Verification code: " + data.dev_code);
+        // Auto-fill verify screen with email and code (no real email service)
         document.getElementById("verify-email").value = email;
-
-        setTimeout(() => showAuth("verify"), 2000);
+        document.getElementById("verify-code").value = data.dev_code || "";
+        showAuth("verify");
+        showAuthSuccess("verify", t("msg.verifyAutoFilled"));
     } catch {
-        showAuthError("signup", "Cannot reach server");
+        showAuthError("signup", t("msg.cannotReachServer"));
     }
 }
 
@@ -860,7 +2123,7 @@ async function doVerify() {
     const code = document.getElementById("verify-code").value.trim();
 
     if (!email || !code) {
-        showAuthError("verify", "Enter your email and the 6-digit code");
+        showAuthError("verify", t("msg.enterEmailAndCode"));
         return;
     }
 
@@ -881,7 +2144,7 @@ async function doVerify() {
         document.getElementById("login-email").value = email;
         setTimeout(() => showAuth("login"), 2000);
     } catch {
-        showAuthError("verify", "Cannot reach server");
+        showAuthError("verify", t("msg.cannotReachServer"));
     }
 }
 
@@ -891,7 +2154,7 @@ async function doLogin() {
     const password = document.getElementById("login-password").value;
 
     if (!email || !password) {
-        showAuthError("login", "Enter your email and password");
+        showAuthError("login", t("msg.enterUsernamePassword"));
         return;
     }
 
@@ -909,11 +2172,13 @@ async function doLogin() {
         }
 
         authToken = data.token;
+        currentUserRole = data.role || "user";
         localStorage.setItem("dietyto_token", data.token);
         localStorage.setItem("dietyto_username", data.username);
+        showAdminTab(currentUserRole === "admin");
         enterApp(data.username);
     } catch {
-        showAuthError("login", "Cannot reach server");
+        showAuthError("login", t("msg.cannotReachServer"));
     }
 }
 
@@ -922,7 +2187,7 @@ async function doForgotPassword() {
     const email = document.getElementById("forgot-email").value.trim();
 
     if (!email) {
-        showAuthError("forgot", "Enter your email");
+        showAuthError("forgot", t("msg.enterEmail"));
         return;
     }
 
@@ -941,7 +2206,7 @@ async function doForgotPassword() {
         }
         document.getElementById("reset-email").value = email;
     } catch {
-        showAuthError("forgot", "Cannot reach server");
+        showAuthError("forgot", t("msg.cannotReachServer"));
     }
 }
 
@@ -952,7 +2217,7 @@ async function doResetPassword() {
     const newPassword = document.getElementById("reset-password").value;
 
     if (!email || !code || !newPassword) {
-        showAuthError("reset", "All fields are required");
+        showAuthError("reset", t("msg.allFieldsRequired"));
         return;
     }
 
@@ -973,7 +2238,7 @@ async function doResetPassword() {
         document.getElementById("login-email").value = email;
         setTimeout(() => showAuth("login"), 2000);
     } catch {
-        showAuthError("reset", "Cannot reach server");
+        showAuthError("reset", t("msg.cannotReachServer"));
     }
 }
 
@@ -1006,6 +2271,10 @@ document.querySelectorAll(".tab").forEach(tab => {
         document.getElementById("page-" + tab.dataset.page).classList.add("active");
 
         if (tab.dataset.page === "dashboard") renderDashboard();
+        if (tab.dataset.page === "admin" && currentUserRole === "admin") {
+            loadAdminUsers();
+            loadAdminRecipes();
+        }
     });
 });
 
@@ -1045,16 +2314,16 @@ async function fetchRecipes() {
 function renderRecipes(recipes) {
     const grid = document.getElementById("recipe-grid");
     if (recipes.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><p>No recipes match your filters.</p></div>';
+        grid.innerHTML = '<div class="empty-state"><p>' + t("recipes.noMatch") + '</p></div>';
         return;
     }
     grid.innerHTML = recipes.map(r => `
         <div class="recipe-card" onclick="openRecipe(${r.id})">
             <h3>${esc(r.name)}</h3>
             <div class="meta">
-                <span>${r.calories} cal</span>
-                <span>${r.prep_time_min} min</span>
-                <span>${r.servings} serving${r.servings > 1 ? 's' : ''}</span>
+                <span>${r.calories} ${t("common.cal")}</span>
+                <span>${r.prep_time_min} ${t("common.min")}</span>
+                <span>${r.servings} ${r.servings > 1 ? t("recipe.servings").toLowerCase() : t("recipe.serving")}</span>
             </div>
             <p class="description">${esc(r.description)}</p>
             <div>
@@ -1063,10 +2332,10 @@ function renderRecipes(recipes) {
                 ${r.allergens.map(a => `<span class="tag tag-allergen">${esc(a)}</span>`).join("")}
             </div>
             <div class="macros-bar">
-                <div class="macro"><span>${r.macros.protein_g}g</span>protein</div>
-                <div class="macro"><span>${r.macros.carbs_g}g</span>carbs</div>
-                <div class="macro"><span>${r.macros.fat_g}g</span>fat</div>
-                <div class="macro"><span>${r.macros.fiber_g}g</span>fiber</div>
+                <div class="macro"><span>${r.macros.protein_g}g</span>${t("macro.proteinShort")}</div>
+                <div class="macro"><span>${r.macros.carbs_g}g</span>${t("macro.carbsShort")}</div>
+                <div class="macro"><span>${r.macros.fat_g}g</span>${t("macro.fatShort")}</div>
+                <div class="macro"><span>${r.macros.fiber_g}g</span>${t("macro.fiberShort")}</div>
             </div>
         </div>
     `).join("");
@@ -1076,6 +2345,30 @@ function esc(str) {
     const d = document.createElement("div");
     d.textContent = str;
     return d.innerHTML;
+}
+
+function formatAmount(n) {
+    const fracs = {0.25: "\u00BC", 0.5: "\u00BD", 0.75: "\u00BE", 0.33: "\u2153", 0.67: "\u2154"};
+    if (Number.isInteger(n)) return String(n);
+    const whole = Math.floor(n);
+    const frac = Math.round((n - whole) * 100) / 100;
+    const sym = fracs[frac];
+    if (sym) return whole ? whole + sym : sym;
+    return String(n);
+}
+
+function formatUnit(unit, amount) {
+    if (unit === "pcs") return "";
+    const key = (unit === "handful" && amount > 1) ? "unit.handfuls"
+              : "unit." + unit;
+    const translated = t(key);
+    return translated !== key ? translated : unit;
+}
+
+function formatIngredient(i) {
+    const amt = formatAmount(i.amount);
+    const u = formatUnit(i.unit, i.amount);
+    return u ? `${amt} ${esc(u)} ${esc(i.name)}` : `${amt} ${esc(i.name)}`;
 }
 
 // ═══════════════════════════════════════════════
@@ -1088,11 +2381,11 @@ async function openRecipe(id) {
 
     document.getElementById("modal-body").innerHTML = `
         <h2>${esc(r.name)}</h2>
-        <p style="color:#636e72; margin-bottom:0.5rem;">${esc(r.description)}</p>
-        <div class="meta" style="display:flex; gap:1rem; font-size:0.9rem; color:#636e72; margin-bottom:1rem;">
-            <span>${r.calories} cal/serving</span>
-            <span>${r.prep_time_min} min prep</span>
-            <span>${r.servings} serving${r.servings > 1 ? 's' : ''}</span>
+        <p style="color:var(--stone); margin-bottom:0.5rem;">${esc(r.description)}</p>
+        <div class="meta" style="display:flex; gap:1rem; font-size:0.9rem; color:var(--stone); margin-bottom:1rem;">
+            <span>${r.calories} ${t("recipe.calServing")}</span>
+            <span>${r.prep_time_min} ${t("recipe.minPrep")}</span>
+            <span>${r.servings} ${r.servings > 1 ? t("recipe.servings").toLowerCase() : t("recipe.serving")}</span>
         </div>
         <div style="margin-bottom:1rem;">
             <span class="tag tag-category">${esc(r.category)}</span>
@@ -1100,25 +2393,25 @@ async function openRecipe(id) {
             ${r.allergens.map(a => `<span class="tag tag-allergen">${esc(a)}</span>`).join("")}
         </div>
 
-        <h4>Ingredients</h4>
+        <h4>${t("recipe.ingredients")}</h4>
         <ul>
-            ${r.ingredients.map(i => `<li>${i.amount} ${esc(i.unit)} — ${esc(i.name)}</li>`).join("")}
+            ${r.ingredients.map(i => `<li>${formatIngredient(i)}</li>`).join("")}
         </ul>
 
-        <h4>Instructions</h4>
+        <h4>${t("recipe.instructions")}</h4>
         <ol>
             ${r.instructions.map(s => `<li>${esc(s)}</li>`).join("")}
         </ol>
 
-        <h4>Macros (per serving)</h4>
+        <h4>${t("recipe.macros")}</h4>
         <div class="macros-bar">
-            <div class="macro"><span>${r.macros.protein_g}g</span>protein</div>
-            <div class="macro"><span>${r.macros.carbs_g}g</span>carbs</div>
-            <div class="macro"><span>${r.macros.fat_g}g</span>fat</div>
-            <div class="macro"><span>${r.macros.fiber_g}g</span>fiber</div>
+            <div class="macro"><span>${r.macros.protein_g}g</span>${t("macro.proteinShort")}</div>
+            <div class="macro"><span>${r.macros.carbs_g}g</span>${t("macro.carbsShort")}</div>
+            <div class="macro"><span>${r.macros.fat_g}g</span>${t("macro.fatShort")}</div>
+            <div class="macro"><span>${r.macros.fiber_g}g</span>${t("macro.fiberShort")}</div>
         </div>
 
-        <h4>Health Benefits</h4>
+        <h4>${t("recipe.healthBenefits")}</h4>
         <div>${r.health_benefits.map(b => `<span class="tag tag-category">${esc(b)}</span>`).join("")}</div>
     `;
     document.getElementById("modal-overlay").classList.add("open");
@@ -1142,15 +2435,20 @@ function buildPlanner() {
     const grid = document.getElementById("planner-grid");
     grid.innerHTML = DAYS.map(day => `
         <div class="day-card">
-            <h4>${day}</h4>
+            <h4>${t("day." + day)}</h4>
             ${MEALS.map(meal => `
-                <label>${meal}</label>
-                <select id="plan-${day}-${meal}" data-day="${day}" data-meal="${meal}">
-                    <option value="">— pick —</option>
+                <label>${t("meal." + meal)}</label>
+                <select id="plan-${day}-${meal}" data-day="${day}" data-meal="${meal}" onchange="updatePlannerDayTotals()">
+                    <option value="">${t("planner.pick")}</option>
                 </select>
+                <div class="servings-row">
+                    <span class="servings-label">${t("planner.servings")}</span>
+                    <input type="number" id="srv-${day}-${meal}" class="servings-input" value="1" min="0.5" max="5" step="0.5" onchange="updatePlannerDayTotals()">
+                </div>
             `).join("")}
         </div>
     `).join("");
+    renderAutoGenerateInfo();
 }
 
 function populatePlannerDropdowns(recipes) {
@@ -1159,10 +2457,10 @@ function populatePlannerDropdowns(recipes) {
             const select = document.getElementById(`plan-${day}-${meal}`);
             if (!select) return;
             const current = select.value;
-            const optionsHtml = '<option value="">— pick —</option>' +
+            const optionsHtml = `<option value="">${t("planner.pick")}</option>` +
                 recipes
                     .filter(r => meal === "snack" ? r.meal_type === "snack" : r.meal_type === meal || r.meal_type === "snack")
-                    .map(r => `<option value="${r.id}" ${r.id == current ? 'selected' : ''}>${esc(r.name)} (${r.calories} cal)</option>`)
+                    .map(r => `<option value="${r.id}" ${r.id == current ? 'selected' : ''}>${esc(r.name)} (${r.calories} ${t("common.cal")})</option>`)
                     .join("");
             select.innerHTML = optionsHtml;
         });
@@ -1198,12 +2496,13 @@ async function saveMealPlan() {
     DAYS.forEach(day => {
         MEALS.forEach(meal => {
             const val = document.getElementById(`plan-${day}-${meal}`).value;
-            if (val) slots.push({ day, meal, recipe_id: parseInt(val) });
+            const srv = parseFloat(document.getElementById(`srv-${day}-${meal}`).value) || 1;
+            if (val) slots.push({ day, meal, recipe_id: parseInt(val), servings: srv });
         });
     });
 
     if (slots.length === 0) {
-        showToast("Pick at least one recipe first!", "error");
+        showToast(t("msg.pickRecipeFirst"), "error");
         return;
     }
 
@@ -1212,7 +2511,7 @@ async function saveMealPlan() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slots }),
     });
-    if (res) showToast("Meal plan saved!");
+    if (res) showToast(t("msg.mealPlanSaved"));
 }
 
 // Load saved meal plan from database
@@ -1223,7 +2522,131 @@ async function loadMealPlan() {
     for (const slot of data.slots) {
         const select = document.getElementById(`plan-${slot.day}-${slot.meal}`);
         if (select) select.value = slot.recipe_id;
+        const srvInput = document.getElementById(`srv-${slot.day}-${slot.meal}`);
+        if (srvInput) srvInput.value = slot.servings || 1;
     }
+    updatePlannerDayTotals();
+}
+
+// ═══════════════════════════════════════════════
+// AUTO-GENERATE WEEK PLAN
+// ═══════════════════════════════════════════════
+
+function renderAutoGenerateInfo() {
+    const box = document.getElementById("auto-generate-info");
+    if (!box) return;
+    if (!userProfile || !userProfile.daily_calories) {
+        box.innerHTML = `<span>${t("planner.setupProfile")}</span>`;
+        return;
+    }
+    box.innerHTML = `
+        <div>${t("planner.yourTargets")}</div>
+        <div class="target-values">
+            <span>${userProfile.daily_calories} ${t("common.cal")}</span>
+            <span>${t("macro.proteinShort")} ${userProfile.protein_target_g}g</span>
+            <span>${t("macro.carbsShort")} ${userProfile.carbs_target_g}g</span>
+            <span>${t("macro.fatShort")} ${userProfile.fat_target_g}g</span>
+        </div>
+    `;
+}
+
+async function autoGeneratePlan() {
+    if (!authToken) {
+        showToast(t("msg.loginFirst"), "error");
+        return;
+    }
+    const btn = document.getElementById("btn-auto-generate");
+    btn.disabled = true;
+    btn.textContent = "...";
+
+    const data = await apiCall(API + "/meal-plan/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+    });
+
+    btn.disabled = false;
+    btn.textContent = t("planner.autoGenerate");
+
+    if (!data || !data.slots) {
+        showToast(t("msg.generateFailed"), "error");
+        return;
+    }
+
+    // Clear all dropdowns and reset servings
+    DAYS.forEach(day => {
+        MEALS.forEach(meal => {
+            const select = document.getElementById(`plan-${day}-${meal}`);
+            if (select) select.value = "";
+            const srvInput = document.getElementById(`srv-${day}-${meal}`);
+            if (srvInput) srvInput.value = 1;
+        });
+    });
+
+    // Fill in generated values with servings
+    for (const slot of data.slots) {
+        const select = document.getElementById(`plan-${slot.day}-${slot.meal}`);
+        if (select) select.value = slot.recipe_id;
+        const srvInput = document.getElementById(`srv-${slot.day}-${slot.meal}`);
+        if (srvInput) srvInput.value = slot.servings || 1;
+    }
+
+    updatePlannerDayTotals();
+    showToast(t("msg.planGenerated"));
+}
+
+function updatePlannerDayTotals() {
+    const container = document.getElementById("planner-day-totals");
+    if (!container || !allRecipes.length) return;
+
+    const recipeMap = {};
+    allRecipes.forEach(r => { recipeMap[r.id] = r; });
+
+    const dailyCal = userProfile ? userProfile.daily_calories : 0;
+    const dailyP = userProfile ? userProfile.protein_target_g : 0;
+    const dailyC = userProfile ? userProfile.carbs_target_g : 0;
+    const dailyF = userProfile ? userProfile.fat_target_g : 0;
+
+    let html = '<div class="planner-day-totals">';
+    for (const day of DAYS) {
+        let cal = 0, prot = 0, carbs = 0, fat = 0, count = 0;
+        for (const meal of MEALS) {
+            const sel = document.getElementById(`plan-${day}-${meal}`);
+            if (!sel || !sel.value) continue;
+            const r = recipeMap[parseInt(sel.value)];
+            if (!r) continue;
+            const srv = parseFloat(document.getElementById(`srv-${day}-${meal}`).value) || 1;
+            cal += r.calories * srv;
+            prot += r.macros.protein_g * srv;
+            carbs += r.macros.carbs_g * srv;
+            fat += r.macros.fat_g * srv;
+            count++;
+        }
+        if (count === 0) {
+            html += `<div class="day-total-card"><h5>${t("day." + day)}</h5><div class="day-macros"><span class="dm">—</span></div></div>`;
+            continue;
+        }
+
+        function cls(actual, target) {
+            if (!target) return "";
+            const ratio = actual / target;
+            if (ratio > 1.15) return "over";
+            if (ratio < 0.85) return "under";
+            return "ok";
+        }
+
+        html += `<div class="day-total-card">
+            <h5>${t("day." + day)}</h5>
+            <div class="day-macros">
+                <span class="dm ${cls(cal, dailyCal)}">${cal} ${t("common.cal")}</span>
+                <span class="dm ${cls(prot, dailyP)}">${Math.round(prot)}g ${t("macro.proteinShort")}</span>
+                <span class="dm ${cls(carbs, dailyC)}">${Math.round(carbs)}g ${t("macro.carbsShort")}</span>
+                <span class="dm ${cls(fat, dailyF)}">${Math.round(fat)}g ${t("macro.fatShort")}</span>
+            </div>
+        </div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════
@@ -1233,7 +2656,7 @@ async function loadMealPlan() {
 async function generateGroceryList() {
     const plan = getWeekPlan();
     if (plan.days.length === 0) {
-        showToast("Pick at least breakfast, lunch, and dinner for one day!", "error");
+        showToast(t("msg.pickOneDayFirst"), "error");
         return;
     }
 
@@ -1248,16 +2671,16 @@ async function generateGroceryList() {
     container.innerHTML = `
         <div class="grocery-list">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <h3 style="margin:0;">Shopping List (${data.items.length} items)</h3>
+                <h3 style="margin:0;">${t("grocery.shoppingList", data.items.length)}</h3>
                 <div>
-                    <button class="btn-outline" onclick="copyGroceryList()">Copy</button>
-                    <button class="btn-outline" onclick="window.print()" style="margin-left:0.5rem;">Print</button>
+                    <button class="btn-outline" onclick="copyGroceryList()">${t("grocery.copy")}</button>
+                    <button class="btn-outline" onclick="window.print()" style="margin-left:0.5rem;">${t("grocery.print")}</button>
                 </div>
             </div>
             ${data.items.map(item => `
                 <div class="grocery-item">
                     <span>${esc(item.name)}</span>
-                    <span class="grocery-amount">${item.total_amount} ${esc(item.unit)}</span>
+                    <span class="grocery-amount">${formatAmount(item.total_amount)} ${formatUnit(item.unit, item.total_amount)}</span>
                 </div>
             `).join("")}
         </div>
@@ -1270,9 +2693,9 @@ let lastGroceryItems = [];
 
 function copyGroceryList() {
     if (!lastGroceryItems.length) return;
-    const text = lastGroceryItems.map(i => `${i.name}: ${i.total_amount} ${i.unit}`).join("\n");
+    const text = lastGroceryItems.map(i => `${i.name}: ${formatAmount(i.total_amount)} ${formatUnit(i.unit, i.total_amount)}`).join("\n");
     navigator.clipboard.writeText(text).then(() => {
-        showToast("Grocery list copied to clipboard!");
+        showToast(t("msg.groceryCopied"));
     });
 }
 
@@ -1283,7 +2706,7 @@ function copyGroceryList() {
 async function generateSummary() {
     const plan = getWeekPlan();
     if (plan.days.length === 0) {
-        showToast("Pick at least breakfast, lunch, and dinner for one day!", "error");
+        showToast(t("msg.pickOneDayFirst"), "error");
         return;
     }
 
@@ -1298,35 +2721,35 @@ async function generateSummary() {
 
     document.getElementById("summary-container").innerHTML = `
         <div class="summary-box">
-            <h3>Weekly Summary (${plan.days.length} days planned)</h3>
+            <h3>${t("summary.title", plan.days.length)}</h3>
             <div class="summary-stats">
                 <div class="stat">
                     <div class="number">${data.total_calories}</div>
-                    <div class="label">Total Calories</div>
+                    <div class="label">${t("dashboard.totalCalories")}</div>
                 </div>
                 <div class="stat">
                     <div class="number">${avgCal}</div>
-                    <div class="label">Avg Cal/Day</div>
+                    <div class="label">${t("dashboard.avgCalDay")}</div>
                 </div>
                 <div class="stat">
                     <div class="number">${data.total_macros.protein_g}g</div>
-                    <div class="label">Total Protein</div>
+                    <div class="label">${t("dashboard.totalProtein")}</div>
                 </div>
                 <div class="stat">
                     <div class="number">${data.total_macros.carbs_g}g</div>
-                    <div class="label">Total Carbs</div>
+                    <div class="label">${t("dashboard.totalCarbs")}</div>
                 </div>
                 <div class="stat">
                     <div class="number">${data.total_macros.fat_g}g</div>
-                    <div class="label">Total Fat</div>
+                    <div class="label">${t("dashboard.totalFat")}</div>
                 </div>
                 <div class="stat">
                     <div class="number">${data.total_macros.fiber_g}g</div>
-                    <div class="label">Total Fiber</div>
+                    <div class="label">${t("dashboard.totalFiber")}</div>
                 </div>
             </div>
             ${data.allergen_warnings.length > 0 ? `
-                <h4 style="margin-top:1rem; color:#e65100;">Allergen Warnings</h4>
+                <h4 style="margin-top:1rem; color:var(--terracotta);">${t("dashboard.allergenWarnings")}</h4>
                 ${data.allergen_warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("")}
             ` : ''}
         </div>
@@ -1347,39 +2770,78 @@ async function loadProfile() {
     document.getElementById("prof-weight").value = data.weight_kg;
     document.getElementById("prof-height").value = data.height_cm;
     document.getElementById("prof-activity").value = data.activity_level;
+    document.getElementById("prof-target-weight").value = data.target_weight_kg;
+    document.getElementById("prof-rate").value = data.weight_rate;
     document.getElementById("prof-fasting").value = data.intermittent_fasting;
+    document.getElementById("pref-fish").checked = data.exclude_allergens.includes("fish");
+    document.getElementById("pref-meat").checked = data.exclude_allergens.includes("meat");
     document.getElementById("pref-gluten").checked = data.exclude_allergens.includes("gluten");
     document.getElementById("pref-lactose").checked = data.exclude_allergens.includes("lactose");
 
     renderProfileTargets(data);
+    renderAutoGenerateInfo();
 }
 
 function renderProfileTargets(data) {
     const fastingLabels = {
         "none": "",
-        "16_8": "16:8 fasting — eat your meals within an 8-hour window (e.g. 12:00–20:00)",
-        "18_6": "18:6 fasting — eat within a 6-hour window (e.g. 13:00–19:00)",
-        "20_4": "20:4 fasting — eat within a 4-hour window (e.g. 14:00–18:00)",
+        "12_12": t("fastingTip.12_12"),
+        "14_10": t("fastingTip.14_10"),
+        "16_8": t("fastingTip.16_8"),
+        "18_6": t("fastingTip.18_6"),
+        "20_4": t("fastingTip.20_4"),
     };
+    const rateLabel = t("rateLabel." + data.weight_rate) || t("rateLabel.maintain");
+    const isLosing = data.weight_rate && data.weight_rate.startsWith("lose");
+    const isGaining = data.weight_rate && data.weight_rate.startsWith("gain");
+    const goalColor = isLosing ? "var(--terracotta)" : isGaining ? "var(--clay)" : "var(--moss)";
     const ifNote = fastingLabels[data.intermittent_fasting] || "";
+    const adj = data.calorie_adjustment;
+    const adjText = adj === 0 ? "" : ` (${adj > 0 ? "+" : ""}${adj} ${t("common.cal")}/${currentLang === "lt" ? "d." : "day"})`;
+
+    // Weight journey info
+    const weightDiff = Math.abs(data.target_weight_kg - data.weight_kg).toFixed(1);
+    let journeyHtml = "";
+    if (data.weight_rate !== "maintain" && weightDiff > 0) {
+        const direction = isLosing ? "↓" : "↑";
+        const weeksText = data.weeks_to_goal ? t("profile.weeks", data.weeks_to_goal) : "";
+        journeyHtml = `
+            <div style="display:flex; align-items:center; gap:1.5rem; padding:0.75rem 1rem; background:var(--sand); border-radius:4px; margin-bottom:1rem; font-size:0.88rem;">
+                <div style="text-align:center;">
+                    <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--stone);">${t("profile.now")}</div>
+                    <div style="font-size:1.2rem; font-weight:600; color:var(--ink);">${data.weight_kg} kg</div>
+                </div>
+                <div style="font-size:1.2rem; color:var(--stone);">${direction}</div>
+                <div style="text-align:center;">
+                    <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--stone);">${t("profile.goal")}</div>
+                    <div style="font-size:1.2rem; font-weight:600; color:var(--ink);">${data.target_weight_kg} kg</div>
+                </div>
+                ${weeksText ? `<div style="margin-left:auto; color:var(--stone); font-size:0.85rem;">${weeksText}</div>` : ""}
+            </div>
+        `;
+    }
 
     document.getElementById("profile-targets").innerHTML = `
+        ${journeyHtml}
+        <div style="padding:0.75rem 1rem; border-left:3px solid ${goalColor}; background:rgba(0,0,0,0.03); border-radius:0 4px 4px 0; margin-bottom:1rem; font-size:0.9rem;">
+            <strong>${esc(rateLabel)}</strong>${adjText}
+        </div>
         <div class="summary-stats">
             <div class="stat">
                 <div class="number">${data.daily_calories}</div>
-                <div class="label">Daily Calories</div>
+                <div class="label">${t("profile.dailyCalories")}</div>
             </div>
             <div class="stat">
                 <div class="number">${data.protein_target_g}g</div>
-                <div class="label">Protein Target</div>
+                <div class="label">${t("profile.proteinTarget")}</div>
             </div>
             <div class="stat">
                 <div class="number">${data.carbs_target_g}g</div>
-                <div class="label">Carbs Target</div>
+                <div class="label">${t("profile.carbsTarget")}</div>
             </div>
             <div class="stat">
                 <div class="number">${data.fat_target_g}g</div>
-                <div class="label">Fat Target</div>
+                <div class="label">${t("profile.fatTarget")}</div>
             </div>
         </div>
         ${ifNote ? `<div class="if-info" style="margin-top:1rem;">${esc(ifNote)}</div>` : ''}
@@ -1388,6 +2850,8 @@ function renderProfileTargets(data) {
 
 async function saveProfile() {
     const allergens = [];
+    if (document.getElementById("pref-fish").checked) allergens.push("fish");
+    if (document.getElementById("pref-meat").checked) allergens.push("meat");
     if (document.getElementById("pref-gluten").checked) allergens.push("gluten");
     if (document.getElementById("pref-lactose").checked) allergens.push("lactose");
 
@@ -1397,6 +2861,8 @@ async function saveProfile() {
         weight_kg: parseFloat(document.getElementById("prof-weight").value),
         height_cm: parseFloat(document.getElementById("prof-height").value),
         activity_level: document.getElementById("prof-activity").value,
+        target_weight_kg: parseFloat(document.getElementById("prof-target-weight").value),
+        weight_rate: document.getElementById("prof-rate").value,
         intermittent_fasting: document.getElementById("prof-fasting").value,
         exclude_allergens: allergens,
     };
@@ -1410,13 +2876,14 @@ async function saveProfile() {
 
     userProfile = data;
     renderProfileTargets(data);
-    showToast("Profile saved! Daily target: " + data.daily_calories + " cal");
+    renderAutoGenerateInfo();
+    showToast(t("msg.profileSaved", data.daily_calories));
 }
 
 async function resetProfile() {
     const profile = {
-        gender: "male", age: 30, weight_kg: 70, height_cm: 170,
-        activity_level: "moderate", intermittent_fasting: "none", exclude_allergens: [],
+        gender: "male", age: 30, weight_kg: 70, target_weight_kg: 70, height_cm: 170,
+        activity_level: "moderate", weight_rate: "maintain", intermittent_fasting: "none", exclude_allergens: [],
     };
     const data = await apiCall(API + "/profile", {
         method: "PUT",
@@ -1431,11 +2898,15 @@ async function resetProfile() {
     document.getElementById("prof-weight").value = 70;
     document.getElementById("prof-height").value = 170;
     document.getElementById("prof-activity").value = "moderate";
+    document.getElementById("prof-target-weight").value = 70;
+    document.getElementById("prof-rate").value = "maintain";
     document.getElementById("prof-fasting").value = "none";
+    document.getElementById("pref-fish").checked = false;
+    document.getElementById("pref-meat").checked = false;
     document.getElementById("pref-gluten").checked = false;
     document.getElementById("pref-lactose").checked = false;
     document.getElementById("profile-targets").innerHTML = "";
-    showToast("Profile reset to defaults");
+    showToast(t("msg.profileReset"));
 }
 
 // ═══════════════════════════════════════════════
@@ -1446,16 +2917,16 @@ async function renderDashboard() {
     const container = document.getElementById("dashboard-content");
 
     if (!userProfile) {
-        container.innerHTML = '<div class="empty-state"><p>Set up your profile first to see your targets.</p></div>';
+        container.innerHTML = '<div class="empty-state"><p>' + t("dashboard.empty") + '</p></div>';
         return;
     }
 
     if (userProfile.weight_kg === 70 && userProfile.height_cm === 170 && userProfile.age === 30) {
         container.innerHTML = `
             <div class="dashboard-card">
-                <h3>Complete Your Profile</h3>
-                <p style="margin-bottom:1rem;">Your profile still has default values. For accurate calorie targets, fill in your real weight, height, and age.</p>
-                <a href="#" class="btn" onclick="switchTab('profile'); return false;">Go to My Profile</a>
+                <h3>${t("dashboard.completeProfile")}</h3>
+                <p style="margin-bottom:1rem;">${t("dashboard.completeProfileHint")}</p>
+                <a href="#" class="btn" onclick="switchTab('profile'); return false;">${t("dashboard.goToProfile")}</a>
             </div>
         `;
         return;
@@ -1465,16 +2936,17 @@ async function renderDashboard() {
     if (plan.days.length === 0) {
         container.innerHTML = `
             <div class="dashboard-card">
-                <h3>Your Daily Targets</h3>
+                <h3>${t("dashboard.yourTargets")}</h3>
                 <div class="summary-stats">
-                    <div class="stat"><div class="number">${userProfile.daily_calories}</div><div class="label">Calories/day</div></div>
-                    <div class="stat"><div class="number">${userProfile.protein_target_g}g</div><div class="label">Protein</div></div>
-                    <div class="stat"><div class="number">${userProfile.carbs_target_g}g</div><div class="label">Carbs</div></div>
-                    <div class="stat"><div class="number">${userProfile.fat_target_g}g</div><div class="label">Fat</div></div>
+                    <div class="stat"><div class="number">${userProfile.daily_calories}</div><div class="label">${t("dashboard.caloriesDay")}</div></div>
+                    <div class="stat"><div class="number">${userProfile.protein_target_g}g</div><div class="label">${t("dashboard.totalProtein")}</div></div>
+                    <div class="stat"><div class="number">${userProfile.carbs_target_g}g</div><div class="label">${t("dashboard.totalCarbs")}</div></div>
+                    <div class="stat"><div class="number">${userProfile.fat_target_g}g</div><div class="label">${t("dashboard.totalFat")}</div></div>
                 </div>
-                ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info" style="margin-top:1rem;">Intermittent fasting active</div>` : ''}
+                ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info" style="margin-top:1rem;">${t("dashboard.fastingActive")}</div>` : ''}
             </div>
-            <div class="empty-state"><p>Plan some meals to see how they compare to your targets.</p></div>
+            ${buildFastingTimeline(userProfile.intermittent_fasting)}
+            <div class="empty-state"><p>${t("dashboard.planMealsHint")}</p></div>
         `;
         return;
     }
@@ -1500,8 +2972,8 @@ async function renderDashboard() {
 
     function barColor(pct) {
         if (pct < 70) return "#f39c12";
-        if (pct <= 110) return "#4a7c2e";
-        return "#d63031";
+        if (pct <= 110) return "#7A8B6F";
+        return "#C0392B";
     }
 
     function barHtml(label, actual, target, unit, pct) {
@@ -1518,43 +2990,107 @@ async function renderDashboard() {
 
     const fastingInfo = {
         "none": "",
-        "16_8": "16:8 fasting — pack your meals into an 8-hour eating window",
-        "18_6": "18:6 fasting — pack your meals into a 6-hour eating window",
-        "20_4": "20:4 fasting — pack your meals into a 4-hour eating window",
+        "12_12": t("fastingDash.12_12"),
+        "14_10": t("fastingDash.14_10"),
+        "16_8": t("fastingDash.16_8"),
+        "18_6": t("fastingDash.18_6"),
+        "20_4": t("fastingDash.20_4"),
     };
 
     container.innerHTML = `
         <div class="dashboard-card">
-            <h3>Daily Average vs Targets (${numDays} days planned)</h3>
-            ${barHtml("Calories", avgCal, userProfile.daily_calories, " cal", calPct)}
-            ${barHtml("Protein", avgProtein, userProfile.protein_target_g, "g", protPct)}
-            ${barHtml("Carbs", avgCarbs, userProfile.carbs_target_g, "g", carbPct)}
-            ${barHtml("Fat", avgFat, userProfile.fat_target_g, "g", fatPct)}
+            <h3>${t("dashboard.dailyAvg", numDays)}</h3>
+            ${barHtml(t("dashboard.calories"), avgCal, userProfile.daily_calories, ` ${t("common.cal")}`, calPct)}
+            ${barHtml(t("dashboard.totalProtein"), avgProtein, userProfile.protein_target_g, "g", protPct)}
+            ${barHtml(t("dashboard.totalCarbs"), avgCarbs, userProfile.carbs_target_g, "g", carbPct)}
+            ${barHtml(t("dashboard.totalFat"), avgFat, userProfile.fat_target_g, "g", fatPct)}
             <div class="progress-row">
-                <span class="progress-label">Fiber</span>
+                <span class="progress-label">${t("dashboard.totalFiber")}</span>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width:${Math.min(avgFiber / 30 * 100, 100)}%; background:${avgFiber >= 25 ? '#4a7c2e' : '#f39c12'};"></div>
+                    <div class="progress-bar-fill" style="width:${Math.min(avgFiber / 30 * 100, 100)}%; background:${avgFiber >= 25 ? '#7A8B6F' : '#C4A882'};"></div>
                 </div>
                 <span class="progress-value">${avgFiber}g / 30g</span>
             </div>
             ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info">${fastingInfo[userProfile.intermittent_fasting]}</div>` : ''}
         </div>
         <div class="dashboard-card">
-            <h3>Weekly Totals</h3>
+            <h3>${t("dashboard.weeklyTotals")}</h3>
             <div class="summary-stats">
-                <div class="stat"><div class="number">${data.total_calories}</div><div class="label">Total Calories</div></div>
-                <div class="stat"><div class="number">${data.total_macros.protein_g}g</div><div class="label">Protein</div></div>
-                <div class="stat"><div class="number">${data.total_macros.carbs_g}g</div><div class="label">Carbs</div></div>
-                <div class="stat"><div class="number">${data.total_macros.fat_g}g</div><div class="label">Fat</div></div>
-                <div class="stat"><div class="number">${data.total_macros.fiber_g}g</div><div class="label">Fiber</div></div>
+                <div class="stat"><div class="number">${data.total_calories}</div><div class="label">${t("dashboard.totalCalories")}</div></div>
+                <div class="stat"><div class="number">${data.total_macros.protein_g}g</div><div class="label">${t("dashboard.totalProtein")}</div></div>
+                <div class="stat"><div class="number">${data.total_macros.carbs_g}g</div><div class="label">${t("dashboard.totalCarbs")}</div></div>
+                <div class="stat"><div class="number">${data.total_macros.fat_g}g</div><div class="label">${t("dashboard.totalFat")}</div></div>
+                <div class="stat"><div class="number">${data.total_macros.fiber_g}g</div><div class="label">${t("dashboard.totalFiber")}</div></div>
             </div>
         </div>
         ${data.allergen_warnings.length > 0 ? `
             <div class="dashboard-card">
-                <h3 style="color:#e65100;">Allergen Warnings</h3>
+                <h3 style="color:var(--terracotta);">${t("dashboard.allergenWarnings")}</h3>
                 ${data.allergen_warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("")}
             </div>
         ` : ''}
+        ${buildFastingTimeline(userProfile.intermittent_fasting)}
+    `;
+}
+
+// ═══════════════════════════════════════════════
+// FASTING TIMELINE WIDGET
+// ═══════════════════════════════════════════════
+
+function buildFastingTimeline(protocol) {
+    if (!protocol || protocol === "none") {
+        return `<div class="dashboard-card"><p style="color:var(--stone); font-size:0.88rem;">${t("ft.noFasting")}</p></div>`;
+    }
+
+    const parts = protocol.split("_");
+    const fastHours = parseInt(parts[0]);
+    const eatHours = parseInt(parts[1]);
+    const eatPct = (eatHours / 24 * 100).toFixed(1);
+    const fastPct = (fastHours / 24 * 100).toFixed(1);
+
+    const steps = [
+        { hour: 0, titleKey: "ft.h0", descKey: "ft.h0desc" },
+        { hour: 4, titleKey: "ft.h4", descKey: "ft.h4desc" },
+        { hour: 8, titleKey: "ft.h8", descKey: "ft.h8desc" },
+        { hour: 12, titleKey: "ft.h12", descKey: "ft.h12desc" },
+        { hour: 14, titleKey: "ft.h14", descKey: "ft.h14desc" },
+        { hour: 16, titleKey: "ft.h16", descKey: "ft.h16desc" },
+        { hour: 18, titleKey: "ft.h18", descKey: "ft.h18desc" },
+        { hour: 20, titleKey: "ft.h20", descKey: "ft.h20desc" },
+    ];
+
+    const stepsHtml = steps.map(s => {
+        const unlocked = fastHours >= s.hour;
+        const cls = unlocked ? "unlocked" : "locked";
+        const statusText = unlocked ? t("ft.unlocked") : t("ft.needsMore");
+        return `
+            <li class="ft-step">
+                <div class="ft-hour-badge ${cls}">${s.hour}${t("ft.hour")}</div>
+                <div class="ft-step-info">
+                    <div class="ft-step-title">${t(s.titleKey)}</div>
+                    <div class="ft-step-desc">${t(s.descKey)}</div>
+                    <div class="ft-step-status ${cls}">${statusText}</div>
+                </div>
+            </li>
+        `;
+    }).join("");
+
+    return `
+        <div class="dashboard-card">
+            <h3>${t("ft.title")}</h3>
+            <div class="ft-protocol">
+                <strong>${fastHours}:${eatHours}</strong>
+                <span>${t("ft.fasting")}: ${fastHours}${t("ft.hour")} · ${t("ft.eating")}: ${eatHours}${t("ft.hour")}</span>
+            </div>
+            <div class="ft-bar-wrap">
+                <div class="ft-bar-eat" style="width:${eatPct}%">${t("ft.eating")} ${eatHours}${t("ft.hour")}</div>
+                <div class="ft-bar-fast" style="width:${fastPct}%">${t("ft.fasting")} ${fastHours}${t("ft.hour")}</div>
+            </div>
+            <h4 style="margin-bottom:0.5rem; font-size:0.85rem; color:var(--ink);">${t("ft.benefitsTitle")}</h4>
+            <ul class="ft-steps">
+                ${stepsHtml}
+            </ul>
+        </div>
     `;
 }
 
@@ -1567,14 +3103,277 @@ document.getElementById("filter-category").addEventListener("change", fetchRecip
 document.getElementById("filter-allergen").addEventListener("change", fetchRecipes);
 
 // ═══════════════════════════════════════════════
+// ADMIN PANEL — users + recipe management
+// ═══════════════════════════════════════════════
+
+let currentUserRole = "user";
+
+function showAdminTab(show) {
+    document.querySelectorAll(".admin-only").forEach(el => {
+        el.style.display = show ? "" : "none";
+    });
+}
+
+async function loadAdminUsers() {
+    const users = await apiCall(API + "/admin/users");
+    if (!users) return;
+    const container = document.getElementById("admin-users-list");
+    if (users.length === 0) {
+        container.innerHTML = '<div class="empty-state">' + t("admin.noUsers") + '</div>';
+        return;
+    }
+    container.innerHTML = `
+        <div class="admin-table-wrap">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--sand); text-align:left;">
+                    <th style="padding:0.5rem;">${t("admin.id")}</th>
+                    <th style="padding:0.5rem;">${t("admin.username")}</th>
+                    <th style="padding:0.5rem;">${t("admin.email")}</th>
+                    <th style="padding:0.5rem;">${t("admin.role")}</th>
+                    <th style="padding:0.5rem;">${t("admin.verified")}</th>
+                    <th style="padding:0.5rem;">${t("admin.actions")}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${users.map(u => `
+                    <tr style="border-bottom:1px solid var(--sand);">
+                        <td style="padding:0.5rem; color:var(--stone);">${u.id}</td>
+                        <td style="padding:0.5rem; font-weight:500;">${esc(u.username)}</td>
+                        <td style="padding:0.5rem;">${esc(u.email)}</td>
+                        <td style="padding:0.5rem;">
+                            <span style="padding:0.15rem 0.5rem; border-radius:3px; font-size:0.75rem; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; background:${u.role === 'admin' ? 'rgba(176,123,95,0.15)' : 'rgba(122,139,111,0.15)'}; color:${u.role === 'admin' ? 'var(--terracotta)' : 'var(--moss-dark)'};">${u.role}</span>
+                        </td>
+                        <td style="padding:0.5rem;">${u.email_verified ? '✓' : '✗'}</td>
+                        <td style="padding:0.5rem;">
+                            ${u.role !== 'admin' ? `
+                                <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="adminToggleRole(${u.id}, 'admin')">${t("admin.makeAdmin")}</button>
+                                <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem; border-color:#C0392B; color:#C0392B;" onclick="adminDeleteUser(${u.id}, '${esc(u.username)}')">${t("admin.delete")}</button>
+                            ` : `
+                                <span style="color:var(--stone); font-size:0.8rem;">—</span>
+                            `}
+                        </td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+        </div>
+    `;
+}
+
+async function adminDeleteUser(userId, username) {
+    if (!confirm(t("msg.deleteUserConfirm", username))) return;
+    const res = await apiCall(API + "/admin/users/" + userId, { method: "DELETE" });
+    if (res) {
+        showToast(t("msg.userDeleted", username));
+        loadAdminUsers();
+    }
+}
+
+async function adminToggleRole(userId, newRole) {
+    const res = await apiCall(API + "/admin/users/" + userId + "/role?role=" + newRole, { method: "PUT" });
+    if (res) {
+        showToast(res.message);
+        loadAdminUsers();
+    }
+}
+
+async function loadAdminRecipes() {
+    const recipes = await apiCall(API + "/recipes");
+    if (!recipes) return;
+    const container = document.getElementById("admin-recipes-list");
+    if (recipes.length === 0) {
+        container.innerHTML = '<div class="empty-state">' + t("admin.noRecipes") + '</div>';
+        return;
+    }
+    container.innerHTML = `
+        <div class="admin-table-wrap">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--sand); text-align:left;">
+                    <th style="padding:0.5rem;">${t("admin.id")}</th>
+                    <th style="padding:0.5rem;">${t("recipe.name")}</th>
+                    <th style="padding:0.5rem;">${t("admin.type")}</th>
+                    <th style="padding:0.5rem;">${t("admin.category")}</th>
+                    <th style="padding:0.5rem;">${t("admin.cal")}</th>
+                    <th style="padding:0.5rem;">${t("admin.actions")}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${recipes.map(r => `
+                    <tr style="border-bottom:1px solid var(--sand);">
+                        <td style="padding:0.5rem; color:var(--stone);">${r.id}</td>
+                        <td style="padding:0.5rem; font-weight:500;">${esc(r.name)}</td>
+                        <td style="padding:0.5rem;">${esc(r.meal_type)}</td>
+                        <td style="padding:0.5rem;">${esc(r.category)}</td>
+                        <td style="padding:0.5rem;">${r.calories}</td>
+                        <td style="padding:0.5rem;">
+                            <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="editRecipe(${r.id})">${t("admin.edit")}</button>
+                            <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem; border-color:#C0392B; color:#C0392B;" onclick="adminDeleteRecipe(${r.id}, '${esc(r.name).replace(/'/g, "\\'")}')">${t("admin.delete")}</button>
+                        </td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+        </div>
+    `;
+}
+
+function showRecipeForm(recipe) {
+    const card = document.getElementById("recipe-form-card");
+    card.style.display = "block";
+    if (recipe) {
+        document.getElementById("recipe-form-title").textContent = t("admin.editRecipeTitle");
+        document.getElementById("rf-id").value = recipe.id;
+        document.getElementById("rf-name").value = recipe.name;
+        document.getElementById("rf-description").value = recipe.description;
+        document.getElementById("rf-meal-type").value = recipe.meal_type;
+        document.getElementById("rf-category").value = recipe.category;
+        document.getElementById("rf-servings").value = recipe.servings;
+        document.getElementById("rf-prep").value = recipe.prep_time_min;
+        document.getElementById("rf-calories").value = recipe.calories;
+        document.getElementById("rf-protein").value = recipe.macros.protein_g;
+        document.getElementById("rf-carbs").value = recipe.macros.carbs_g;
+        document.getElementById("rf-fat").value = recipe.macros.fat_g;
+        document.getElementById("rf-fiber").value = recipe.macros.fiber_g;
+        document.getElementById("rf-ingredients").value = recipe.ingredients.map(i => i.amount + " " + i.unit + " " + i.name).join("\n");
+        document.getElementById("rf-instructions").value = recipe.instructions.join("\n");
+        document.getElementById("rf-benefits").value = recipe.health_benefits.join("\n");
+        document.getElementById("rf-allergen-fish").checked = recipe.allergens.includes("fish");
+        document.getElementById("rf-allergen-meat").checked = recipe.allergens.includes("meat");
+        document.getElementById("rf-allergen-gluten").checked = recipe.allergens.includes("gluten");
+        document.getElementById("rf-allergen-lactose").checked = recipe.allergens.includes("lactose");
+    } else {
+        document.getElementById("recipe-form-title").textContent = t("admin.addRecipeTitle");
+        document.getElementById("rf-id").value = "";
+        document.getElementById("rf-name").value = "";
+        document.getElementById("rf-description").value = "";
+        document.getElementById("rf-meal-type").value = "breakfast";
+        document.getElementById("rf-category").value = "anti-inflammatory";
+        document.getElementById("rf-servings").value = 2;
+        document.getElementById("rf-prep").value = 15;
+        document.getElementById("rf-calories").value = 300;
+        document.getElementById("rf-protein").value = 20;
+        document.getElementById("rf-carbs").value = 30;
+        document.getElementById("rf-fat").value = 10;
+        document.getElementById("rf-fiber").value = 5;
+        document.getElementById("rf-ingredients").value = "";
+        document.getElementById("rf-instructions").value = "";
+        document.getElementById("rf-benefits").value = "";
+        document.getElementById("rf-allergen-fish").checked = false;
+        document.getElementById("rf-allergen-meat").checked = false;
+        document.getElementById("rf-allergen-gluten").checked = false;
+        document.getElementById("rf-allergen-lactose").checked = false;
+    }
+    card.scrollIntoView({ behavior: "smooth" });
+}
+
+function hideRecipeForm() {
+    document.getElementById("recipe-form-card").style.display = "none";
+}
+
+function parseIngredientLine(line) {
+    const parts = line.trim().split(/\s+/);
+    if (parts.length < 3) return null;
+    const amount = parseFloat(parts[0]);
+    if (isNaN(amount)) return null;
+    const unit = parts[1];
+    const name = parts.slice(2).join(" ");
+    return { amount, unit, name };
+}
+
+async function saveRecipeForm() {
+    const allergens = [];
+    if (document.getElementById("rf-allergen-fish").checked) allergens.push("fish");
+    if (document.getElementById("rf-allergen-meat").checked) allergens.push("meat");
+    if (document.getElementById("rf-allergen-gluten").checked) allergens.push("gluten");
+    if (document.getElementById("rf-allergen-lactose").checked) allergens.push("lactose");
+
+    const ingredients = document.getElementById("rf-ingredients").value
+        .split("\n").map(parseIngredientLine).filter(Boolean);
+    const instructions = document.getElementById("rf-instructions").value
+        .split("\n").map(s => s.trim()).filter(Boolean);
+    const health_benefits = document.getElementById("rf-benefits").value
+        .split("\n").map(s => s.trim()).filter(Boolean);
+
+    if (!document.getElementById("rf-name").value.trim()) {
+        showToast(t("msg.recipeNameRequired"), "error"); return;
+    }
+    if (ingredients.length === 0) {
+        showToast(t("msg.addIngredient"), "error"); return;
+    }
+
+    const recipe = {
+        name: document.getElementById("rf-name").value.trim(),
+        description: document.getElementById("rf-description").value.trim(),
+        meal_type: document.getElementById("rf-meal-type").value,
+        category: document.getElementById("rf-category").value,
+        servings: parseInt(document.getElementById("rf-servings").value),
+        prep_time_min: parseInt(document.getElementById("rf-prep").value),
+        calories: parseInt(document.getElementById("rf-calories").value),
+        macros: {
+            protein_g: parseFloat(document.getElementById("rf-protein").value),
+            carbs_g: parseFloat(document.getElementById("rf-carbs").value),
+            fat_g: parseFloat(document.getElementById("rf-fat").value),
+            fiber_g: parseFloat(document.getElementById("rf-fiber").value),
+        },
+        nutrients: {},
+        ingredients,
+        instructions,
+        health_benefits,
+        allergens,
+    };
+
+    const editId = document.getElementById("rf-id").value;
+    let url = API + "/admin/recipes";
+    let method = "POST";
+    if (editId) {
+        url += "/" + editId;
+        method = "PUT";
+    }
+
+    const res = await apiCall(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(recipe),
+    });
+    if (res) {
+        showToast(editId ? t("msg.recipeUpdated") : t("msg.recipeCreated"));
+        hideRecipeForm();
+        loadAdminRecipes();
+        fetchRecipes();  // refresh the recipes tab too
+    }
+}
+
+async function editRecipe(recipeId) {
+    const recipe = await apiCall(API + "/recipes/" + recipeId);
+    if (recipe) showRecipeForm(recipe);
+}
+
+async function adminDeleteRecipe(recipeId, name) {
+    if (!confirm(t("msg.deleteRecipeConfirm", name))) return;
+    const res = await apiCall(API + "/admin/recipes/" + recipeId, { method: "DELETE" });
+    if (res) {
+        showToast(t("msg.recipeDeleted"));
+        loadAdminRecipes();
+        fetchRecipes();
+    }
+}
+
+// ═══════════════════════════════════════════════
 // INIT — load everything on startup
 // ═══════════════════════════════════════════════
 
 async function initApp() {
+    applyTranslations();
     buildPlanner();
     await loadProfile();
     await fetchRecipes();
     await loadMealPlan();
+    if (currentUserRole === "admin") {
+        loadAdminUsers();
+        loadAdminRecipes();
+    }
 }
 
 // On page load: check if we have a saved token
@@ -1587,6 +3386,9 @@ async function initApp() {
             });
             if (res.ok) {
                 const data = await res.json();
+                currentUserRole = data.role || "user";
+                showAdminTab(currentUserRole === "admin");
+                applyTranslations();
                 enterApp(data.username);
                 return;
             }
@@ -1598,6 +3400,7 @@ async function initApp() {
     }
     // Show login screen
     document.getElementById("auth-section").classList.remove("auth-hidden");
+    applyTranslations();
 })();
 </script>
 

@@ -170,8 +170,10 @@ class UserProfile(BaseModel):
     gender: str = "male"                      # "male" or "female"
     age: int = 30
     weight_kg: float = 70.0
+    target_weight_kg: float = 70.0             # desired weight
     height_cm: float = 170.0
     activity_level: str = "moderate"           # sedentary, light, moderate, active, very_active
+    weight_rate: str = "maintain"              # "lose_0.25", "lose_0.5", "maintain", "gain_0.25", "gain_0.5"
     intermittent_fasting: str = "none"         # none, 16_8, 18_6, 20_4
     exclude_allergens: list[str] = []
 
@@ -179,6 +181,9 @@ class UserProfile(BaseModel):
 class UserProfileResponse(UserProfile):
     """Returned profile includes calculated calorie target."""
     daily_calories: int
+    maintenance_calories: int
+    calorie_adjustment: int
+    weeks_to_goal: int | None = None
     protein_target_g: int
     carbs_target_g: int
     fat_target_g: int
@@ -193,6 +198,7 @@ class MealSlot(BaseModel):
     day: str
     meal: str
     recipe_id: int
+    servings: float = 1.0
 
 
 class SavedMealPlan(BaseModel):
@@ -241,8 +247,8 @@ class VerifyEmailRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    """Login with email and password."""
-    email: str
+    """Login with username or email, and password."""
+    email: str  # accepts username or email
     password: str
 
 
@@ -250,6 +256,7 @@ class LoginResponse(BaseModel):
     """Returned after successful login."""
     token: str
     username: str
+    role: str
     message: str
 
 
