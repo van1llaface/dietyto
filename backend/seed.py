@@ -9,8 +9,9 @@ That file IS your database. Your recipes are now permanent.
 """
 
 import json
+from passlib.hash import bcrypt
 from database import engine, SessionLocal, Base
-from db_models import RecipeDB, IngredientDB
+from db_models import RecipeDB, IngredientDB, UserDB
 
 # Recipes sourced from Blue Zones (bluezones.com), NutritionFacts.org (Dr. Greger),
 # and Valter Longo's Longevity Diet — adapted with Lithuanian ingredients.
@@ -729,6 +730,21 @@ def seed():
 
     db.commit()
     print(f"Seeded {len(RECIPES)} recipes into the database!")
+
+    # ── Create admin user if not exists ──
+    admin = db.query(UserDB).filter(UserDB.username == "admin").first()
+    if not admin:
+        admin = UserDB(
+            username="admin",
+            email="admin@dietyto.com",
+            password_hash=bcrypt.hash("1admin"),
+            email_verified=True,
+            role="admin",
+        )
+        db.add(admin)
+        db.commit()
+        print("Created admin user (admin / 1admin)")
+
     db.close()
 
 
