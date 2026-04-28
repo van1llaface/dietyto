@@ -9,7 +9,6 @@ WORKDIR /app/backend
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
-RUN python seed.py
 
 # ── Frontend ──
 COPY frontend/ /usr/share/nginx/html/
@@ -17,7 +16,13 @@ COPY frontend/ /usr/share/nginx/html/
 # ── Config files ──
 COPY deploy/nginx.conf /etc/nginx/sites-available/default
 COPY deploy/supervisord.conf /etc/supervisor/conf.d/app.conf
+COPY deploy/start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Persistent DB lives here (mount a volume to /data)
+RUN mkdir -p /data
+VOLUME ["/data"]
 
 EXPOSE 8080
 
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/app/start.sh"]
