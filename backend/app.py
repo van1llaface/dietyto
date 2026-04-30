@@ -433,8 +433,8 @@ def generate_grocery_list(week_plan: WeekPlanCreate, db: Session = Depends(get_d
     """Send a week plan, get a combined grocery list from the database."""
     import re as _re
 
-    TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cups": 240}
-    TO_G = {"g": 1, "kg": 1000}
+    TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cup": 240, "cups": 240}
+    TO_G = {"g": 1, "kg": 1000, "can": 400}
 
     # ── Ingredient name normalization ──
     # Strips prep notes like "(cubed)", "(chopped)", "(quartered)" etc.
@@ -554,8 +554,8 @@ def household_grocery_list(user: UserDB = Depends(get_current_user), db: Session
     """
     import re as _re
 
-    TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cups": 240}
-    TO_G = {"g": 1, "kg": 1000}
+    TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cup": 240, "cups": 240}
+    TO_G = {"g": 1, "kg": 1000, "can": 400}
 
     SYNONYMS = {
         "cooked beet": "beet", "young potato with skin": "potato",
