@@ -15,6 +15,8 @@ COPY frontend/ /usr/share/nginx/html/
 
 # ── Config files ──
 COPY deploy/nginx.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
+    rm -f /etc/nginx/sites-enabled/default.bak
 COPY deploy/supervisord.conf /etc/supervisor/conf.d/app.conf
 COPY deploy/start.sh /app/start.sh
 RUN chmod +x /app/start.sh
@@ -22,10 +24,14 @@ RUN chmod +x /app/start.sh
 # Persistent DB lives here (mount a volume to /data)
 RUN mkdir -p /data
 
+# Nginx temp dirs need to be writable by non-root
+RUN mkdir -p /tmp/nginx && \
+    chown -R www-data:www-data /var/lib/nginx
+
 # Run as non-root user
 RUN useradd -r -s /bin/false appuser && \
     chown -R appuser:appuser /data /app /usr/share/nginx/html && \
-    chown -R appuser:appuser /var/log/nginx /var/lib/nginx /run
+    chown -R appuser:appuser /var/log/nginx /var/lib/nginx /run /tmp
 USER appuser
 
 VOLUME ["/data"]
