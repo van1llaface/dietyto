@@ -71,6 +71,7 @@ class UserDB(Base):
     verify_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     reset_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     auth_token: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True, default=None)
+    token_created_at: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     role: Mapped[str] = mapped_column(String, default="user")  # "admin" or "user"
     household_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("households.id"), nullable=True, default=None)
 

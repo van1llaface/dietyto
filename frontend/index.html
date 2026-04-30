@@ -2406,11 +2406,10 @@ async function doSignup() {
             return;
         }
 
-        // Auto-fill verify screen with email and code (no real email service)
+        // Show verify screen — user must check email/console for code
         document.getElementById("verify-email").value = email;
-        document.getElementById("verify-code").value = data.dev_code || "";
         showAuth("verify");
-        showAuthSuccess("verify", t("msg.verifyAutoFilled"));
+        showAuthSuccess("verify", data.message);
     } catch {
         showAuthError("signup", t("msg.cannotReachServer"));
     }
@@ -2498,9 +2497,7 @@ async function doForgotPassword() {
         });
         const data = await res.json();
 
-        if (data.dev_code) {
-            showAuthSuccess("forgot", "Reset code: " + data.dev_code);
-        } else {
+        if (data.message) {
             showAuthSuccess("forgot", data.message);
         }
         document.getElementById("reset-email").value = email;

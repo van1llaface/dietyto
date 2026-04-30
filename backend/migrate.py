@@ -38,6 +38,10 @@ def migrate():
             cursor.execute("ALTER TABLE users ADD COLUMN household_id INTEGER DEFAULT NULL")
             print("[migrate] Added 'household_id' column to users")
 
+        if "token_created_at" not in cols:
+            cursor.execute("ALTER TABLE users ADD COLUMN token_created_at TEXT DEFAULT NULL")
+            print("[migrate] Added 'token_created_at' column to users")
+
     # --- households table ---
     if not table_exists(cursor, "households"):
         cursor.execute("""

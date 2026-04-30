@@ -56,6 +56,19 @@ def get_current_user(
     user = db.query(UserDB).filter(UserDB.auth_token == token).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    # Check token expiration (7 days)
+    if user.token_created_at:
+        try:
+            created = datetime.fromisoformat(user.token_created_at)
+            if (datetime.now(timezone.utc) - created) > timedelta(days=7):
+                user.auth_token = None
+                user.token_created_at = None
+                db.commit()
+                raise HTTPException(status_code=401, detail="Token expired, please log in again")
+        except (ValueError, TypeError):
+            pass
+
     return user
 
 
@@ -69,8 +82,8 @@ def require_admin(
 
 
 def generate_code() -> str:
-    """Generate a random 6-digit verification code."""
-    return str(random.randint(100000, 999999))
+    """Generate a random 6-digit verification code (cryptographically secure)."""
+    return str(secrets.randbelow(900000) + 100000)
 
 
 # ──────────────────────────────────────────────
@@ -110,7 +123,8 @@ def signup(req: SignUpRequest, db: Session = Depends(get_db)):
     print(f"  Code: {code}")
     print(f"{'='*50}\n")
 
-    return {"message": "Account created! Check your email for verification code.", "dev_code": code}
+    # In production: send code via email only. Console log for dev.
+    return {"message": "Account created! Check your email for verification code."}
 
 
 @app.post("/auth/verify-email")
@@ -152,6 +166,7 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     # Generate a secure random token
     token = secrets.token_urlsafe(32)
     user.auth_token = token
+    user.token_created_at = datetime.now(timezone.utc).isoformat()
     db.commit()
 
     return LoginResponse(token=token, username=user.username, role=user.role, message="Welcome back!")
@@ -174,7 +189,7 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     print(f"  Code: {code}")
     print(f"{'='*50}\n")
 
-    return {"message": "If that email exists, a reset code has been sent.", "dev_code": code}
+    return {"message": "If that email exists, a reset code has been sent."}
 
 
 @app.post("/auth/reset-password")
@@ -377,7 +392,7 @@ def get_recipe(recipe_id: int, db: Session = Depends(get_db)):
 # ──────────────────────────────────────────────
 
 @app.post("/recipes", response_model=RecipeResponse)
-def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db)):
+def create_recipe(recipe: RecipeCreate, user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Create a new recipe and save it to the DATABASE.
     Now it persists — restart the server and it's still there!
