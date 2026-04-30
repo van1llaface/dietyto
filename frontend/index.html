@@ -3253,9 +3253,10 @@ function populatePlannerDropdowns(recipes) {
             const select = document.getElementById(`plan-${day}-${meal}`);
             if (!select) return;
             const current = select.value;
+            const matchesMeal = r => r.meal_type.split(",").map(t => t.trim()).includes(meal);
             const optionsHtml = `<option value="">${t("planner.pick")}</option>` +
                 recipes
-                    .filter(r => meal === "snack" ? r.meal_type === "snack" : r.meal_type === meal || r.meal_type === "snack")
+                    .filter(r => matchesMeal(r))
                     .map(r => `<option value="${r.id}" ${r.id == current ? 'selected' : ''}>${esc(r.name)} (${r.calories} ${t("common.cal")})</option>`)
                     .join("");
             select.innerHTML = optionsHtml;
