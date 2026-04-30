@@ -29,6 +29,8 @@
             --terracotta: #B07B5F;
             --moss: #7A8B6F;
             --moss-dark: #5C6B52;
+            --deep: #1B2A4A;
+            --deep-dark: #0F1B33;
             --charcoal: #3A3A38;
             --stone: #8C8578;
             --linen: #FAF8F5;
@@ -36,6 +38,11 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -47,7 +54,7 @@
 
         /* ── Header ── */
         header {
-            background: var(--ink);
+            background: var(--deep);
             color: var(--sand);
             padding: 1.5rem 2rem;
             text-align: center;
@@ -95,10 +102,40 @@
             flex-shrink: 0;
         }
         .tab:hover { color: var(--charcoal); }
-        .tab.active { color: var(--ink); border-bottom-color: var(--terracotta); }
+        .tab.active { color: var(--ink); border-bottom-color: var(--deep); }
+
+        /* ── Planner section titles ── */
+        .planner-section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--stone);
+            margin: 1.5rem 0 0.75rem;
+            font-weight: 600;
+        }
+        .planner-section-title:first-of-type { margin-top: 0; }
+
+        /* ── Rating stars ── */
+        .rating-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .rating-row .meal-name { flex: 1; font-size: 0.85rem; color: var(--charcoal); }
+        .rating-stars { display: flex; gap: 2px; }
+        .rating-stars .star { cursor: pointer; font-size: 1.3rem; color: var(--sand); transition: color 0.15s; }
+        .rating-stars .star.active { color: #e6a817; }
+        .rating-stars .star:hover { color: #e6a817; }
+        .rating-banner { background: #fff3cd; border: 1px solid #e6a817; border-radius: 8px; padding: 0.6rem 1rem; margin-top: 0.75rem; font-size: 0.8rem; color: #856404; }
+        .recipe-rating { display: flex; align-items: center; gap: 2px; margin-top: 0.25rem; }
+        .recipe-rating .star { font-size: 0.85rem; color: #e6a817; }
+
+        /* ── Ingredient picker ── */
+        .ingredient-picker { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+        .ingredient-picker select, .ingredient-picker input { min-width: 0; }
+        .ingredient-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; background: var(--cream); border: 1px solid var(--sand); border-radius: 6px; margin-bottom: 0.3rem; font-size: 0.82rem; }
+        .ingredient-item .ing-remove { cursor: pointer; color: var(--terracotta); font-weight: bold; margin-left: auto; }
+        .ingredient-item .ing-edit { cursor: pointer; color: var(--stone); font-size: 0.8rem; transition: color 0.15s; }
+        .ingredient-item .ing-edit:hover { color: var(--deep); }
 
         /* ── Main content ── */
-        main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+        main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; overflow-x: hidden; }
         .page { display: none; }
         .page.active { display: block; }
 
@@ -326,7 +363,7 @@
         .day-total-card .dm.ok { background: rgba(122,139,111,0.25); color: var(--moss-dark); }
         .planner-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -335,6 +372,7 @@
             border-radius: 8px;
             padding: 1rem;
             border: 1px solid var(--sand);
+            overflow: hidden;
         }
         .day-card h4 {
             text-transform: capitalize;
@@ -360,19 +398,21 @@
             padding: 0.4rem;
             border: 1px solid var(--sand);
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             margin-top: 0.2rem;
             font-family: 'Inter', sans-serif;
             background: white;
             color: var(--charcoal);
             text-overflow: ellipsis;
+            overflow: hidden;
         }
         .servings-row {
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.25rem;
             margin-top: 0.15rem;
             margin-bottom: 0.3rem;
+            flex-wrap: wrap;
         }
         .servings-label {
             font-size: 0.68rem;
@@ -380,8 +420,8 @@
             white-space: nowrap;
         }
         .servings-input {
-            width: 3.2rem;
-            padding: 0.2rem 0.3rem;
+            width: 2.8rem;
+            padding: 0.2rem 0.2rem;
             border: 1px solid var(--sand);
             border-radius: 4px;
             font-size: 0.72rem;
@@ -390,9 +430,13 @@
             background: white;
             color: var(--charcoal);
         }
+        .partner-srv {
+            background: rgba(196,168,130,0.1);
+            border-color: var(--clay);
+        }
         .btn {
             padding: 0.7rem 1.4rem;
-            background: var(--moss);
+            background: var(--deep);
             color: white;
             border: none;
             border-radius: 4px;
@@ -405,12 +449,12 @@
             font-family: 'Inter', sans-serif;
             white-space: nowrap;
         }
-        .btn:hover { background: var(--moss-dark); }
+        .btn:hover { background: var(--deep-dark); }
         .btn-outline {
             padding: 0.7rem 1.4rem;
             background: transparent;
-            color: var(--moss);
-            border: 1.5px solid var(--moss);
+            color: var(--deep);
+            border: 1.5px solid var(--deep);
             border-radius: 4px;
             font-size: 0.82rem;
             font-weight: 500;
@@ -421,8 +465,75 @@
             font-family: 'Inter', sans-serif;
             white-space: nowrap;
         }
-        .btn-outline:hover { background: rgba(122,139,111,0.08); }
+        .btn-outline:hover { background: rgba(27,42,74,0.08); }
         .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+        /* ── Day locking ── */
+        .day-locked {
+            opacity: 0.6;
+            background: var(--sand) !important;
+            pointer-events: none;
+        }
+        .day-locked .btn-day-done {
+            pointer-events: auto;
+        }
+        .day-lock-row {
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+        .btn-day-done {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--sand);
+            border-radius: 4px;
+            background: var(--linen);
+            color: var(--stone);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-day-done:hover { border-color: var(--deep); color: var(--deep); }
+        .btn-day-done.locked {
+            background: var(--deep);
+            color: white;
+            border-color: var(--deep);
+        }
+
+        /* ── Approval bar ── */
+        .approval-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            background: rgba(27,42,74,0.06);
+            border: 1.5px solid var(--deep);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .approval-bar span {
+            font-size: 0.88rem;
+            color: var(--charcoal);
+        }
+        .planning-reminder {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(196,168,130,0.12);
+            border: 1px solid var(--clay);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.88rem;
+            color: var(--charcoal);
+        }
+        .planning-reminder span:first-child {
+            font-size: 1.3rem;
+        }
 
         /* ── Grocery List ── */
         .grocery-list {
@@ -525,6 +636,28 @@
             outline: none;
             border-color: var(--clay);
         }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1.25rem;
+            margin-top: 0.3rem;
+        }
+        .checkbox-label {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.88rem !important;
+            font-weight: 400 !important;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+            color: var(--charcoal) !important;
+            cursor: pointer;
+        }
+        .checkbox-label input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--deep);
+        }
 
         /* ── Progress bars ── */
         .progress-row {
@@ -569,7 +702,7 @@
             display: inline-block;
             width: 18px; height: 18px;
             border: 2px solid var(--sand);
-            border-top-color: var(--moss);
+            border-top-color: var(--deep);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin-right: 0.5rem;
@@ -665,7 +798,7 @@
         }
         .auth-card .btn { width: 100%; margin-top: 0.5rem; }
         .auth-card .link {
-            color: var(--terracotta);
+            color: var(--deep);
             cursor: pointer;
             font-weight: 500;
             text-decoration: none;
@@ -744,7 +877,7 @@
             .tab { padding: 0.7rem 0.8rem; font-size: 0.72rem; letter-spacing: 0.3px; }
             main { padding: 1rem 0.75rem; }
             .recipe-grid { grid-template-columns: 1fr; }
-            .planner-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .planner-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
             .form-grid { grid-template-columns: 1fr; }
             .summary-stats { gap: 0.5rem; overflow-x: auto; flex-wrap: nowrap; }
             .stat { flex: 0 0 auto; min-width: 90px; padding: 0.6rem 0.5rem; }
@@ -864,7 +997,7 @@
 <body>
 
 <!-- ════════════ AUTH SCREENS (shown when not logged in) ════════════ -->
-<div id="auth-section" class="auth-wrapper">
+<div id="auth-section" class="auth-wrapper auth-hidden">
 
     <!-- Language switcher on auth screen -->
     <div style="position:fixed; top:1rem; right:1.5rem; z-index:50;">
@@ -879,6 +1012,7 @@
         <h2 data-i18n="auth.welcome">Welcome to Dietyto</h2>
         <p class="subtitle" data-i18n="auth.loginSubtitle">Log in to plan your longevity meals</p>
         <div class="error-msg" id="login-error"></div>
+        <form onsubmit="event.preventDefault(); doLogin();">
         <div class="form-group">
             <label data-i18n="auth.usernameOrEmail">Username or Email</label>
             <input type="text" id="login-email" data-i18n-placeholder="auth.usernameOrEmailPlaceholder" placeholder="username or email">
@@ -887,7 +1021,8 @@
             <label data-i18n="auth.password">Password</label>
             <input type="password" id="login-password" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Your password">
         </div>
-        <button class="btn" onclick="doLogin()" data-i18n="auth.login">Log In</button>
+        <button type="submit" class="btn" data-i18n="auth.login">Log In</button>
+        </form>
         <div class="footer">
             <span class="link" onclick="showAuth('signup')" data-i18n="auth.createAccount">Create an account</span>
             &nbsp;·&nbsp;
@@ -1083,24 +1218,38 @@
 
     <!-- ════════════ MEAL PLANNER PAGE ════════════ -->
     <div class="page" id="page-planner">
+        <!-- Saturday planning reminder -->
+        <div class="planning-reminder" id="planning-reminder" style="display:none;">
+            <span>📋</span>
+            <span data-i18n="planner.saturdayReminder">It's planning day! Generate your meals for next week and get your grocery list ready.</span>
+        </div>
+
         <h2 style="margin-bottom:1rem; color:var(--ink); font-family:'Playfair Display',Georgia,serif;" data-i18n="planner.title">Plan Your Week</h2>
 
-        <!-- Auto-generate bar -->
+        <!-- Targets + generate -->
+        <h4 class="planner-section-title" data-i18n="planner.tabTargets">Targets</h4>
         <div class="auto-generate-bar" id="auto-generate-bar">
             <div class="auto-generate-info" id="auto-generate-info"></div>
             <button class="btn" onclick="autoGeneratePlan()" id="btn-auto-generate" data-i18n="planner.autoGenerate">Auto-Generate Plan</button>
         </div>
 
+        <!-- Meals section -->
+        <h4 class="planner-section-title" data-i18n="planner.tabMeals">Meals</h4>
         <div class="planner-grid" id="planner-grid"></div>
 
-        <!-- Day totals strip -->
+        <!-- Approval bar (shown after auto-generate) -->
+        <div class="approval-bar" id="approval-bar" style="display:none;">
+            <span data-i18n="planner.reviewMsg">Review your suggested meals. Swap any you don't like, then approve.</span>
+            <div style="display:flex; gap:0.5rem;">
+                <button class="btn" onclick="approvePlan()" data-i18n="planner.approve">Approve & Get Groceries</button>
+                <button class="btn-outline" onclick="dismissApproval()" data-i18n="planner.dismiss">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Macros section -->
+        <h4 class="planner-section-title" data-i18n="planner.tabMacros">Macros</h4>
         <div id="planner-day-totals"></div>
 
-        <div class="btn-row">
-            <button class="btn" onclick="saveMealPlan()" data-i18n="planner.save">Save Plan</button>
-            <button class="btn" onclick="generateGroceryList()" data-i18n="planner.generateGrocery">Generate Grocery List</button>
-            <button class="btn" onclick="generateSummary()" data-i18n="planner.viewSummary">View Weekly Summary</button>
-        </div>
         <div id="summary-container"></div>
     </div>
 
@@ -1187,20 +1336,17 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label data-i18n="profile.excludeAllergens">Exclude Allergens</label>
-                    <div>
-                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
                             <input type="checkbox" id="pref-fish"> <span data-i18n="allergen.fish">Fish</span>
                         </label>
-                        &nbsp;&nbsp;
-                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <label class="checkbox-label">
                             <input type="checkbox" id="pref-meat"> <span data-i18n="allergen.meat">Meat</span>
                         </label>
-                        &nbsp;&nbsp;
-                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <label class="checkbox-label">
                             <input type="checkbox" id="pref-gluten"> <span data-i18n="allergen.gluten">Gluten</span>
                         </label>
-                        &nbsp;&nbsp;
-                        <label style="display:inline; font-weight:400; cursor:pointer;">
+                        <label class="checkbox-label">
                             <input type="checkbox" id="pref-lactose"> <span data-i18n="allergen.lactose">Lactose</span>
                         </label>
                     </div>
@@ -1209,6 +1355,13 @@
             <button class="btn" onclick="saveProfile()" data-i18n="profile.save">Save Profile</button>
             <button class="btn-outline" onclick="resetProfile()" style="margin-left:0.75rem;" data-i18n="profile.reset">Reset Profile</button>
             <div id="profile-targets" style="margin-top:1.5rem;"></div>
+        </div>
+
+        <!-- ──── Household (Couples) ──── -->
+        <div class="dashboard-card" style="margin-top:1.5rem;">
+            <h3 data-i18n="household.title">Household</h3>
+            <p style="color:var(--stone); margin-bottom:1rem;" data-i18n="household.subtitle">Link with your partner to share meal plans and combine grocery lists.</p>
+            <div id="household-section"></div>
         </div>
     </div>
 
@@ -1238,27 +1391,60 @@
                     <label data-i18n="recipe.name">Name</label>
                     <input type="text" id="rf-name" data-i18n-placeholder="recipe.namePlaceholder" placeholder="Recipe name">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="grid-column: 1 / -1;">
                     <label data-i18n="recipe.mealType">Meal Type</label>
-                    <select id="rf-meal-type">
-                        <option value="breakfast" data-i18n="meal.breakfast">Breakfast</option>
-                        <option value="lunch" data-i18n="meal.lunch">Lunch</option>
-                        <option value="dinner" data-i18n="meal.dinner">Dinner</option>
-                        <option value="snack" data-i18n="meal.snack">Snack</option>
-                    </select>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.3rem;">
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-mt-breakfast" value="breakfast"> <span data-i18n="meal.breakfast">Breakfast</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-mt-lunch" value="lunch"> <span data-i18n="meal.lunch">Lunch</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-mt-dinner" value="dinner"> <span data-i18n="meal.dinner">Dinner</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-mt-snack" value="snack"> <span data-i18n="meal.snack">Snack</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label data-i18n="recipe.category">Category</label>
-                    <select id="rf-category">
-                        <option value="anti-inflammatory" data-i18n="cat.antiInflammatory">Anti-inflammatory</option>
-                        <option value="antioxidant-rich" data-i18n="cat.antioxidantRich">Antioxidant-rich</option>
-                        <option value="heart-healthy" data-i18n="cat.heartHealthy">Heart-healthy</option>
-                        <option value="gut-friendly" data-i18n="cat.gutFriendly">Gut-friendly</option>
-                    </select>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label data-i18n="recipe.allergens">Allergens</label>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.3rem;">
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-allergen-fish" value="fish"> <span data-i18n="allergen.fish">Fish</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-allergen-meat" value="meat"> <span data-i18n="allergen.meat">Meat</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-allergen-gluten" value="gluten"> <span data-i18n="allergen.gluten">Gluten</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-allergen-lactose" value="lactose"> <span data-i18n="allergen.lactose">Lactose</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label data-i18n="recipe.healthBenefits">Health Benefits</label>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.3rem;">
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-hb-anti-inflammatory" value="anti-inflammatory"> <span data-i18n="cat.antiInflammatory">Anti-inflammatory</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-hb-antioxidant-rich" value="antioxidant-rich"> <span data-i18n="cat.antioxidantRich">Antioxidant-rich</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-hb-heart-healthy" value="heart-healthy"> <span data-i18n="cat.heartHealthy">Heart-healthy</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:0.3rem; font-weight:400; cursor:pointer;">
+                            <input type="checkbox" id="rf-hb-gut-friendly" value="gut-friendly"> <span data-i18n="cat.gutFriendly">Gut-friendly</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label data-i18n="recipe.servings">Servings</label>
-                    <input type="number" id="rf-servings" value="2" min="1">
+                    <input type="number" id="rf-servings" value="2" min="1" oninput="autoCalcMacros()">
                 </div>
                 <div class="form-group">
                     <label data-i18n="recipe.prepTime">Prep Time (min)</label>
@@ -1293,37 +1479,38 @@
                 </div>
             </div>
             <div class="form-group" style="margin-bottom:1rem;">
-                <label data-i18n="recipe.ingredientsLabel">Ingredients (one per line: amount unit name — e.g. "200 g salmon fillet")</label>
-                <textarea id="rf-ingredients" rows="5" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="200 g salmon fillet&#10;1 tbsp olive oil&#10;100 g broccoli"></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom:1rem;">
-                <label data-i18n="recipe.instructionsLabel">Instructions (one step per line)</label>
-                <textarea id="rf-instructions" rows="4" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="Preheat oven to 200°C&#10;Season the salmon&#10;Bake for 15 minutes"></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom:1rem;">
-                <label data-i18n="recipe.benefitsLabel">Health Benefits (one per line)</label>
-                <textarea id="rf-benefits" rows="2" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem; resize:vertical;" placeholder="Rich in omega-3&#10;Anti-inflammatory"></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom:1rem;">
-                <label data-i18n="recipe.allergens">Allergens</label>
-                <div>
-                    <label style="display:inline; font-weight:400; cursor:pointer;">
-                        <input type="checkbox" id="rf-allergen-fish"> <span data-i18n="allergen.fish">Fish</span>
-                    </label>
-                    &nbsp;&nbsp;
-                    <label style="display:inline; font-weight:400; cursor:pointer;">
-                        <input type="checkbox" id="rf-allergen-meat"> <span data-i18n="allergen.meat">Meat</span>
-                    </label>
-                    &nbsp;&nbsp;
-                    <label style="display:inline; font-weight:400; cursor:pointer;">
-                        <input type="checkbox" id="rf-allergen-gluten"> <span data-i18n="allergen.gluten">Gluten</span>
-                    </label>
-                    &nbsp;&nbsp;
-                    <label style="display:inline; font-weight:400; cursor:pointer;">
-                        <input type="checkbox" id="rf-allergen-lactose"> <span data-i18n="allergen.lactose">Lactose</span>
-                    </label>
+                <label data-i18n="recipe.ingredientsLabel">Ingredients</label>
+                <div class="ingredient-picker">
+                    <select id="rf-ing-name" style="flex:2; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
+                        <option value="">— pick ingredient —</option>
+                    </select>
+                    <input type="number" id="rf-ing-amount" placeholder="e.g. 200" min="1" step="1" style="flex:0.7; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
+                    <select id="rf-ing-unit" style="flex:0.6; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
+                        <option value="g">g</option>
+                        <option value="ml">ml</option>
+                        <option value="tbsp">tbsp</option>
+                        <option value="tsp">tsp</option>
+                        <option value="cup">cup</option>
+                        <option value="pcs">pcs</option>
+                        <option value="handful">handful</option>
+                    </select>
+                    <button type="button" class="btn" style="padding:0.45rem 0.8rem; font-size:0.8rem;" onclick="addIngredientRow()">+</button>
                 </div>
+                <div id="rf-ingredients-list" style="margin-top:0.5rem;"></div>
+                <textarea id="rf-ingredients" rows="0" style="display:none;" oninput="autoCalcMacros()"></textarea>
+                <div id="macro-calc-status" style="font-size:0.75rem; margin-top:0.3rem;"></div>
             </div>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.instructionsLabel">Instructions</label>
+                <div class="ingredient-picker">
+                    <input type="text" id="rf-step-input" placeholder="e.g. Preheat oven to 200°C" style="flex:3; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
+                    <button type="button" class="btn" style="padding:0.45rem 0.8rem; font-size:0.8rem;" onclick="addInstructionStep()">+</button>
+                </div>
+                <div id="rf-steps-list" style="margin-top:0.5rem;"></div>
+                <textarea id="rf-instructions" rows="0" style="display:none;"></textarea>
+            </div>
+
+
             <div class="btn-row">
                 <button class="btn" onclick="saveRecipeForm()" data-i18n="recipe.save">Save Recipe</button>
                 <button class="btn-outline" onclick="hideRecipeForm()" data-i18n="common.cancel">Cancel</button>
@@ -1340,10 +1527,18 @@
     </div>
 </div>
 
+<!-- ════════════ RATING MODAL ════════════ -->
+<div class="modal-overlay" id="rating-overlay">
+    <div class="modal" style="max-width:420px;">
+        <button class="modal-close" onclick="closeRatingModal()">&times;</button>
+        <div id="rating-modal-body"></div>
+    </div>
+</div>
+
 </div><!-- end #app-section -->
 
 <script>
-const API = window.location.hostname === "localhost"
+const API = (window.location.hostname === "localhost" || window.location.protocol === "file:")
     ? "http://localhost:8000"
     : window.location.origin + "/api";
 let allRecipes = [];
@@ -1509,9 +1704,41 @@ const translations = {
     "planner.autoGenerate": "Auto-Generate Plan",
     "planner.setupProfile": "Set up your profile first to auto-generate a plan.",
     "planner.yourTargets": "Your daily targets:",
+    "planner.tabTargets": "Targets",
+    "planner.tabMeals": "Meals",
+    "planner.tabMacros": "Macros",
+    "planner.noTargets": "Set up your profile to see daily targets.",
     "planner.servings": "×",
+    "planner.finishDay": "Finish Day",
+    "planner.done": "Done",
+    "planner.unlock": "Click to unlock",
+    "planner.reviewMsg": "Review your suggested meals. Swap any you don't like, then approve.",
+    "planner.approve": "Approve & Get Groceries",
+    "planner.dismiss": "Dismiss",
+    "planner.saturdayReminder": "It's planning day! Generate your meals for next week and get your grocery list ready.",
+    "rating.title": "Rate your meals",
+    "rating.submit": "Done",
+    "rating.lowBanner": "Meals rated 1-2 stars won't appear in future plans.",
     "msg.planGenerated": "Week plan generated based on your targets!",
     "msg.generateFailed": "Could not generate plan. Check your profile.",
+    "msg.householdCreated": "Household created! Share the code with your partner.",
+    "msg.householdJoined": "Joined household successfully!",
+    "msg.householdLeft": "Left household.",
+    "msg.leaveHouseholdConfirm": "Leave this household? Your meal plan will no longer be shared.",
+    "msg.enterCode": "Please enter the invite code.",
+    "msg.copied": "Copied!",
+
+    // Household
+    "household.title": "Household",
+    "household.subtitle": "Link with your partner to share meal plans and combine grocery lists.",
+    "household.create": "Create Household",
+    "household.join": "Join",
+    "household.enterCode": "Invite Code",
+    "household.inviteCode": "Invite Code",
+    "household.partner": "Partner",
+    "household.waitingPartner": "Waiting for partner...",
+    "household.leave": "Leave Household",
+    "household.partnerShort": "P×",
 
     // Days
     "day.monday": "Monday",
@@ -1548,6 +1775,25 @@ const translations = {
     "dashboard.totalFat": "Fat",
     "dashboard.totalFiber": "Fiber",
     "dashboard.avgCalDay": "Avg Cal/Day",
+    "dashboard.weightProgress": "Weight Progress",
+    "dashboard.maintaining": "Maintaining at {0} kg — you're on track!",
+    "dashboard.toGo": "to go",
+    "dashboard.rateInfo": "At {0} kg/week → ~{1} weeks remaining",
+    "dashboard.streak": "Planning Streak",
+    "dashboard.streakStart": "Save your meal plan this week to start your streak!",
+    "dashboard.streakOne": "Great start! Keep planning every week.",
+    "dashboard.streakMulti": "{0} consecutive weeks of meal planning!",
+    "dashboard.week": "week",
+    "dashboard.weeks": "weeks",
+    "dashboard.weightNoData": "Save your profile to start tracking weight progress.",
+    "dashboard.weightOneEntry": "Update your weight again later to see the graph.",
+    "dashboard.lost": "You lost",
+    "dashboard.gained": "You gained",
+    "dashboard.inTime": "in {0}",
+    "dashboard.days": "days",
+    "dashboard.months": "months",
+    "dashboard.now": "now",
+    "dashboard.goal": "goal",
 
     // Profile
     "profile.title": "My Profile",
@@ -1655,6 +1901,7 @@ const translations = {
     "admin.verified": "Verified",
     "admin.actions": "Actions",
     "admin.makeAdmin": "Make Admin",
+    "admin.makeUser": "Make User",
     "admin.delete": "Delete",
     "admin.edit": "Edit",
     "admin.type": "Type",
@@ -1822,9 +2069,41 @@ const translations = {
     "planner.autoGenerate": "Automatiškai generuoti",
     "planner.setupProfile": "Pirmiausia užpildykite profilį, kad sugeneruotumėte planą.",
     "planner.yourTargets": "Jūsų dienos tikslai:",
+    "planner.tabTargets": "Tikslai",
+    "planner.tabMeals": "Valgiai",
+    "planner.tabMacros": "Makro",
+    "planner.noTargets": "Užpildykite profilį, kad matytumėte dienos tikslus.",
     "planner.servings": "×",
+    "planner.finishDay": "Baigti dieną",
+    "planner.done": "Atlikta",
+    "planner.unlock": "Spustelėkite atrakinti",
+    "planner.reviewMsg": "Peržiūrėkite pasiūlytus patiekalus. Pakeiskite netinkamus, tada patvirtinkite.",
+    "planner.approve": "Patvirtinti ir gauti pirkinius",
+    "planner.dismiss": "Atmesti",
+    "planner.saturdayReminder": "Šiandien planavimo diena! Sugeneruokite savaitės patiekalus ir paruoškite pirkinių sąrašą.",
+    "rating.title": "Įvertinkite patiekalus",
+    "rating.submit": "Baigti",
+    "rating.lowBanner": "Patiekalai, įvertinti 1-2 žvaigždutėmis, nebus rodomi būsimuose planuose.",
     "msg.planGenerated": "Savaitės planas sugeneruotas pagal jūsų tikslus!",
     "msg.generateFailed": "Nepavyko sugeneruoti plano. Patikrinkite profilį.",
+    "msg.householdCreated": "Namų ūkis sukurtas! Pasidalinkite kodu su partneriu.",
+    "msg.householdJoined": "Sėkmingai prisijungėte prie namų ūkio!",
+    "msg.householdLeft": "Palikote namų ūkį.",
+    "msg.leaveHouseholdConfirm": "Palikti šį namų ūkį? Jūsų planas nebebus bendrinamas.",
+    "msg.enterCode": "Įveskite pakvietimo kodą.",
+    "msg.copied": "Nukopijuota!",
+
+    // Household
+    "household.title": "Namų ūkis",
+    "household.subtitle": "Susiekite su partneriu, kad dalintumėtės valgiaraščiu ir pirkinių sąrašu.",
+    "household.create": "Sukurti namų ūkį",
+    "household.join": "Prisijungti",
+    "household.enterCode": "Pakvietimo kodas",
+    "household.inviteCode": "Pakvietimo kodas",
+    "household.partner": "Partneris",
+    "household.waitingPartner": "Laukiama partnerio...",
+    "household.leave": "Palikti namų ūkį",
+    "household.partnerShort": "P×",
 
     // Days
     "day.monday": "Pirmadienis",
@@ -1861,6 +2140,25 @@ const translations = {
     "dashboard.totalFat": "Riebalai",
     "dashboard.totalFiber": "Skaidulos",
     "dashboard.avgCalDay": "Vid. kal/dieną",
+    "dashboard.weightProgress": "Svorio progresas",
+    "dashboard.maintaining": "Palaikote {0} kg — viskas gerai!",
+    "dashboard.toGo": "liko",
+    "dashboard.rateInfo": "Po {0} kg/sav. → ~{1} savaičių liko",
+    "dashboard.streak": "Planavimo serija",
+    "dashboard.streakStart": "Išsaugokite savaitės planą, kad pradėtumėte seriją!",
+    "dashboard.streakOne": "Puiki pradžia! Planuokite kiekvieną savaitę.",
+    "dashboard.streakMulti": "{0} savaitės iš eilės su planu!",
+    "dashboard.week": "savaitė",
+    "dashboard.weeks": "savaitės",
+    "dashboard.weightNoData": "Išsaugokite profilį, kad pradėtumėte sekti svorio progresą.",
+    "dashboard.weightOneEntry": "Atnaujinkite svorį vėliau, kad matytumėte grafiką.",
+    "dashboard.lost": "Numetėte",
+    "dashboard.gained": "Priaugote",
+    "dashboard.inTime": "per {0}",
+    "dashboard.days": "dienų",
+    "dashboard.months": "mėnesių",
+    "dashboard.now": "dabar",
+    "dashboard.goal": "tikslas",
 
     // Profile
     "profile.title": "Mano profilis",
@@ -1968,6 +2266,7 @@ const translations = {
     "admin.verified": "Patvirtintas",
     "admin.actions": "Veiksmai",
     "admin.makeAdmin": "Padaryti admin",
+    "admin.makeUser": "Padaryti vartotoju",
     "admin.delete": "Ištrinti",
     "admin.edit": "Redaguoti",
     "admin.type": "Tipas",
@@ -2256,6 +2555,7 @@ function enterApp(username) {
     document.getElementById("auth-section").classList.add("auth-hidden");
     document.getElementById("app-section").classList.remove("auth-hidden");
     document.getElementById("header-user").textContent = username;
+    currentUsername = username;
     initApp();
 }
 
@@ -2283,6 +2583,372 @@ function switchTab(name) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.querySelector('[data-page="' + name + '"]').classList.add("active");
     document.getElementById("page-" + name).classList.add("active");
+}
+
+// ═══════════════════════════════════════════════
+// INGREDIENT NUTRITION DATABASE (per 100g)
+// ═══════════════════════════════════════════════
+const NUTRITION_DB = {
+    // Proteins
+    "chicken breast": { protein: 31, carbs: 0, fat: 3.6, fiber: 0 },
+    "chicken thigh": { protein: 26, carbs: 0, fat: 10, fiber: 0 },
+    "chicken": { protein: 27, carbs: 0, fat: 14, fiber: 0 },
+    "turkey breast": { protein: 29, carbs: 0, fat: 1, fiber: 0 },
+    "turkey": { protein: 29, carbs: 0, fat: 7, fiber: 0 },
+    "beef": { protein: 26, carbs: 0, fat: 15, fiber: 0 },
+    "beef steak": { protein: 27, carbs: 0, fat: 12, fiber: 0 },
+    "ground beef": { protein: 26, carbs: 0, fat: 20, fiber: 0 },
+    "pork": { protein: 27, carbs: 0, fat: 14, fiber: 0 },
+    "pork loin": { protein: 27, carbs: 0, fat: 8, fiber: 0 },
+    "lamb": { protein: 25, carbs: 0, fat: 21, fiber: 0 },
+    "salmon": { protein: 20, carbs: 0, fat: 13, fiber: 0 },
+    "salmon fillet": { protein: 20, carbs: 0, fat: 13, fiber: 0 },
+    "tuna": { protein: 30, carbs: 0, fat: 1, fiber: 0 },
+    "cod": { protein: 18, carbs: 0, fat: 0.7, fiber: 0 },
+    "shrimp": { protein: 24, carbs: 0.2, fat: 0.3, fiber: 0 },
+    "prawns": { protein: 24, carbs: 0.2, fat: 0.3, fiber: 0 },
+    "eggs": { protein: 13, carbs: 1.1, fat: 11, fiber: 0 },
+    "egg": { protein: 13, carbs: 1.1, fat: 11, fiber: 0 },
+    "tofu": { protein: 8, carbs: 2, fat: 4.8, fiber: 0.3 },
+    "tempeh": { protein: 19, carbs: 9, fat: 11, fiber: 0 },
+    // Dairy
+    "milk": { protein: 3.4, carbs: 5, fat: 1, fiber: 0 },
+    "whole milk": { protein: 3.2, carbs: 4.8, fat: 3.2, fiber: 0 },
+    "greek yogurt": { protein: 10, carbs: 3.6, fat: 0.7, fiber: 0 },
+    "yogurt": { protein: 5, carbs: 7, fat: 3, fiber: 0 },
+    "cottage cheese": { protein: 11, carbs: 3.4, fat: 4.3, fiber: 0 },
+    "cheddar": { protein: 25, carbs: 1.3, fat: 33, fiber: 0 },
+    "cheese": { protein: 25, carbs: 1.3, fat: 33, fiber: 0 },
+    "mozzarella": { protein: 22, carbs: 2.2, fat: 22, fiber: 0 },
+    "parmesan": { protein: 36, carbs: 3.2, fat: 26, fiber: 0 },
+    "feta": { protein: 14, carbs: 4.1, fat: 21, fiber: 0 },
+    "cream cheese": { protein: 6, carbs: 4, fat: 34, fiber: 0 },
+    "butter": { protein: 0.9, carbs: 0.1, fat: 81, fiber: 0 },
+    // Grains & starches
+    "rice": { protein: 2.7, carbs: 28, fat: 0.3, fiber: 0.4 },
+    "brown rice": { protein: 2.6, carbs: 23, fat: 0.9, fiber: 1.8 },
+    "pasta": { protein: 5, carbs: 25, fat: 0.9, fiber: 1.8 },
+    "bread": { protein: 9, carbs: 49, fat: 3.2, fiber: 2.7 },
+    "oats": { protein: 13, carbs: 68, fat: 7, fiber: 10 },
+    "oatmeal": { protein: 2.4, carbs: 12, fat: 1.5, fiber: 1.7 },
+    "quinoa": { protein: 4.4, carbs: 21, fat: 1.9, fiber: 2.8 },
+    "potato": { protein: 2, carbs: 17, fat: 0.1, fiber: 2.2 },
+    "sweet potato": { protein: 1.6, carbs: 20, fat: 0.1, fiber: 3 },
+    "couscous": { protein: 3.8, carbs: 23, fat: 0.2, fiber: 1.4 },
+    "tortilla": { protein: 8, carbs: 48, fat: 8, fiber: 3 },
+    // Legumes
+    "lentils": { protein: 9, carbs: 20, fat: 0.4, fiber: 8 },
+    "chickpeas": { protein: 9, carbs: 27, fat: 2.6, fiber: 8 },
+    "black beans": { protein: 9, carbs: 24, fat: 0.5, fiber: 9 },
+    "kidney beans": { protein: 9, carbs: 22, fat: 0.5, fiber: 7 },
+    "beans": { protein: 9, carbs: 22, fat: 0.5, fiber: 7 },
+    "edamame": { protein: 11, carbs: 8.9, fat: 5, fiber: 5 },
+    // Vegetables
+    "broccoli": { protein: 2.8, carbs: 7, fat: 0.4, fiber: 2.6 },
+    "spinach": { protein: 2.9, carbs: 3.6, fat: 0.4, fiber: 2.2 },
+    "kale": { protein: 4.3, carbs: 9, fat: 0.9, fiber: 3.6 },
+    "carrot": { protein: 0.9, carbs: 10, fat: 0.2, fiber: 2.8 },
+    "carrots": { protein: 0.9, carbs: 10, fat: 0.2, fiber: 2.8 },
+    "tomato": { protein: 0.9, carbs: 3.9, fat: 0.2, fiber: 1.2 },
+    "tomatoes": { protein: 0.9, carbs: 3.9, fat: 0.2, fiber: 1.2 },
+    "onion": { protein: 1.1, carbs: 9, fat: 0.1, fiber: 1.7 },
+    "garlic": { protein: 6.4, carbs: 33, fat: 0.5, fiber: 2.1 },
+    "bell pepper": { protein: 1, carbs: 6, fat: 0.3, fiber: 2.1 },
+    "pepper": { protein: 1, carbs: 6, fat: 0.3, fiber: 2.1 },
+    "zucchini": { protein: 1.2, carbs: 3.1, fat: 0.3, fiber: 1 },
+    "cucumber": { protein: 0.7, carbs: 3.6, fat: 0.1, fiber: 0.5 },
+    "lettuce": { protein: 1.4, carbs: 2.9, fat: 0.2, fiber: 1.3 },
+    "cabbage": { protein: 1.3, carbs: 6, fat: 0.1, fiber: 2.5 },
+    "cauliflower": { protein: 1.9, carbs: 5, fat: 0.3, fiber: 2 },
+    "mushrooms": { protein: 3.1, carbs: 3.3, fat: 0.3, fiber: 1 },
+    "asparagus": { protein: 2.2, carbs: 3.9, fat: 0.1, fiber: 2.1 },
+    "avocado": { protein: 2, carbs: 9, fat: 15, fiber: 7 },
+    "peas": { protein: 5, carbs: 14, fat: 0.4, fiber: 5 },
+    "corn": { protein: 3.3, carbs: 19, fat: 1.4, fiber: 2.7 },
+    "eggplant": { protein: 1, carbs: 6, fat: 0.2, fiber: 3 },
+    // Fruits
+    "banana": { protein: 1.1, carbs: 23, fat: 0.3, fiber: 2.6 },
+    "apple": { protein: 0.3, carbs: 14, fat: 0.2, fiber: 2.4 },
+    "berries": { protein: 0.7, carbs: 14, fat: 0.3, fiber: 2 },
+    "blueberries": { protein: 0.7, carbs: 14, fat: 0.3, fiber: 2.4 },
+    "strawberries": { protein: 0.7, carbs: 8, fat: 0.3, fiber: 2 },
+    "orange": { protein: 0.9, carbs: 12, fat: 0.1, fiber: 2.4 },
+    "lemon": { protein: 1.1, carbs: 9, fat: 0.3, fiber: 2.8 },
+    "mango": { protein: 0.8, carbs: 15, fat: 0.4, fiber: 1.6 },
+    // Nuts & seeds
+    "almonds": { protein: 21, carbs: 22, fat: 49, fiber: 12 },
+    "walnuts": { protein: 15, carbs: 14, fat: 65, fiber: 7 },
+    "peanuts": { protein: 26, carbs: 16, fat: 49, fiber: 9 },
+    "peanut butter": { protein: 25, carbs: 20, fat: 50, fiber: 6 },
+    "cashews": { protein: 18, carbs: 30, fat: 44, fiber: 3 },
+    "chia seeds": { protein: 17, carbs: 42, fat: 31, fiber: 34 },
+    "flax seeds": { protein: 18, carbs: 29, fat: 42, fiber: 27 },
+    "sunflower seeds": { protein: 21, carbs: 20, fat: 51, fiber: 9 },
+    "pumpkin seeds": { protein: 30, carbs: 11, fat: 49, fiber: 6 },
+    // Oils & fats
+    "olive oil": { protein: 0, carbs: 0, fat: 100, fiber: 0 },
+    "coconut oil": { protein: 0, carbs: 0, fat: 100, fiber: 0 },
+    "vegetable oil": { protein: 0, carbs: 0, fat: 100, fiber: 0 },
+    // Other
+    "honey": { protein: 0.3, carbs: 82, fat: 0, fiber: 0 },
+    "maple syrup": { protein: 0, carbs: 67, fat: 0, fiber: 0 },
+    "soy sauce": { protein: 6, carbs: 5, fat: 0, fiber: 0 },
+    "hummus": { protein: 8, carbs: 14, fat: 10, fiber: 4 },
+    "tahini": { protein: 17, carbs: 12, fat: 54, fiber: 9 },
+    "coconut milk": { protein: 2.3, carbs: 6, fat: 24, fiber: 0 },
+};
+
+// Unit conversions to grams
+const UNIT_TO_GRAMS = {
+    "g": 1, "gram": 1, "grams": 1,
+    "kg": 1000, "kilogram": 1000,
+    "ml": 1, "milliliter": 1,
+    "l": 1000, "liter": 1000, "litre": 1000,
+    "oz": 28.35, "ounce": 28.35,
+    "lb": 453.6, "pound": 453.6,
+    "cup": 240, "cups": 240,
+    "tbsp": 15, "tablespoon": 15, "tablespoons": 15,
+    "tsp": 5, "teaspoon": 5, "teaspoons": 5,
+    "pcs": 50, "piece": 50, "pieces": 50, // default estimate
+    "handful": 30, "handfuls": 30,
+    "clove": 5, "cloves": 5,
+    "slice": 30, "slices": 30,
+};
+
+function parseIngredientLine(line) {
+    line = line.trim();
+    if (!line) return null;
+    // Pattern: "200 g chicken breast" or "1 tbsp olive oil" or "2 eggs"
+    const match = line.match(/^([\d.,/]+)\s*([a-zA-Z]+)\s+(.+)$/);
+    if (!match) {
+        // Try without unit: "2 eggs"
+        const m2 = line.match(/^([\d.,/]+)\s+(.+)$/);
+        if (m2) return { amount: parseFloat(m2[1].replace(",", ".")), unit: "pcs", name: m2[2].trim().toLowerCase() };
+        return null;
+    }
+    let amount = match[1].replace(",", ".");
+    if (amount.includes("/")) { const [n, d] = amount.split("/"); amount = parseFloat(n) / parseFloat(d); }
+    else amount = parseFloat(amount);
+    return { amount, unit: match[2].toLowerCase(), name: match[3].trim().toLowerCase() };
+}
+
+function lookupNutrition(name) {
+    // Exact match
+    if (NUTRITION_DB[name]) return NUTRITION_DB[name];
+    // Partial match (ingredient contains a known key)
+    for (const key of Object.keys(NUTRITION_DB)) {
+        if (name.includes(key) || key.includes(name)) return NUTRITION_DB[key];
+    }
+    return null;
+}
+
+// Populate ingredient dropdown from NUTRITION_DB
+function populateIngredientDropdown() {
+    const sel = document.getElementById("rf-ing-name");
+    if (!sel) return;
+    const names = Object.keys(NUTRITION_DB).sort();
+    sel.innerHTML = '<option value="">— pick ingredient —</option>' +
+        names.map(n => `<option value="${n}">${n.charAt(0).toUpperCase() + n.slice(1)}</option>`).join('');
+}
+
+let ingredientsList = []; // [{amount, unit, name}]
+let instructionSteps = []; // ["step text", ...]
+
+function addInstructionStep() {
+    const input = document.getElementById("rf-step-input");
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) { alert("Enter a step"); return; }
+    instructionSteps.push(text);
+    renderInstructionSteps();
+    syncInstructionsTextarea();
+    input.value = "";
+    input.focus();
+}
+
+function removeInstructionStep(idx) {
+    instructionSteps.splice(idx, 1);
+    renderInstructionSteps();
+    syncInstructionsTextarea();
+}
+
+function renderInstructionSteps() {
+    const container = document.getElementById("rf-steps-list");
+    if (!container) return;
+    container.innerHTML = instructionSteps.map((step, i) =>
+        `<div class="ingredient-item">
+            <span style="flex:1;"><strong>${i + 1}.</strong> ${step}</span>
+            <span class="ing-edit" onclick="editInstructionStep(${i})" title="Edit">\u270e</span>
+            ${i > 0 ? `<span class="ing-edit" onclick="moveInstructionStep(${i},-1)" title="Move up">\u25b2</span>` : ''}
+            ${i < instructionSteps.length - 1 ? `<span class="ing-edit" onclick="moveInstructionStep(${i},1)" title="Move down">\u25bc</span>` : ''}
+            <span class="ing-remove" onclick="removeInstructionStep(${i})">\u2715</span>
+        </div>`
+    ).join('');
+}
+
+function editInstructionStep(idx) {
+    const container = document.getElementById("rf-steps-list");
+    const items = container.querySelectorAll(".ingredient-item");
+    const item = items[idx];
+    const current = instructionSteps[idx];
+    item.innerHTML = `
+        <input type="text" class="ing-edit-input" value="${current.replace(/"/g, '&quot;')}" style="flex:1; padding:0.35rem; border:1px solid var(--deep); border-radius:4px; font-size:0.82rem; font-family:Inter,sans-serif;">
+        <span class="ing-edit" onclick="saveInstructionEdit(${idx})" title="Save">✓</span>
+        <span class="ing-remove" onclick="renderInstructionSteps()" title="Cancel">✕</span>
+    `;
+    const input = item.querySelector("input");
+    input.focus();
+    input.addEventListener("keydown", e => { if (e.key === "Enter") saveInstructionEdit(idx); if (e.key === "Escape") renderInstructionSteps(); });
+}
+
+function saveInstructionEdit(idx) {
+    const container = document.getElementById("rf-steps-list");
+    const input = container.querySelectorAll(".ingredient-item")[idx].querySelector("input");
+    const val = input.value.trim();
+    if (val) {
+        instructionSteps[idx] = val;
+        renderInstructionSteps();
+        syncInstructionsTextarea();
+    } else {
+        renderInstructionSteps();
+    }
+}
+
+function moveInstructionStep(idx, dir) {
+    const target = idx + dir;
+    if (target < 0 || target >= instructionSteps.length) return;
+    [instructionSteps[idx], instructionSteps[target]] = [instructionSteps[target], instructionSteps[idx]];
+    renderInstructionSteps();
+    syncInstructionsTextarea();
+}
+
+function syncInstructionsTextarea() {
+    const ta = document.getElementById("rf-instructions");
+    if (ta) ta.value = instructionSteps.join("\n");
+}
+
+function addIngredientRow() {
+    const nameEl = document.getElementById("rf-ing-name");
+    const amountEl = document.getElementById("rf-ing-amount");
+    const unitEl = document.getElementById("rf-ing-unit");
+    if (!nameEl || !amountEl || !unitEl) return;
+    const name = nameEl.value;
+    const amount = parseFloat(amountEl.value);
+    const unit = unitEl.value || "g";
+    if (!name || isNaN(amount) || amount <= 0) { alert("Pick ingredient + amount"); return; }
+    ingredientsList.push({ amount, unit, name });
+    renderIngredientsList();
+    syncIngredientsTextarea();
+    // Reset picker for next ingredient
+    nameEl.selectedIndex = 0;
+    amountEl.value = "";
+    unitEl.selectedIndex = 0;
+}
+
+function removeIngredientRow(idx) {
+    ingredientsList.splice(idx, 1);
+    renderIngredientsList();
+    syncIngredientsTextarea();
+}
+
+function renderIngredientsList() {
+    const container = document.getElementById("rf-ingredients-list");
+    container.innerHTML = ingredientsList.map((ing, i) =>
+        `<div class="ingredient-item">
+            <span style="flex:1;">${ing.amount} ${ing.unit} ${ing.name}</span>
+            <span class="ing-edit" onclick="editIngredientRow(${i})" title="Edit">✎</span>
+            ${i > 0 ? `<span class="ing-edit" onclick="moveIngredientRow(${i},-1)" title="Move up">▲</span>` : ''}
+            ${i < ingredientsList.length - 1 ? `<span class="ing-edit" onclick="moveIngredientRow(${i},1)" title="Move down">▼</span>` : ''}
+            <span class="ing-remove" onclick="removeIngredientRow(${i})">✕</span>
+        </div>`
+    ).join('');
+}
+
+function editIngredientRow(idx) {
+    const container = document.getElementById("rf-ingredients-list");
+    const items = container.querySelectorAll(".ingredient-item");
+    const item = items[idx];
+    const ing = ingredientsList[idx];
+    item.innerHTML = `
+        <input type="number" class="ing-edit-input" id="edit-ing-amount" value="${ing.amount}" min="1" step="1" style="width:60px; padding:0.35rem; border:1px solid var(--deep); border-radius:4px; font-size:0.82rem;">
+        <input type="text" class="ing-edit-input" id="edit-ing-unit" value="${ing.unit}" style="width:50px; padding:0.35rem; border:1px solid var(--deep); border-radius:4px; font-size:0.82rem;">
+        <input type="text" class="ing-edit-input" id="edit-ing-name" value="${ing.name.replace(/"/g, '&quot;')}" style="flex:1; padding:0.35rem; border:1px solid var(--deep); border-radius:4px; font-size:0.82rem;">
+        <span class="ing-edit" onclick="saveIngredientEdit(${idx})" title="Save">✓</span>
+        <span class="ing-remove" onclick="renderIngredientsList()" title="Cancel">✕</span>
+    `;
+    item.querySelector("#edit-ing-amount").focus();
+    item.querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("keydown", e => { if (e.key === "Enter") saveIngredientEdit(idx); if (e.key === "Escape") renderIngredientsList(); });
+    });
+}
+
+function saveIngredientEdit(idx) {
+    const container = document.getElementById("rf-ingredients-list");
+    const item = container.querySelectorAll(".ingredient-item")[idx];
+    const amount = parseFloat(item.querySelector("#edit-ing-amount").value);
+    const unit = item.querySelector("#edit-ing-unit").value.trim();
+    const name = item.querySelector("#edit-ing-name").value.trim();
+    if (isNaN(amount) || amount <= 0 || !unit || !name) { renderIngredientsList(); return; }
+    ingredientsList[idx] = { amount, unit, name };
+    renderIngredientsList();
+    syncIngredientsTextarea();
+}
+
+function moveIngredientRow(idx, dir) {
+    const target = idx + dir;
+    if (target < 0 || target >= ingredientsList.length) return;
+    [ingredientsList[idx], ingredientsList[target]] = [ingredientsList[target], ingredientsList[idx]];
+    renderIngredientsList();
+    syncIngredientsTextarea();
+}
+
+function syncIngredientsTextarea() {
+    const ta = document.getElementById("rf-ingredients");
+    if (ta) ta.value = ingredientsList.map(i => `${i.amount} ${i.unit} ${i.name}`).join("\n");
+    try { autoCalcMacros(); } catch(e) { console.error("autoCalcMacros error:", e); }
+}
+
+function autoCalcMacros() {
+    const text = document.getElementById("rf-ingredients").value;
+    const servings = parseInt(document.getElementById("rf-servings").value) || 1;
+    const lines = text.split("\n");
+    let totalP = 0, totalC = 0, totalF = 0, totalFib = 0;
+    let matched = 0, total = 0;
+
+    for (const line of lines) {
+        const parsed = parseIngredientLine(line);
+        if (!parsed) continue;
+        total++;
+        const nutri = lookupNutrition(parsed.name);
+        if (!nutri) continue;
+        matched++;
+        const grams = parsed.amount * (UNIT_TO_GRAMS[parsed.unit] || 1);
+        const factor = grams / 100;
+        totalP += nutri.protein * factor;
+        totalC += nutri.carbs * factor;
+        totalF += nutri.fat * factor;
+        totalFib += nutri.fiber * factor;
+    }
+
+    if (matched > 0) {
+        const perServing = (v) => Math.round((v / servings) * 10) / 10;
+        document.getElementById("rf-protein").value = perServing(totalP);
+        document.getElementById("rf-carbs").value = perServing(totalC);
+        document.getElementById("rf-fat").value = perServing(totalF);
+        document.getElementById("rf-fiber").value = perServing(totalFib);
+        // Calories: protein*4 + carbs*4 + fat*9
+        const cal = Math.round(((totalP * 4) + (totalC * 4) + (totalF * 9)) / servings);
+        document.getElementById("rf-calories").value = cal;
+    }
+
+    // Show match status
+    const indicator = document.getElementById("macro-calc-status");
+    if (indicator) {
+        if (total === 0) indicator.textContent = "";
+        else if (matched === total) indicator.textContent = `✓ ${matched}/${total} ingredients matched`;
+        else indicator.textContent = `⚠ ${matched}/${total} ingredients matched`;
+        indicator.style.color = matched === total ? "var(--green)" : "var(--terracotta)";
+    }
 }
 
 // ═══════════════════════════════════════════════
@@ -2317,9 +2983,13 @@ function renderRecipes(recipes) {
         grid.innerHTML = '<div class="empty-state"><p>' + t("recipes.noMatch") + '</p></div>';
         return;
     }
-    grid.innerHTML = recipes.map(r => `
+    grid.innerHTML = recipes.map(r => {
+        const agg = aggregateRatings[r.id];
+        const starsHtml = agg ? `<div class="recipe-rating">${'★'.repeat(Math.round(agg.avg))}${'☆'.repeat(5-Math.round(agg.avg))} <span style="font-size:0.75rem; color:var(--stone); margin-left:4px;">${agg.avg} (${agg.count})</span></div>` : '';
+        return `
         <div class="recipe-card" onclick="openRecipe(${r.id})">
             <h3>${esc(r.name)}</h3>
+            ${starsHtml}
             <div class="meta">
                 <span>${r.calories} ${t("common.cal")}</span>
                 <span>${r.prep_time_min} ${t("common.min")}</span>
@@ -2338,7 +3008,7 @@ function renderRecipes(recipes) {
                 <div class="macro"><span>${r.macros.fiber_g}g</span>${t("macro.fiberShort")}</div>
             </div>
         </div>
-    `).join("");
+    `}).join("");
 }
 
 function esc(str) {
@@ -2430,25 +3100,47 @@ document.getElementById("modal-overlay").addEventListener("click", (e) => {
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 const MEALS = ["breakfast", "lunch", "dinner", "snack"];
+let lockedDays = JSON.parse(localStorage.getItem("dietyto_locked_days") || "[]");
+let pendingApproval = false;
+let planHasContent = false;
 
 function buildPlanner() {
     const grid = document.getElementById("planner-grid");
-    grid.innerHTML = DAYS.map(day => `
-        <div class="day-card">
+    const hasPartner = !!(householdData && householdData.members.length === 2);
+    grid.innerHTML = DAYS.map(day => {
+        const locked = lockedDays.includes(day);
+        return `
+        <div class="day-card ${locked ? 'day-locked' : ''}" id="daycard-${day}">
             <h4>${t("day." + day)}</h4>
             ${MEALS.map(meal => `
                 <label>${t("meal." + meal)}</label>
-                <select id="plan-${day}-${meal}" data-day="${day}" data-meal="${meal}" onchange="updatePlannerDayTotals()">
+                <select id="plan-${day}-${meal}" data-day="${day}" data-meal="${meal}" onchange="updatePlannerDayTotals()" ${locked ? 'disabled' : ''}>
                     <option value="">${t("planner.pick")}</option>
                 </select>
                 <div class="servings-row">
                     <span class="servings-label">${t("planner.servings")}</span>
-                    <input type="number" id="srv-${day}-${meal}" class="servings-input" value="1" min="0.5" max="5" step="0.5" onchange="updatePlannerDayTotals()">
+                    <input type="number" id="srv-${day}-${meal}" class="servings-input" value="1" min="0.5" max="5" step="0.5" onchange="updatePlannerDayTotals()" ${locked ? 'disabled' : ''}>
+                    ${hasPartner ? `<span class="servings-label" style="margin-left:0.5rem;">${t("household.partnerShort")}</span>
+                    <input type="number" id="psrv-${day}-${meal}" class="servings-input partner-srv" value="1" min="0.5" max="5" step="0.5" onchange="updatePlannerDayTotals()" ${locked ? 'disabled' : ''}>` : ''}
                 </div>
             `).join("")}
-        </div>
-    `).join("");
+            <div class="day-lock-row">
+                ${locked
+                    ? `<button class="btn-day-done locked" onclick="unlockDay('${day}')" title="${t("planner.unlock")}">✓ ${t("planner.done")}</button>`
+                    : `<button class="btn-day-done" onclick="lockDay('${day}')">${t("planner.finishDay")}</button>`
+                }
+            </div>
+        </div>`;
+    }).join("");
     renderAutoGenerateInfo();
+    renderApprovalBar();
+
+    // Show Saturday reminder
+    const reminder = document.getElementById("planning-reminder");
+    if (reminder) {
+        const today = new Date().getDay(); // 0=Sun, 6=Sat
+        reminder.style.display = (today === 6) ? "flex" : "none";
+    }
 }
 
 function populatePlannerDropdowns(recipes) {
@@ -2493,11 +3185,19 @@ function getWeekPlan() {
 // Save meal plan to database
 async function saveMealPlan() {
     const slots = [];
+    const hasPartner = !!(householdData && householdData.members.length === 2);
     DAYS.forEach(day => {
         MEALS.forEach(meal => {
             const val = document.getElementById(`plan-${day}-${meal}`).value;
             const srv = parseFloat(document.getElementById(`srv-${day}-${meal}`).value) || 1;
-            if (val) slots.push({ day, meal, recipe_id: parseInt(val), servings: srv });
+            if (val) {
+                const slot = { day, meal, recipe_id: parseInt(val), servings: srv };
+                if (hasPartner) {
+                    const psrv = parseFloat(document.getElementById(`psrv-${day}-${meal}`)?.value) || 1;
+                    slot.partner_servings = psrv;
+                }
+                slots.push(slot);
+            }
         });
     });
 
@@ -2511,7 +3211,10 @@ async function saveMealPlan() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slots }),
     });
-    if (res) showToast(t("msg.mealPlanSaved"));
+    if (res) {
+        showToast(t("msg.mealPlanSaved"));
+        incrementStreak();
+    }
 }
 
 // Load saved meal plan from database
@@ -2524,8 +3227,17 @@ async function loadMealPlan() {
         if (select) select.value = slot.recipe_id;
         const srvInput = document.getElementById(`srv-${slot.day}-${slot.meal}`);
         if (srvInput) srvInput.value = slot.servings || 1;
+        // Partner servings
+        if (slot.partner_servings != null) {
+            const psrvInput = document.getElementById(`psrv-${slot.day}-${slot.meal}`);
+            if (psrvInput) psrvInput.value = slot.partner_servings;
+        }
     }
+    // Don't trigger approval on initial load
+    const prev = planHasContent;
+    planHasContent = false;
     updatePlannerDayTotals();
+    planHasContent = true;
 }
 
 // ═══════════════════════════════════════════════
@@ -2539,7 +3251,7 @@ function renderAutoGenerateInfo() {
         box.innerHTML = `<span>${t("planner.setupProfile")}</span>`;
         return;
     }
-    box.innerHTML = `
+    let html = `
         <div>${t("planner.yourTargets")}</div>
         <div class="target-values">
             <span>${userProfile.daily_calories} ${t("common.cal")}</span>
@@ -2548,6 +3260,18 @@ function renderAutoGenerateInfo() {
             <span>${t("macro.fatShort")} ${userProfile.fat_target_g}g</span>
         </div>
     `;
+    if (partnerProfile) {
+        html += `
+            <div style="margin-top:0.5rem;">${esc(partnerProfile.username)}'s ${t("planner.yourTargets").toLowerCase()}</div>
+            <div class="target-values" style="opacity:0.75;">
+                <span>${partnerProfile.daily_calories} ${t("common.cal")}</span>
+                <span>${t("macro.proteinShort")} ${partnerProfile.protein_target_g}g</span>
+                <span>${t("macro.carbsShort")} ${partnerProfile.carbs_target_g}g</span>
+                <span>${t("macro.fatShort")} ${partnerProfile.fat_target_g}g</span>
+            </div>
+        `;
+    }
+    box.innerHTML = html;
 }
 
 async function autoGeneratePlan() {
@@ -2574,12 +3298,15 @@ async function autoGeneratePlan() {
     }
 
     // Clear all dropdowns and reset servings
+    planHasContent = false; // suppress approval during fill
     DAYS.forEach(day => {
         MEALS.forEach(meal => {
             const select = document.getElementById(`plan-${day}-${meal}`);
             if (select) select.value = "";
             const srvInput = document.getElementById(`srv-${day}-${meal}`);
             if (srvInput) srvInput.value = 1;
+            const psrvInput = document.getElementById(`psrv-${day}-${meal}`);
+            if (psrvInput) psrvInput.value = 1;
         });
     });
 
@@ -2589,15 +3316,172 @@ async function autoGeneratePlan() {
         if (select) select.value = slot.recipe_id;
         const srvInput = document.getElementById(`srv-${slot.day}-${slot.meal}`);
         if (srvInput) srvInput.value = slot.servings || 1;
+        if (slot.partner_servings != null) {
+            const psrvInput = document.getElementById(`psrv-${slot.day}-${slot.meal}`);
+            if (psrvInput) psrvInput.value = slot.partner_servings;
+        }
     }
 
     updatePlannerDayTotals();
+    planHasContent = true;
+    pendingApproval = true;
+    renderApprovalBar();
     showToast(t("msg.planGenerated"));
+}
+
+function renderApprovalBar() {
+    let bar = document.getElementById("approval-bar");
+    if (!bar) return;
+    if (pendingApproval) {
+        bar.style.display = "flex";
+    } else {
+        bar.style.display = "none";
+    }
+}
+
+async function approvePlan() {
+    pendingApproval = false;
+    renderApprovalBar();
+    await saveMealPlan();
+    await generateGroceryList();
+}
+
+function dismissApproval() {
+    pendingApproval = false;
+    planHasContent = false;
+    renderApprovalBar();
+}
+
+let userRatings = {}; // {recipe_id: rating}
+let aggregateRatings = {}; // {recipe_id: {avg, count}}
+
+async function loadRatings() {
+    if (!authToken) return;
+    const data = await apiCall(API + "/ratings", { headers: { "Authorization": "Bearer " + authToken } });
+    if (data) data.forEach(r => { userRatings[r.recipe_id] = r.rating; });
+    const agg = await apiCall(API + "/ratings/aggregate");
+    if (agg) agg.forEach(r => { aggregateRatings[r.recipe_id] = { avg: r.avg, count: r.count }; });
+}
+
+function lockDay(day) {
+    // Show rating modal for meals of this day
+    const meals = [];
+    for (const meal of MEALS) {
+        const sel = document.getElementById(`plan-${day}-${meal}`);
+        if (sel && sel.value) {
+            const recipe = allRecipes.find(r => r.id === parseInt(sel.value));
+            if (recipe) meals.push({ recipe_id: recipe.id, name: recipe.name, meal });
+        }
+    }
+    if (meals.length === 0) {
+        doLockDay(day);
+        return;
+    }
+    showRatingModal(day, meals);
+}
+
+function showRatingModal(day, meals) {
+    const overlay = document.getElementById("rating-overlay");
+    const body = document.getElementById("rating-modal-body");
+    let html = `<h3 style="margin-bottom:1rem; font-family:'Playfair Display',Georgia,serif;">${t("rating.title")}</h3>`;
+    meals.forEach((m, i) => {
+        const existing = userRatings[m.recipe_id] || 0;
+        html += `<div class="rating-row">
+            <span class="meal-name">${esc(m.name)}</span>
+            <div class="rating-stars" data-recipe="${m.recipe_id}" data-selected="${existing}">
+                ${[1,2,3,4,5].map(s => `<span class="star ${s <= existing ? 'active' : ''}" data-star="${s}" onclick="setRatingStar(this, ${m.recipe_id}, ${s})">★</span>`).join('')}
+            </div>
+        </div>`;
+    });
+    html += `<div id="rating-banner-area"></div>`;
+    html += `<button class="btn" style="margin-top:1rem; width:100%;" onclick="submitRatings('${day}')">${t("rating.submit")}</button>`;
+    body.innerHTML = html;
+    overlay.classList.add("open");
+}
+
+function setRatingStar(el, recipeId, star) {
+    const container = el.parentElement;
+    container.querySelectorAll(".star").forEach((s, i) => {
+        s.classList.toggle("active", i < star);
+    });
+    container.dataset.selected = star;
+    // Show banner if 1-2
+    const bannerArea = document.getElementById("rating-banner-area");
+    const lowRated = document.querySelectorAll('.rating-stars[data-recipe]');
+    let hasLow = false;
+    lowRated.forEach(rs => { if (parseInt(rs.dataset.selected || 0) >= 1 && parseInt(rs.dataset.selected || 0) <= 2) hasLow = true; });
+    bannerArea.innerHTML = hasLow ? `<div class="rating-banner">⚠️ ${t("rating.lowBanner")}</div>` : '';
+}
+
+async function submitRatings(day) {
+    const starContainers = document.querySelectorAll('#rating-modal-body .rating-stars');
+    for (const container of starContainers) {
+        const recipeId = parseInt(container.dataset.recipe);
+        const selected = parseInt(container.dataset.selected || 0);
+        if (selected >= 1) {
+            userRatings[recipeId] = selected;
+            await apiCall(API + "/ratings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + authToken },
+                body: JSON.stringify({ recipe_id: recipeId, rating: selected })
+            });
+        }
+    }
+    // Refresh aggregate ratings
+    const agg = await apiCall(API + "/ratings/aggregate");
+    if (agg) { aggregateRatings = {}; agg.forEach(r => { aggregateRatings[r.recipe_id] = { avg: r.avg, count: r.count }; }); }
+    closeRatingModal();
+    doLockDay(day);
+    renderRecipes(allRecipes);
+}
+
+function closeRatingModal() {
+    document.getElementById("rating-overlay").classList.remove("open");
+}
+
+function doLockDay(day) {
+    if (!lockedDays.includes(day)) {
+        lockedDays.push(day);
+        localStorage.setItem("dietyto_locked_days", JSON.stringify(lockedDays));
+    }
+    const card = document.getElementById(`daycard-${day}`);
+    if (card) {
+        card.classList.add("day-locked");
+        card.querySelectorAll("select, input").forEach(el => el.disabled = true);
+        const btn = card.querySelector(".btn-day-done");
+        if (btn) {
+            btn.classList.add("locked");
+            btn.setAttribute("onclick", `unlockDay('${day}')`);
+            btn.innerHTML = `✓ ${t("planner.done")}`;
+        }
+    }
+}
+
+function unlockDay(day) {
+    lockedDays = lockedDays.filter(d => d !== day);
+    localStorage.setItem("dietyto_locked_days", JSON.stringify(lockedDays));
+    const card = document.getElementById(`daycard-${day}`);
+    if (card) {
+        card.classList.remove("day-locked");
+        card.querySelectorAll("select, input").forEach(el => el.disabled = false);
+        const btn = card.querySelector(".btn-day-done");
+        if (btn) {
+            btn.classList.remove("locked");
+            btn.setAttribute("onclick", `lockDay('${day}')`);
+            btn.innerHTML = t("planner.finishDay");
+        }
+    }
 }
 
 function updatePlannerDayTotals() {
     const container = document.getElementById("planner-day-totals");
     if (!container || !allRecipes.length) return;
+
+    // If plan has content and user makes a change, show approval bar
+    if (planHasContent) {
+        pendingApproval = true;
+        renderApprovalBar();
+    }
 
     const recipeMap = {};
     allRecipes.forEach(r => { recipeMap[r.id] = r; });
@@ -2638,10 +3522,10 @@ function updatePlannerDayTotals() {
         html += `<div class="day-total-card">
             <h5>${t("day." + day)}</h5>
             <div class="day-macros">
-                <span class="dm ${cls(cal, dailyCal)}">${cal} ${t("common.cal")}</span>
-                <span class="dm ${cls(prot, dailyP)}">${Math.round(prot)}g ${t("macro.proteinShort")}</span>
-                <span class="dm ${cls(carbs, dailyC)}">${Math.round(carbs)}g ${t("macro.carbsShort")}</span>
-                <span class="dm ${cls(fat, dailyF)}">${Math.round(fat)}g ${t("macro.fatShort")}</span>
+                <span class="dm ${cls(cal, dailyCal)}">${Math.round(cal)}/${Math.round(dailyCal)} ${t("common.cal")}</span>
+                <span class="dm ${cls(prot, dailyP)}">${Math.round(prot)}/${Math.round(dailyP)}g ${t("macro.proteinShort")}</span>
+                <span class="dm ${cls(carbs, dailyC)}">${Math.round(carbs)}/${Math.round(dailyC)}g ${t("macro.carbsShort")}</span>
+                <span class="dm ${cls(fat, dailyF)}">${Math.round(fat)}/${Math.round(dailyF)}g ${t("macro.fatShort")}</span>
             </div>
         </div>`;
     }
@@ -2654,17 +3538,21 @@ function updatePlannerDayTotals() {
 // ═══════════════════════════════════════════════
 
 async function generateGroceryList() {
-    const plan = getWeekPlan();
-    if (plan.days.length === 0) {
-        showToast(t("msg.pickOneDayFirst"), "error");
-        return;
+    let data;
+    if (householdData) {
+        data = await apiCall(API + "/meal-plan/grocery-list/household");
+    } else {
+        const plan = getWeekPlan();
+        if (plan.days.length === 0) {
+            showToast(t("msg.pickOneDayFirst"), "error");
+            return;
+        }
+        data = await apiCall(API + "/meal-plan/grocery-list", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(plan),
+        });
     }
-
-    const data = await apiCall(API + "/meal-plan/grocery-list", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plan),
-    });
     if (!data) return;
 
     const container = document.getElementById("grocery-container");
@@ -2910,6 +3798,118 @@ async function resetProfile() {
 }
 
 // ═══════════════════════════════════════════════
+// HOUSEHOLD (COUPLES) — create, join, leave
+// ═══════════════════════════════════════════════
+
+let householdData = null;    // { id, invite_code, members: [{id, username}] }
+let partnerProfile = null;   // { username, daily_calories, protein_target_g, ... }
+
+async function loadHousehold() {
+    const section = document.getElementById("household-section");
+    if (!section) return;
+    try {
+        const data = await apiCall(API + "/household");
+        if (data && data.id) {
+            householdData = data;
+            // Also load partner's profile for planner
+            try {
+                partnerProfile = await apiCall(API + "/household/partner-profile");
+            } catch (e) { partnerProfile = null; }
+            renderHousehold();
+            return;
+        }
+    } catch (e) { /* not in household */ }
+    householdData = null;
+    partnerProfile = null;
+    renderHousehold();
+}
+
+function renderHousehold() {
+    const section = document.getElementById("household-section");
+    if (!section) return;
+
+    if (!householdData) {
+        section.innerHTML = `
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
+                <div>
+                    <button class="btn" onclick="createHousehold()" data-i18n="household.create">Create Household</button>
+                </div>
+                <div style="display:flex; gap:0.5rem; align-items:flex-end;">
+                    <div class="form-group" style="margin:0;">
+                        <label data-i18n="household.enterCode">Invite Code</label>
+                        <input type="text" id="join-code-input" maxlength="6" style="width:100px; text-transform:uppercase; text-align:center; font-weight:600; letter-spacing:2px;" placeholder="ABC123">
+                    </div>
+                    <button class="btn-outline" onclick="joinHousehold()" data-i18n="household.join">Join</button>
+                </div>
+            </div>
+        `;
+        applyTranslations();
+        return;
+    }
+
+    const partner = householdData.members.find(m => m.username !== currentUsername);
+    const partnerHtml = partner
+        ? `<span style="font-weight:600;">${esc(partner.username)}</span>`
+        : `<span style="color:var(--stone);" data-i18n="household.waitingPartner">Waiting for partner...</span>`;
+
+    section.innerHTML = `
+        <div style="display:flex; gap:2rem; align-items:center; flex-wrap:wrap;">
+            <div>
+                <div style="font-size:0.8rem; text-transform:uppercase; color:var(--stone); letter-spacing:0.5px; margin-bottom:0.25rem;" data-i18n="household.inviteCode">Invite Code</div>
+                <div style="font-size:1.5rem; font-weight:700; letter-spacing:3px; font-family:monospace;">${householdData.invite_code}
+                    <button class="btn-outline" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;" onclick="navigator.clipboard.writeText('${householdData.invite_code}'); showToast(t('msg.copied'));" data-i18n="grocery.copy">Copy</button>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:0.8rem; text-transform:uppercase; color:var(--stone); letter-spacing:0.5px; margin-bottom:0.25rem;" data-i18n="household.partner">Partner</div>
+                <div>${partnerHtml}</div>
+            </div>
+            <div>
+                <button class="btn-outline" style="color:#c44;" onclick="leaveHousehold()" data-i18n="household.leave">Leave Household</button>
+            </div>
+        </div>
+    `;
+    applyTranslations();
+}
+
+let currentUsername = "";
+
+async function createHousehold() {
+    const data = await apiCall(API + "/household", { method: "POST" });
+    if (data) {
+        householdData = data;
+        renderHousehold();
+        showToast(t("msg.householdCreated"));
+    }
+}
+
+async function joinHousehold() {
+    const code = document.getElementById("join-code-input")?.value?.trim();
+    if (!code) { showToast(t("msg.enterCode"), "error"); return; }
+    const data = await apiCall(API + "/household/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invite_code: code }),
+    });
+    if (data) {
+        householdData = data;
+        try { partnerProfile = await apiCall(API + "/household/partner-profile"); } catch(e) { partnerProfile = null; }
+        renderHousehold();
+        showToast(t("msg.householdJoined"));
+    }
+}
+
+async function leaveHousehold() {
+    if (!confirm(t("msg.leaveHouseholdConfirm"))) return;
+    await apiCall(API + "/household/leave", { method: "DELETE" });
+    householdData = null;
+    partnerProfile = null;
+    renderHousehold();
+    buildPlanner();
+    showToast(t("msg.householdLeft"));
+}
+
+// ═══════════════════════════════════════════════
 // DASHBOARD — nutrition vs targets
 // ═══════════════════════════════════════════════
 
@@ -3014,14 +4014,12 @@ async function renderDashboard() {
             ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info">${fastingInfo[userProfile.intermittent_fasting]}</div>` : ''}
         </div>
         <div class="dashboard-card">
-            <h3>${t("dashboard.weeklyTotals")}</h3>
-            <div class="summary-stats">
-                <div class="stat"><div class="number">${data.total_calories}</div><div class="label">${t("dashboard.totalCalories")}</div></div>
-                <div class="stat"><div class="number">${data.total_macros.protein_g}g</div><div class="label">${t("dashboard.totalProtein")}</div></div>
-                <div class="stat"><div class="number">${data.total_macros.carbs_g}g</div><div class="label">${t("dashboard.totalCarbs")}</div></div>
-                <div class="stat"><div class="number">${data.total_macros.fat_g}g</div><div class="label">${t("dashboard.totalFat")}</div></div>
-                <div class="stat"><div class="number">${data.total_macros.fiber_g}g</div><div class="label">${t("dashboard.totalFiber")}</div></div>
-            </div>
+            <h3>${t("dashboard.weightProgress")}</h3>
+            <div id="weight-progress-container"><span class="spinner"></span></div>
+        </div>
+        <div class="dashboard-card">
+            <h3>${t("dashboard.streak")}</h3>
+            ${buildStreakCard()}
         </div>
         ${data.allergen_warnings.length > 0 ? `
             <div class="dashboard-card">
@@ -3031,6 +4029,210 @@ async function renderDashboard() {
         ` : ''}
         ${buildFastingTimeline(userProfile.intermittent_fasting)}
     `;
+    loadWeightProgress();
+}
+
+// ═══════════════════════════════════════════════
+// WEIGHT PROGRESS + STREAK WIDGETS
+// ═══════════════════════════════════════════════
+
+function buildWeightProgress() {
+    // Legacy fallback — now uses loadWeightProgress() async
+    return '<span class="spinner"></span>';
+}
+
+async function loadWeightProgress() {
+    const container = document.getElementById("weight-progress-container");
+    if (!container || !userProfile) return;
+
+    const history = await apiCall(API + "/profile/weight-history");
+    if (!history) {
+        container.innerHTML = `<p style="color:var(--stone); font-size:0.85rem;">${t("dashboard.weightNoData")}</p>`;
+        return;
+    }
+
+    const current = userProfile.weight_kg;
+    const target = userProfile.target_weight_kg;
+    const rate = userProfile.weight_rate || "maintain";
+
+    if (history.length === 0) {
+        container.innerHTML = `<p style="color:var(--stone); font-size:0.85rem;">${t("dashboard.weightNoData")}</p>`;
+        return;
+    }
+
+    // Progress message
+    let progressMsg = '';
+    if (history.length >= 2) {
+        const first = history[0];
+        const last = history[history.length - 1];
+        const diff = (first.weight_kg - last.weight_kg).toFixed(1);
+        const firstDate = new Date(first.recorded_at);
+        const lastDate = new Date(last.recorded_at);
+        const daysBetween = Math.round((lastDate - firstDate) / (1000 * 60 * 60 * 24));
+
+        let timeStr = '';
+        if (daysBetween < 7) timeStr = `${daysBetween} ${t("dashboard.days")}`;
+        else if (daysBetween < 30) timeStr = `${Math.round(daysBetween / 7)} ${t("dashboard.weeks")}`;
+        else timeStr = `${Math.round(daysBetween / 30)} ${t("dashboard.months")}`;
+
+        if (Math.abs(diff) >= 0.1) {
+            const verb = diff > 0 ? t("dashboard.lost") : t("dashboard.gained");
+            progressMsg = `<div style="background:rgba(122,139,111,0.1); border-radius:6px; padding:0.6rem 1rem; margin-bottom:1rem; font-size:0.88rem; color:var(--ink);">
+                <strong>${verb} ${Math.abs(diff)} kg</strong> ${t("dashboard.inTime", timeStr)}
+            </div>`;
+        }
+    }
+
+    // Current → Target display
+    let targetHtml = '';
+    if (rate !== "maintain" && current !== target) {
+        const diff = Math.abs(target - current);
+        const arrow = target < current ? "↓" : "↑";
+        targetHtml = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; font-size:0.85rem; color:var(--stone);">
+            <span><strong style="color:var(--ink); font-size:1.1rem;">${current} kg</strong> ${t("dashboard.now")}</span>
+            <span>${arrow} ${diff.toFixed(1)} kg ${t("dashboard.toGo")}</span>
+            <span><strong style="color:var(--moss); font-size:1.1rem;">${target} kg</strong> ${t("dashboard.goal")}</span>
+        </div>`;
+    }
+
+    // SVG Chart
+    const chartHtml = buildWeightChart(history, target);
+
+    container.innerHTML = progressMsg + targetHtml + chartHtml;
+}
+
+function buildWeightChart(history, target) {
+    if (history.length < 2) {
+        return `<p style="color:var(--stone); font-size:0.82rem; margin-top:0.5rem;">${t("dashboard.weightOneEntry")}</p>`;
+    }
+
+    const W = 500, H = 160, padL = 45, padR = 15, padT = 15, padB = 30;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+
+    const points = history.map(h => ({
+        date: new Date(h.recorded_at),
+        weight: h.weight_kg
+    }));
+
+    const weights = points.map(p => p.weight);
+    if (target) weights.push(target);
+    let minW = Math.min(...weights) - 0.5;
+    let maxW = Math.max(...weights) + 0.5;
+    if (maxW - minW < 2) { minW -= 1; maxW += 1; }
+
+    const minDate = points[0].date.getTime();
+    const maxDate = points[points.length - 1].date.getTime();
+    const dateRange = maxDate - minDate || 1;
+
+    function x(date) { return padL + ((date.getTime() - minDate) / dateRange) * plotW; }
+    function y(w) { return padT + plotH - ((w - minW) / (maxW - minW)) * plotH; }
+
+    // Line path
+    const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${x(p.date).toFixed(1)} ${y(p.weight).toFixed(1)}`).join(' ');
+
+    // Area path (filled below line)
+    const areaD = pathD + ` L ${x(points[points.length-1].date).toFixed(1)} ${(padT + plotH).toFixed(1)} L ${x(points[0].date).toFixed(1)} ${(padT + plotH).toFixed(1)} Z`;
+
+    // Target line
+    let targetLine = '';
+    if (target && target >= minW && target <= maxW) {
+        const ty = y(target);
+        targetLine = `<line x1="${padL}" y1="${ty.toFixed(1)}" x2="${W - padR}" y2="${ty.toFixed(1)}" stroke="var(--moss)" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+        <text x="${W - padR + 2}" y="${(ty + 4).toFixed(1)}" font-size="10" fill="var(--moss)">${target}</text>`;
+    }
+
+    // Y-axis labels (4 labels)
+    let yLabels = '';
+    const steps = 4;
+    for (let i = 0; i <= steps; i++) {
+        const w = minW + (maxW - minW) * (i / steps);
+        const yPos = y(w);
+        yLabels += `<text x="${padL - 5}" y="${(yPos + 3).toFixed(1)}" font-size="10" fill="var(--stone)" text-anchor="end">${w.toFixed(1)}</text>`;
+        yLabels += `<line x1="${padL}" y1="${yPos.toFixed(1)}" x2="${W - padR}" y2="${yPos.toFixed(1)}" stroke="var(--sand)" stroke-width="0.5"/>`;
+    }
+
+    // X-axis date labels
+    let xLabels = '';
+    const labelCount = Math.min(points.length, 5);
+    const step = Math.max(1, Math.floor((points.length - 1) / (labelCount - 1)));
+    for (let i = 0; i < points.length; i += step) {
+        const p = points[i];
+        const px = x(p.date);
+        const label = `${p.date.getDate()}/${p.date.getMonth() + 1}`;
+        xLabels += `<text x="${px.toFixed(1)}" y="${(H - 5).toFixed(1)}" font-size="9" fill="var(--stone)" text-anchor="middle">${label}</text>`;
+    }
+    // Always show last date
+    if (points.length > 1) {
+        const last = points[points.length - 1];
+        const px = x(last.date);
+        const label = `${last.date.getDate()}/${last.date.getMonth() + 1}`;
+        xLabels += `<text x="${px.toFixed(1)}" y="${(H - 5).toFixed(1)}" font-size="9" fill="var(--stone)" text-anchor="middle">${label}</text>`;
+    }
+
+    // Dots
+    const dots = points.map(p =>
+        `<circle cx="${x(p.date).toFixed(1)}" cy="${y(p.weight).toFixed(1)}" r="3.5" fill="var(--terracotta)" stroke="var(--linen)" stroke-width="1.5"/>`
+    ).join('');
+
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-height:180px; font-family:'Inter',sans-serif;">
+        ${yLabels}
+        ${targetLine}
+        <path d="${areaD}" fill="rgba(176,123,95,0.08)"/>
+        <path d="${pathD}" fill="none" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        ${dots}
+        ${xLabels}
+    </svg>`;
+}
+
+function buildStreakCard() {
+    const streak = getStreak();
+    const flame = streak > 0 ? "🔥" : "○";
+    const msg = streak === 0 ? t("dashboard.streakStart")
+              : streak === 1 ? t("dashboard.streakOne")
+              : t("dashboard.streakMulti", streak);
+    return `
+        <div style="display:flex; align-items:center; gap:1rem;">
+            <span style="font-size:2.2rem;">${flame}</span>
+            <div>
+                <div style="font-size:1.4rem; font-weight:600; color:var(--ink);">${streak} ${streak === 1 ? t("dashboard.week") : t("dashboard.weeks")}</div>
+                <div style="font-size:0.82rem; color:var(--stone);">${msg}</div>
+            </div>
+        </div>
+    `;
+}
+
+function getStreak() {
+    const raw = localStorage.getItem("dietyto_streak");
+    if (!raw) return 0;
+    try {
+        const data = JSON.parse(raw);
+        // Check if the last save was within the past 2 weeks (user is active)
+        const lastSave = new Date(data.lastSave);
+        const now = new Date();
+        const daysDiff = (now - lastSave) / (1000 * 60 * 60 * 24);
+        if (daysDiff > 14) return 0; // streak broken
+        return data.count || 0;
+    } catch { return 0; }
+}
+
+function incrementStreak() {
+    const raw = localStorage.getItem("dietyto_streak");
+    let data = { count: 0, lastSave: null, lastWeek: null };
+    if (raw) { try { data = JSON.parse(raw); } catch {} }
+
+    // Get current ISO week
+    const now = new Date();
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const currentWeek = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+    const weekKey = `${now.getFullYear()}-W${currentWeek}`;
+
+    if (data.lastWeek !== weekKey) {
+        data.count = (data.count || 0) + 1;
+        data.lastWeek = weekKey;
+    }
+    data.lastSave = now.toISOString();
+    localStorage.setItem("dietyto_streak", JSON.stringify(data));
 }
 
 // ═══════════════════════════════════════════════
@@ -3150,7 +4352,7 @@ async function loadAdminUsers() {
                                 <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="adminToggleRole(${u.id}, 'admin')">${t("admin.makeAdmin")}</button>
                                 <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem; border-color:#C0392B; color:#C0392B;" onclick="adminDeleteUser(${u.id}, '${esc(u.username)}')">${t("admin.delete")}</button>
                             ` : `
-                                <span style="color:var(--stone); font-size:0.8rem;">—</span>
+                                <button class="btn-outline" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="adminToggleRole(${u.id}, 'user')">${t("admin.makeUser")}</button>
                             `}
                         </td>
                     </tr>
@@ -3227,8 +4429,18 @@ function showRecipeForm(recipe) {
         document.getElementById("rf-id").value = recipe.id;
         document.getElementById("rf-name").value = recipe.name;
         document.getElementById("rf-description").value = recipe.description;
-        document.getElementById("rf-meal-type").value = recipe.meal_type;
-        document.getElementById("rf-category").value = recipe.category;
+        // Set meal type checkboxes
+        const mealTypes = (recipe.meal_type || "").split(",");
+        document.getElementById("rf-mt-breakfast").checked = mealTypes.includes("breakfast");
+        document.getElementById("rf-mt-lunch").checked = mealTypes.includes("lunch");
+        document.getElementById("rf-mt-dinner").checked = mealTypes.includes("dinner");
+        document.getElementById("rf-mt-snack").checked = mealTypes.includes("snack");
+        // Set health benefits checkboxes
+        const hb = recipe.health_benefits || [];
+        document.getElementById("rf-hb-anti-inflammatory").checked = hb.includes("anti-inflammatory");
+        document.getElementById("rf-hb-antioxidant-rich").checked = hb.includes("antioxidant-rich");
+        document.getElementById("rf-hb-heart-healthy").checked = hb.includes("heart-healthy");
+        document.getElementById("rf-hb-gut-friendly").checked = hb.includes("gut-friendly");
         document.getElementById("rf-servings").value = recipe.servings;
         document.getElementById("rf-prep").value = recipe.prep_time_min;
         document.getElementById("rf-calories").value = recipe.calories;
@@ -3238,18 +4450,31 @@ function showRecipeForm(recipe) {
         document.getElementById("rf-fiber").value = recipe.macros.fiber_g;
         document.getElementById("rf-ingredients").value = recipe.ingredients.map(i => i.amount + " " + i.unit + " " + i.name).join("\n");
         document.getElementById("rf-instructions").value = recipe.instructions.join("\n");
-        document.getElementById("rf-benefits").value = recipe.health_benefits.join("\n");
+        // Populate instruction steps from existing recipe
+        instructionSteps = [...recipe.instructions];
+        renderInstructionSteps();
         document.getElementById("rf-allergen-fish").checked = recipe.allergens.includes("fish");
         document.getElementById("rf-allergen-meat").checked = recipe.allergens.includes("meat");
         document.getElementById("rf-allergen-gluten").checked = recipe.allergens.includes("gluten");
         document.getElementById("rf-allergen-lactose").checked = recipe.allergens.includes("lactose");
+        // Populate ingredient list from existing recipe
+        ingredientsList = recipe.ingredients.map(i => ({ amount: i.amount, unit: i.unit, name: i.name }));
+        renderIngredientsList();
     } else {
         document.getElementById("recipe-form-title").textContent = t("admin.addRecipeTitle");
         document.getElementById("rf-id").value = "";
         document.getElementById("rf-name").value = "";
         document.getElementById("rf-description").value = "";
-        document.getElementById("rf-meal-type").value = "breakfast";
-        document.getElementById("rf-category").value = "anti-inflammatory";
+        // Reset meal type checkboxes
+        document.getElementById("rf-mt-breakfast").checked = true;
+        document.getElementById("rf-mt-lunch").checked = false;
+        document.getElementById("rf-mt-dinner").checked = false;
+        document.getElementById("rf-mt-snack").checked = false;
+        // Reset health benefits checkboxes
+        document.getElementById("rf-hb-anti-inflammatory").checked = false;
+        document.getElementById("rf-hb-antioxidant-rich").checked = false;
+        document.getElementById("rf-hb-heart-healthy").checked = false;
+        document.getElementById("rf-hb-gut-friendly").checked = false;
         document.getElementById("rf-servings").value = 2;
         document.getElementById("rf-prep").value = 15;
         document.getElementById("rf-calories").value = 300;
@@ -3259,27 +4484,22 @@ function showRecipeForm(recipe) {
         document.getElementById("rf-fiber").value = 5;
         document.getElementById("rf-ingredients").value = "";
         document.getElementById("rf-instructions").value = "";
-        document.getElementById("rf-benefits").value = "";
+        // Clear instruction steps
+        instructionSteps = [];
+        renderInstructionSteps();
         document.getElementById("rf-allergen-fish").checked = false;
         document.getElementById("rf-allergen-meat").checked = false;
         document.getElementById("rf-allergen-gluten").checked = false;
         document.getElementById("rf-allergen-lactose").checked = false;
+        // Clear ingredient list
+        ingredientsList = [];
+        renderIngredientsList();
     }
     card.scrollIntoView({ behavior: "smooth" });
 }
 
 function hideRecipeForm() {
     document.getElementById("recipe-form-card").style.display = "none";
-}
-
-function parseIngredientLine(line) {
-    const parts = line.trim().split(/\s+/);
-    if (parts.length < 3) return null;
-    const amount = parseFloat(parts[0]);
-    if (isNaN(amount)) return null;
-    const unit = parts[1];
-    const name = parts.slice(2).join(" ");
-    return { amount, unit, name };
 }
 
 async function saveRecipeForm() {
@@ -3293,8 +4513,11 @@ async function saveRecipeForm() {
         .split("\n").map(parseIngredientLine).filter(Boolean);
     const instructions = document.getElementById("rf-instructions").value
         .split("\n").map(s => s.trim()).filter(Boolean);
-    const health_benefits = document.getElementById("rf-benefits").value
-        .split("\n").map(s => s.trim()).filter(Boolean);
+    const health_benefits = [];
+    if (document.getElementById("rf-hb-anti-inflammatory").checked) health_benefits.push("anti-inflammatory");
+    if (document.getElementById("rf-hb-antioxidant-rich").checked) health_benefits.push("antioxidant-rich");
+    if (document.getElementById("rf-hb-heart-healthy").checked) health_benefits.push("heart-healthy");
+    if (document.getElementById("rf-hb-gut-friendly").checked) health_benefits.push("gut-friendly");
 
     if (!document.getElementById("rf-name").value.trim()) {
         showToast(t("msg.recipeNameRequired"), "error"); return;
@@ -3303,11 +4526,21 @@ async function saveRecipeForm() {
         showToast(t("msg.addIngredient"), "error"); return;
     }
 
+    // Collect meal types from checkboxes
+    const mealTypes = [];
+    if (document.getElementById("rf-mt-breakfast").checked) mealTypes.push("breakfast");
+    if (document.getElementById("rf-mt-lunch").checked) mealTypes.push("lunch");
+    if (document.getElementById("rf-mt-dinner").checked) mealTypes.push("dinner");
+    if (document.getElementById("rf-mt-snack").checked) mealTypes.push("snack");
+    if (mealTypes.length === 0) {
+        showToast("Select at least one meal type", "error"); return;
+    }
+
     const recipe = {
         name: document.getElementById("rf-name").value.trim(),
         description: document.getElementById("rf-description").value.trim(),
-        meal_type: document.getElementById("rf-meal-type").value,
-        category: document.getElementById("rf-category").value,
+        meal_type: mealTypes.join(","),
+        category: health_benefits.length > 0 ? health_benefits[0] : "general",
         servings: parseInt(document.getElementById("rf-servings").value),
         prep_time_min: parseInt(document.getElementById("rf-prep").value),
         calories: parseInt(document.getElementById("rf-calories").value),
@@ -3366,8 +4599,11 @@ async function adminDeleteRecipe(recipeId, name) {
 
 async function initApp() {
     applyTranslations();
+    populateIngredientDropdown();
+    await loadHousehold();
     buildPlanner();
     await loadProfile();
+    await loadRatings();
     await fetchRecipes();
     await loadMealPlan();
     if (currentUserRole === "admin") {
