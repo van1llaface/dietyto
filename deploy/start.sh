@@ -9,5 +9,8 @@ fi
 # Symlink so the app reads from the persistent volume
 ln -sf /data/longevity.db /app/backend/longevity.db
 
+# Run migrations (adds any new columns/tables safely)
+cd /app/backend && DB_PATH=/data/longevity.db python migrate.py
+
 # Start supervisor (nginx + uvicorn)
 exec supervisord -c /etc/supervisor/supervisord.conf
