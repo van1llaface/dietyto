@@ -21,6 +21,13 @@ RUN chmod +x /app/start.sh
 
 # Persistent DB lives here (mount a volume to /data)
 RUN mkdir -p /data
+
+# Run as non-root user
+RUN useradd -r -s /bin/false appuser && \
+    chown -R appuser:appuser /data /app /usr/share/nginx/html && \
+    chown -R appuser:appuser /var/log/nginx /var/lib/nginx /run
+USER appuser
+
 VOLUME ["/data"]
 
 EXPOSE 8080
