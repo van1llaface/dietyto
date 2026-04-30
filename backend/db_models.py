@@ -173,6 +173,9 @@ class RecipeDB(Base):
     health_benefits_json: Mapped[str] = mapped_column(Text, default="[]")
     allergens_json: Mapped[str] = mapped_column(Text, default="[]")
 
+    author: Mapped[str] = mapped_column(String, default="")
+    image_url: Mapped[str] = mapped_column(String, default="")
+
     # Relationship: one recipe has many ingredients
     # This tells SQLAlchemy: "when I load a recipe, also load its ingredients"
     ingredients = relationship("IngredientDB", back_populates="recipe", cascade="all, delete-orphan")
@@ -216,6 +219,8 @@ class RecipeDB(Base):
             "nutrients": self.nutrients,
             "health_benefits": self.health_benefits,
             "allergens": self.allergens,
+            "author": self.author,
+            "image_url": self.image_url,
         }
 
 

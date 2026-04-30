@@ -996,6 +996,11 @@
 </head>
 <body>
 
+<!-- ════════════ LOADING SCREEN ════════════ -->
+<div id="loading-screen" style="display:flex; align-items:center; justify-content:center; height:100vh; font-size:1.2rem; color:var(--stone);">
+    <span class="spinner"></span>&nbsp; Loading...
+</div>
+
 <!-- ════════════ AUTH SCREENS (shown when not logged in) ════════════ -->
 <div id="auth-section" class="auth-wrapper auth-hidden">
 
@@ -1176,10 +1181,10 @@
 </header>
 
 <nav class="tabs">
-    <div class="tab active" data-page="recipes" data-i18n="nav.recipes">Recipes</div>
+    <div class="tab active" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</div>
     <div class="tab" data-page="planner" data-i18n="nav.planner">Meal Planner</div>
     <div class="tab" data-page="grocery" data-i18n="nav.grocery">Grocery List</div>
-    <div class="tab" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</div>
+    <div class="tab" data-page="recipes" data-i18n="nav.recipes">Recipes</div>
     <div class="tab" data-page="profile" data-i18n="nav.profile">My Profile</div>
     <div class="tab admin-only" data-page="admin" style="display:none;" data-i18n="nav.admin">Admin</div>
 </nav>
@@ -1188,7 +1193,7 @@
 
 <main>
     <!-- ════════════ RECIPES PAGE ════════════ -->
-    <div class="page active" id="page-recipes">
+    <div class="page" id="page-recipes">
         <div class="filters">
             <select id="filter-meal">
                 <option value="" data-i18n="filter.allMeals">All meals</option>
@@ -1264,7 +1269,7 @@
     </div>
 
     <!-- ════════════ DASHBOARD PAGE ════════════ -->
-    <div class="page" id="page-dashboard">
+    <div class="page active" id="page-dashboard">
         <div id="dashboard-content">
             <div class="empty-state">
                 <p data-i18n="dashboard.empty">Set up your profile first, then plan your week to see your nutrition dashboard.</p>
@@ -1486,13 +1491,14 @@
                     </select>
                     <input type="number" id="rf-ing-amount" placeholder="e.g. 200" min="1" step="1" style="flex:0.7; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
                     <select id="rf-ing-unit" style="flex:0.6; padding:0.45rem; border:1px solid var(--sand); border-radius:4px; font-size:0.85rem;">
-                        <option value="g">g</option>
-                        <option value="ml">ml</option>
-                        <option value="tbsp">tbsp</option>
-                        <option value="tsp">tsp</option>
-                        <option value="cup">cup</option>
-                        <option value="pcs">pcs</option>
-                        <option value="handful">handful</option>
+                        <option value="g" data-i18n="unit.g">g</option>
+                        <option value="ml" data-i18n="unit.ml">ml</option>
+                        <option value="tbsp" data-i18n="unit.tbsp">tbsp</option>
+                        <option value="tsp" data-i18n="unit.tsp">tsp</option>
+                        <option value="cup" data-i18n="unit.cup">cup</option>
+                        <option value="pcs" data-i18n="unit.pcsLabel">pcs</option>
+                        <option value="can" data-i18n="unit.can">can</option>
+                        <option value="handful" data-i18n="unit.handful">handful</option>
                     </select>
                     <button type="button" class="btn" style="padding:0.45rem 0.8rem; font-size:0.8rem;" onclick="addIngredientRow()">+</button>
                 </div>
@@ -1510,6 +1516,15 @@
                 <textarea id="rf-instructions" rows="0" style="display:none;"></textarea>
             </div>
 
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.author">Author</label>
+                <input type="text" id="rf-author" placeholder="e.g. Elizabeth Rider" style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label data-i18n="recipe.imageUrl">Image URL</label>
+                <input type="url" id="rf-image-url" placeholder="https://..." style="width:100%; padding:0.55rem; border:1px solid var(--sand); border-radius:4px; font-family:'Inter',sans-serif; font-size:0.9rem;">
+            </div>
 
             <div class="btn-row">
                 <button class="btn" onclick="saveRecipeForm()" data-i18n="recipe.save">Save Recipe</button>
@@ -1650,7 +1665,11 @@ const translations = {
     // Units
     "unit.handful": "handful",
     "unit.handfuls": "handfuls",
+    "unit.can": "can",
+    "unit.cans": "cans",
+    "unit.cup": "cup",
     "unit.pcs": "",
+    "unit.pcsLabel": "pcs",
     "unit.tbsp": "tbsp",
     "unit.tsp": "tsp",
     "unit.g": "g",
@@ -1677,6 +1696,8 @@ const translations = {
     "recipe.instructionsLabel": "Instructions (one step per line)",
     "recipe.benefitsLabel": "Health Benefits (one per line)",
     "recipe.allergens": "Allergens",
+    "recipe.author": "Author",
+    "recipe.imageUrl": "Image URL",
     "recipe.save": "Save Recipe",
 
     // Macros
@@ -1794,6 +1815,12 @@ const translations = {
     "dashboard.months": "months",
     "dashboard.now": "now",
     "dashboard.goal": "goal",
+    "dashboard.goalMaintain": "Maintaining weight",
+    "dashboard.goalLose": "Lose {0} kg",
+    "dashboard.goalGain": "Gain {0} kg",
+    "dashboard.weeklyMaintain": "This week: maintain your current weight",
+    "dashboard.weeklyLose": "This week: lose {0} kg",
+    "dashboard.weeklyGain": "This week: gain {0} kg",
 
     // Profile
     "profile.title": "My Profile",
@@ -2015,7 +2042,11 @@ const translations = {
     // Units
     "unit.handful": "sauja",
     "unit.handfuls": "saujos",
+    "unit.can": "skardinė",
+    "unit.cans": "skardinės",
+    "unit.cup": "puodelis",
     "unit.pcs": "",
+    "unit.pcsLabel": "vnt",
     "unit.tbsp": "v.š.",
     "unit.tsp": "a.š.",
     "unit.g": "g",
@@ -2042,6 +2073,8 @@ const translations = {
     "recipe.instructionsLabel": "Gaminimo eiga (po vieną žingsnį eilutėje)",
     "recipe.benefitsLabel": "Nauda sveikatai (po vieną eilutėje)",
     "recipe.allergens": "Alergenai",
+    "recipe.author": "Autorius",
+    "recipe.imageUrl": "Nuotraukos URL",
     "recipe.save": "Išsaugoti receptą",
 
     // Macros
@@ -2131,6 +2164,12 @@ const translations = {
     "dashboard.planMealsHint": "Suplanuokite patiekalus, kad palygintumėte su savo normomis.",
     "dashboard.fastingActive": "Protarpinis badavimas aktyvus",
     "dashboard.dailyAvg": "Dienos vidurkis vs Normos ({0} d. suplanuota)",
+    "dashboard.goalMaintain": "Palaikyti svorį",
+    "dashboard.goalLose": "Numesti {0} kg",
+    "dashboard.goalGain": "Priaugti {0} kg",
+    "dashboard.weeklyMaintain": "Šią savaitę: palaikyti esamą svorį",
+    "dashboard.weeklyLose": "Šią savaitę: numesti {0} kg",
+    "dashboard.weeklyGain": "Šią savaitę: priaugti {0} kg",
     "dashboard.weeklyTotals": "Savaitės sumos",
     "dashboard.allergenWarnings": "Alergenų įspėjimai",
     "dashboard.calories": "Kalorijos",
@@ -2325,7 +2364,7 @@ function showToast(message, type = "success") {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-async function apiCall(url, options = {}) {
+async function apiCall(url, options = {}, { silent = false } = {}) {
     try {
         if (!options.headers) options.headers = {};
         if (authToken) options.headers["Authorization"] = "Bearer " + authToken;
@@ -2343,10 +2382,12 @@ async function apiCall(url, options = {}) {
         }
         return await res.json();
     } catch (err) {
-        if (err.message.includes("Failed to fetch")) {
-            showToast(t("msg.serverError"), "error");
-        } else {
-            showToast(err.message, "error");
+        if (!silent) {
+            if (err.message.includes("Failed to fetch")) {
+                showToast(t("msg.serverError"), "error");
+            } else {
+                showToast(err.message, "error");
+            }
         }
         return null;
     }
@@ -2474,7 +2515,9 @@ async function doLogin() {
         localStorage.setItem("dietyto_token", data.token);
         localStorage.setItem("dietyto_username", data.username);
         showAdminTab(currentUserRole === "admin");
-        enterApp(data.username);
+        document.getElementById("loading-screen").style.display = "flex";
+        document.getElementById("auth-section").classList.add("auth-hidden");
+        await enterApp(data.username);
     } catch {
         showAuthError("login", t("msg.cannotReachServer"));
     }
@@ -2548,12 +2591,13 @@ function doLogout() {
     showAuth("login");
 }
 
-function enterApp(username) {
+async function enterApp(username) {
     document.getElementById("auth-section").classList.add("auth-hidden");
-    document.getElementById("app-section").classList.remove("auth-hidden");
     document.getElementById("header-user").textContent = username;
     currentUsername = username;
-    initApp();
+    await initApp();
+    document.getElementById("loading-screen").style.display = "none";
+    document.getElementById("app-section").classList.remove("auth-hidden");
 }
 
 // ═══════════════════════════════════════════════
@@ -2566,6 +2610,7 @@ document.querySelectorAll(".tab").forEach(tab => {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         tab.classList.add("active");
         document.getElementById("page-" + tab.dataset.page).classList.add("active");
+        localStorage.setItem("dietyto_tab", tab.dataset.page);
 
         if (tab.dataset.page === "dashboard") renderDashboard();
         if (tab.dataset.page === "admin" && currentUserRole === "admin") {
@@ -2580,6 +2625,7 @@ function switchTab(name) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.querySelector('[data-page="' + name + '"]').classList.add("active");
     document.getElementById("page-" + name).classList.add("active");
+    localStorage.setItem("dietyto_tab", name);
 }
 
 // ═══════════════════════════════════════════════
@@ -2693,6 +2739,27 @@ const NUTRITION_DB = {
     "hummus": { protein: 8, carbs: 14, fat: 10, fiber: 4 },
     "tahini": { protein: 17, carbs: 12, fat: 54, fiber: 9 },
     "coconut milk": { protein: 2.3, carbs: 6, fat: 24, fiber: 0 },
+    "miso paste": { protein: 12, carbs: 26, fat: 6, fiber: 5 },
+    "chicken broth": { protein: 1.5, carbs: 0.5, fat: 0.2, fiber: 0 },
+    // Additional vegetables
+    "leek": { protein: 1.5, carbs: 14, fat: 0.3, fiber: 1.8 },
+    "celery": { protein: 0.7, carbs: 3, fat: 0.2, fiber: 1.6 },
+    "ginger": { protein: 1.8, carbs: 18, fat: 0.8, fiber: 2 },
+    "butternut squash": { protein: 1, carbs: 12, fat: 0.1, fiber: 2 },
+    "green beans": { protein: 1.8, carbs: 7, fat: 0.1, fiber: 3.4 },
+    "parsnip": { protein: 1.2, carbs: 18, fat: 0.3, fiber: 4.9 },
+    // Additional fruits
+    "lime": { protein: 0.7, carbs: 11, fat: 0.2, fiber: 2.8 },
+    "pineapple": { protein: 0.5, carbs: 13, fat: 0.1, fiber: 1.4 },
+    // Additional nuts & seeds
+    "pistachios": { protein: 20, carbs: 28, fat: 45, fiber: 10 },
+    "sesame seeds": { protein: 18, carbs: 23, fat: 50, fiber: 12 },
+    // Additional spices
+    "turmeric": { protein: 8, carbs: 65, fat: 10, fiber: 21 },
+    "cinnamon": { protein: 4, carbs: 81, fat: 1.2, fiber: 53 },
+    "dill": { protein: 3.5, carbs: 7, fat: 1.1, fiber: 2.1 },
+    // Additional legumes
+    "white beans": { protein: 9, carbs: 23, fat: 0.5, fiber: 7 },
 };
 
 // Unit conversions to grams
@@ -2710,6 +2777,7 @@ const UNIT_TO_GRAMS = {
     "handful": 30, "handfuls": 30,
     "clove": 5, "cloves": 5,
     "slice": 30, "slices": 30,
+    "can": 400, "cans": 400,
 };
 
 function parseIngredientLine(line) {
@@ -2739,13 +2807,47 @@ function lookupNutrition(name) {
     return null;
 }
 
-// Populate ingredient dropdown from NUTRITION_DB
+// Populate ingredient dropdown from NUTRITION_DB grouped by category
 function populateIngredientDropdown() {
     const sel = document.getElementById("rf-ing-name");
     if (!sel) return;
-    const names = Object.keys(NUTRITION_DB).sort();
-    sel.innerHTML = '<option value="">— pick ingredient —</option>' +
-        names.map(n => `<option value="${n}">${n.charAt(0).toUpperCase() + n.slice(1)}</option>`).join('');
+
+    const INGREDIENT_GROUPS = {
+        "🥩 Meat": ["chicken breast", "chicken thigh", "chicken", "turkey breast", "turkey", "beef", "beef steak", "ground beef", "pork", "pork loin", "lamb"],
+        "🐟 Fish & Seafood": ["salmon", "salmon fillet", "tuna", "cod", "shrimp", "prawns"],
+        "🥚 Eggs & Plant Protein": ["eggs", "egg", "tofu", "tempeh"],
+        "🧀 Dairy": ["milk", "whole milk", "greek yogurt", "yogurt", "cottage cheese", "cheddar", "cheese", "mozzarella", "parmesan", "feta", "cream cheese", "butter"],
+        "🌾 Grains & Starches": ["rice", "brown rice", "pasta", "bread", "oats", "oatmeal", "quinoa", "potato", "sweet potato", "couscous", "tortilla"],
+        "🫘 Legumes": ["lentils", "chickpeas", "black beans", "kidney beans", "beans", "edamame", "white beans"],
+        "🥬 Vegetables": ["broccoli", "spinach", "kale", "carrot", "carrots", "tomato", "tomatoes", "onion", "garlic", "bell pepper", "pepper", "zucchini", "cucumber", "lettuce", "cabbage", "cauliflower", "mushrooms", "asparagus", "avocado", "peas", "corn", "eggplant", "leek", "celery", "butternut squash", "green beans", "parsnip", "ginger"],
+        "🍎 Fruits": ["banana", "apple", "berries", "blueberries", "strawberries", "orange", "lemon", "lime", "mango", "pineapple"],
+        "🥜 Nuts & Seeds": ["almonds", "walnuts", "peanuts", "peanut butter", "cashews", "pistachios", "chia seeds", "flax seeds", "sunflower seeds", "pumpkin seeds", "sesame seeds"],
+        "🫒 Oils & Fats": ["olive oil", "coconut oil", "vegetable oil"],
+        "🌿 Herbs & Spices": ["turmeric", "cinnamon", "dill", "miso paste"],
+        "🍯 Other": ["honey", "maple syrup", "soy sauce", "hummus", "tahini", "coconut milk", "chicken broth"]
+    };
+
+    let html = '<option value="">— pick ingredient —</option>';
+    for (const [group, items] of Object.entries(INGREDIENT_GROUPS)) {
+        const available = items.filter(i => NUTRITION_DB[i]);
+        if (available.length === 0) continue;
+        html += `<optgroup label="${group}">`;
+        for (const name of available) {
+            html += `<option value="${name}">${name.charAt(0).toUpperCase() + name.slice(1)}</option>`;
+        }
+        html += `</optgroup>`;
+    }
+    // Add any NUTRITION_DB entries not yet categorized
+    const allCategorized = Object.values(INGREDIENT_GROUPS).flat();
+    const uncategorized = Object.keys(NUTRITION_DB).filter(k => !allCategorized.includes(k)).sort();
+    if (uncategorized.length > 0) {
+        html += `<optgroup label="📦 Other">`;
+        for (const name of uncategorized) {
+            html += `<option value="${name}">${name.charAt(0).toUpperCase() + name.slice(1)}</option>`;
+        }
+        html += `</optgroup>`;
+    }
+    sel.innerHTML = html;
 }
 
 let ingredientsList = []; // [{amount, unit, name}]
@@ -2983,8 +3085,10 @@ function renderRecipes(recipes) {
     grid.innerHTML = recipes.map(r => {
         const agg = aggregateRatings[r.id];
         const starsHtml = agg ? `<div class="recipe-rating">${'★'.repeat(Math.round(agg.avg))}${'☆'.repeat(5-Math.round(agg.avg))} <span style="font-size:0.75rem; color:var(--stone); margin-left:4px;">${agg.avg} (${agg.count})</span></div>` : '';
+        const imgHtml = r.image_url ? `<img src="${esc(r.image_url)}" alt="${esc(r.name)}" style="width:100%; height:160px; object-fit:cover; border-radius:6px; margin-bottom:0.5rem;">` : '';
         return `
         <div class="recipe-card" onclick="openRecipe(${r.id})">
+            ${imgHtml}
             <h3>${esc(r.name)}</h3>
             ${starsHtml}
             <div class="meta">
@@ -3027,6 +3131,7 @@ function formatAmount(n) {
 function formatUnit(unit, amount) {
     if (unit === "pcs") return "";
     const key = (unit === "handful" && amount > 1) ? "unit.handfuls"
+              : (unit === "can" && amount > 1) ? "unit.cans"
               : "unit." + unit;
     const translated = t(key);
     return translated !== key ? translated : unit;
@@ -3047,6 +3152,7 @@ async function openRecipe(id) {
     if (!r) return;
 
     document.getElementById("modal-body").innerHTML = `
+        ${r.image_url ? `<img src="${esc(r.image_url)}" alt="${esc(r.name)}" style="width:100%; max-height:300px; object-fit:cover; border-radius:8px; margin-bottom:1rem;">` : ''}
         <h2>${esc(r.name)}</h2>
         <p style="color:var(--stone); margin-bottom:0.5rem;">${esc(r.description)}</p>
         <div class="meta" style="display:flex; gap:1rem; font-size:0.9rem; color:var(--stone); margin-bottom:1rem;">
@@ -3080,6 +3186,7 @@ async function openRecipe(id) {
 
         <h4>${t("recipe.healthBenefits")}</h4>
         <div>${r.health_benefits.map(b => `<span class="tag tag-category">${esc(b)}</span>`).join("")}</div>
+        ${r.author ? `<p style="margin-top:1rem; font-size:0.85rem; color:var(--stone);"><strong>${t("recipe.author")}:</strong> ${esc(r.author)}</p>` : ''}
     `;
     document.getElementById("modal-overlay").classList.add("open");
 }
@@ -3294,9 +3401,10 @@ async function autoGeneratePlan() {
         return;
     }
 
-    // Clear all dropdowns and reset servings
+    // Clear only unlocked days and reset servings
     planHasContent = false; // suppress approval during fill
     DAYS.forEach(day => {
+        if (lockedDays.includes(day)) return; // skip locked days
         MEALS.forEach(meal => {
             const select = document.getElementById(`plan-${day}-${meal}`);
             if (select) select.value = "";
@@ -3307,8 +3415,9 @@ async function autoGeneratePlan() {
         });
     });
 
-    // Fill in generated values with servings
+    // Fill in generated values only for unlocked days
     for (const slot of data.slots) {
+        if (lockedDays.includes(slot.day)) continue; // preserve locked days
         const select = document.getElementById(`plan-${slot.day}-${slot.meal}`);
         if (select) select.value = slot.recipe_id;
         const srvInput = document.getElementById(`srv-${slot.day}-${slot.meal}`);
@@ -3552,6 +3661,68 @@ async function generateGroceryList() {
     }
     if (!data) return;
 
+    // Group items by category
+    const GROCERY_CATEGORIES = {
+        "condiments": ["soy sauce", "vinegar", "mustard", "ketchup", "mayonnaise", "hot sauce", "honey", "maple syrup", "miso", "worcestershire", "fish sauce", "sriracha", "pesto", "broth", "stock"],
+        "vegetables": ["tomato", "onion", "garlic", "pepper", "carrot", "potato", "broccoli", "spinach", "kale", "zucchini", "cucumber", "lettuce", "cabbage", "cauliflower", "celery", "mushroom", "asparagus", "eggplant", "beet", "radish", "leek", "sweet potato", "corn", "avocado", "pumpkin", "squash", "butternut", "parsnip", "green beans"],
+        "meat": ["chicken breast", "chicken thigh", "chicken", "beef", "pork", "lamb", "turkey", "duck", "veal", "steak", "ground beef", "bacon", "ham", "sausage", "prosciutto"],
+        "fish": ["salmon", "tuna", "cod", "shrimp", "prawns", "sardine", "mackerel", "trout", "sea bass", "anchovies", "fish"],
+        "dairy": ["milk", "cheese", "yogurt", "yoghurt", "butter", "cream", "mozzarella", "parmesan", "feta", "ricotta", "cheddar", "kefir", "cottage cheese", "sour cream", "greek yogurt"],
+        "eggs": ["egg", "eggs"],
+        "grains": ["rice", "pasta", "bread", "oats", "quinoa", "couscous", "flour", "noodles", "tortilla", "wrap", "barley", "bulgur", "buckwheat", "millet"],
+        "legumes": ["lentils", "chickpeas", "black beans", "kidney beans", "white beans", "beans", "peas", "tofu", "tempeh", "edamame", "hummus"],
+        "fruits": ["apple", "banana", "orange", "lemon", "lime", "berry", "berries", "blueberry", "strawberry", "raspberry", "mango", "pineapple", "grape", "peach", "pear", "plum", "fig", "date", "pomegranate", "watermelon", "kiwi", "cherry"],
+        "nuts & seeds": ["almond", "walnut", "cashew", "pistachio", "pecan", "hazelnut", "peanut", "nut", "nuts", "seed", "seeds", "chia", "flax", "sesame", "sunflower", "pumpkin seeds", "pine nuts", "tahini"],
+        "oils & fats": ["olive oil", "coconut oil", "oil", "avocado oil", "sesame oil"],
+        "herbs & spices": ["basil", "oregano", "thyme", "rosemary", "parsley", "cilantro", "dill", "mint", "cumin", "turmeric", "paprika", "cinnamon", "ginger", "nutmeg", "coriander", "chili", "bay leaf", "sage", "pepper", "salt", "curry", "cardamom", "cloves", "vanilla"],
+        "other": []
+    };
+
+    function categorizeItem(name) {
+        const lower = name.toLowerCase();
+        for (const [category, keywords] of Object.entries(GROCERY_CATEGORIES)) {
+            if (category === "other") continue;
+            for (const kw of keywords) {
+                if (lower.includes(kw)) return category;
+            }
+        }
+        return "other";
+    }
+
+    const grouped = {};
+    for (const item of data.items) {
+        const cat = categorizeItem(item.name);
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(item);
+    }
+
+    const categoryIcons = {
+        "meat": "🥩", "fish": "🐟", "dairy": "🧀", "eggs": "🥚",
+        "grains": "🌾", "legumes": "🫘", "vegetables": "🥬", "fruits": "🍎",
+        "nuts & seeds": "🥜", "oils & fats": "🫒", "herbs & spices": "🌿",
+        "condiments": "🍯", "other": "📦"
+    };
+
+    const categoryOrder = ["meat", "fish", "dairy", "eggs", "grains", "legumes", "vegetables", "fruits", "nuts & seeds", "oils & fats", "herbs & spices", "condiments", "other"];
+
+    let groupedHtml = '';
+    for (const cat of categoryOrder) {
+        if (!grouped[cat] || grouped[cat].length === 0) continue;
+        const icon = categoryIcons[cat] || "📦";
+        const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+        groupedHtml += `
+            <div class="grocery-category" style="margin-bottom:1.2rem;">
+                <h4 style="margin:0 0 0.4rem 0; font-size:0.9rem; color:var(--stone); border-bottom:1px solid var(--sand); padding-bottom:0.3rem;">${icon} ${label}</h4>
+                ${grouped[cat].map(item => `
+                    <div class="grocery-item">
+                        <span>${esc(item.name)}</span>
+                        <span class="grocery-amount">${formatAmount(item.total_amount)} ${formatUnit(item.unit, item.total_amount)}</span>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
     const container = document.getElementById("grocery-container");
     container.innerHTML = `
         <div class="grocery-list">
@@ -3562,12 +3733,7 @@ async function generateGroceryList() {
                     <button class="btn-outline" onclick="window.print()" style="margin-left:0.5rem;">${t("grocery.print")}</button>
                 </div>
             </div>
-            ${data.items.map(item => `
-                <div class="grocery-item">
-                    <span>${esc(item.name)}</span>
-                    <span class="grocery-amount">${formatAmount(item.total_amount)} ${formatUnit(item.unit, item.total_amount)}</span>
-                </div>
-            `).join("")}
+            ${groupedHtml}
         </div>
     `;
     lastGroceryItems = data.items;
@@ -3805,13 +3971,11 @@ async function loadHousehold() {
     const section = document.getElementById("household-section");
     if (!section) return;
     try {
-        const data = await apiCall(API + "/household");
+        const data = await apiCall(API + "/household", {}, { silent: true });
         if (data && data.id) {
             householdData = data;
             // Also load partner's profile for planner
-            try {
-                partnerProfile = await apiCall(API + "/household/partner-profile");
-            } catch (e) { partnerProfile = null; }
+            partnerProfile = await apiCall(API + "/household/partner-profile", {}, { silent: true });
             renderHousehold();
             return;
         }
@@ -3890,7 +4054,7 @@ async function joinHousehold() {
     });
     if (data) {
         householdData = data;
-        try { partnerProfile = await apiCall(API + "/household/partner-profile"); } catch(e) { partnerProfile = null; }
+        partnerProfile = await apiCall(API + "/household/partner-profile", {}, { silent: true });
         renderHousehold();
         showToast(t("msg.householdJoined"));
     }
@@ -3940,7 +4104,6 @@ async function renderDashboard() {
                     <div class="stat"><div class="number">${userProfile.carbs_target_g}g</div><div class="label">${t("dashboard.totalCarbs")}</div></div>
                     <div class="stat"><div class="number">${userProfile.fat_target_g}g</div><div class="label">${t("dashboard.totalFat")}</div></div>
                 </div>
-                ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info" style="margin-top:1rem;">${t("dashboard.fastingActive")}</div>` : ''}
             </div>
             ${buildFastingTimeline(userProfile.intermittent_fasting)}
             <div class="empty-state"><p>${t("dashboard.planMealsHint")}</p></div>
@@ -3948,19 +4111,33 @@ async function renderDashboard() {
         return;
     }
 
-    const data = await apiCall(API + "/meal-plan/summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plan),
-    });
-    if (!data) return;
+    // Calculate totals locally using servings from planner
+    let totalCal = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0, totalFiber = 0;
+    const recipeMap = {};
+    allRecipes.forEach(r => { recipeMap[r.id] = r; });
 
     const numDays = plan.days.length;
-    const avgCal = Math.round(data.total_calories / numDays);
-    const avgProtein = Math.round(data.total_macros.protein_g / numDays * 10) / 10;
-    const avgCarbs = Math.round(data.total_macros.carbs_g / numDays * 10) / 10;
-    const avgFat = Math.round(data.total_macros.fat_g / numDays * 10) / 10;
-    const avgFiber = Math.round(data.total_macros.fiber_g / numDays * 10) / 10;
+    for (const day of DAYS) {
+        for (const meal of MEALS) {
+            const sel = document.getElementById(`plan-${day}-${meal}`);
+            const srvInput = document.getElementById(`srv-${day}-${meal}`);
+            if (!sel || !sel.value) continue;
+            const recipe = recipeMap[parseInt(sel.value)];
+            if (!recipe) continue;
+            const servings = parseFloat(srvInput?.value) || 1;
+            totalCal += recipe.calories * servings;
+            totalProtein += recipe.macros.protein_g * servings;
+            totalCarbs += recipe.macros.carbs_g * servings;
+            totalFat += recipe.macros.fat_g * servings;
+            totalFiber += recipe.macros.fiber_g * servings;
+        }
+    }
+
+    const avgCal = Math.round(totalCal / numDays);
+    const avgProtein = Math.round(totalProtein / numDays * 10) / 10;
+    const avgCarbs = Math.round(totalCarbs / numDays * 10) / 10;
+    const avgFat = Math.round(totalFat / numDays * 10) / 10;
+    const avgFiber = Math.round(totalFiber / numDays * 10) / 10;
 
     const calPct = Math.min(Math.round((avgCal / userProfile.daily_calories) * 100), 150);
     const protPct = Math.min(Math.round((avgProtein / userProfile.protein_target_g) * 100), 150);
@@ -3985,15 +4162,6 @@ async function renderDashboard() {
         `;
     }
 
-    const fastingInfo = {
-        "none": "",
-        "12_12": t("fastingDash.12_12"),
-        "14_10": t("fastingDash.14_10"),
-        "16_8": t("fastingDash.16_8"),
-        "18_6": t("fastingDash.18_6"),
-        "20_4": t("fastingDash.20_4"),
-    };
-
     container.innerHTML = `
         <div class="dashboard-card">
             <h3>${t("dashboard.dailyAvg", numDays)}</h3>
@@ -4008,7 +4176,6 @@ async function renderDashboard() {
                 </div>
                 <span class="progress-value">${avgFiber}g / 30g</span>
             </div>
-            ${userProfile.intermittent_fasting !== "none" ? `<div class="if-info">${fastingInfo[userProfile.intermittent_fasting]}</div>` : ''}
         </div>
         <div class="dashboard-card">
             <h3>${t("dashboard.weightProgress")}</h3>
@@ -4018,12 +4185,6 @@ async function renderDashboard() {
             <h3>${t("dashboard.streak")}</h3>
             ${buildStreakCard()}
         </div>
-        ${data.allergen_warnings.length > 0 ? `
-            <div class="dashboard-card">
-                <h3 style="color:var(--terracotta);">${t("dashboard.allergenWarnings")}</h3>
-                ${data.allergen_warnings.map(w => `<div class="warning">${esc(w)}</div>`).join("")}
-            </div>
-        ` : ''}
         ${buildFastingTimeline(userProfile.intermittent_fasting)}
     `;
     loadWeightProgress();
@@ -4454,6 +4615,8 @@ function showRecipeForm(recipe) {
         document.getElementById("rf-allergen-meat").checked = recipe.allergens.includes("meat");
         document.getElementById("rf-allergen-gluten").checked = recipe.allergens.includes("gluten");
         document.getElementById("rf-allergen-lactose").checked = recipe.allergens.includes("lactose");
+        document.getElementById("rf-author").value = recipe.author || "";
+        document.getElementById("rf-image-url").value = recipe.image_url || "";
         // Populate ingredient list from existing recipe
         ingredientsList = recipe.ingredients.map(i => ({ amount: i.amount, unit: i.unit, name: i.name }));
         renderIngredientsList();
@@ -4488,6 +4651,8 @@ function showRecipeForm(recipe) {
         document.getElementById("rf-allergen-meat").checked = false;
         document.getElementById("rf-allergen-gluten").checked = false;
         document.getElementById("rf-allergen-lactose").checked = false;
+        document.getElementById("rf-author").value = "";
+        document.getElementById("rf-image-url").value = "";
         // Clear ingredient list
         ingredientsList = [];
         renderIngredientsList();
@@ -4552,6 +4717,8 @@ async function saveRecipeForm() {
         instructions,
         health_benefits,
         allergens,
+        author: document.getElementById("rf-author").value.trim(),
+        image_url: document.getElementById("rf-image-url").value.trim(),
     };
 
     const editId = document.getElementById("rf-id").value;
@@ -4607,6 +4774,13 @@ async function initApp() {
         loadAdminUsers();
         loadAdminRecipes();
     }
+
+    // Restore last active tab
+    const savedTab = localStorage.getItem("dietyto_tab");
+    if (savedTab && document.getElementById("page-" + savedTab)) {
+        switchTab(savedTab);
+        if (savedTab === "dashboard") renderDashboard();
+    }
 }
 
 // On page load: check if we have a saved token
@@ -4622,7 +4796,7 @@ async function initApp() {
                 currentUserRole = data.role || "user";
                 showAdminTab(currentUserRole === "admin");
                 applyTranslations();
-                enterApp(data.username);
+                await enterApp(data.username);
                 return;
             }
         } catch {}
@@ -4632,6 +4806,7 @@ async function initApp() {
         authToken = null;
     }
     // Show login screen
+    document.getElementById("loading-screen").style.display = "none";
     document.getElementById("auth-section").classList.remove("auth-hidden");
     applyTranslations();
 })();

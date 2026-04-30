@@ -413,6 +413,8 @@ def create_recipe(recipe: RecipeCreate, user: UserDB = Depends(get_current_user)
         instructions_json=json.dumps(recipe.instructions),
         health_benefits_json=json.dumps(recipe.health_benefits),
         allergens_json=json.dumps(recipe.allergens),
+        author=recipe.author,
+        image_url=recipe.image_url,
     )
 
     for ing in recipe.ingredients:
@@ -1207,6 +1209,8 @@ def admin_create_recipe(recipe: RecipeCreate, admin: UserDB = Depends(require_ad
         instructions_json=json.dumps(recipe.instructions),
         health_benefits_json=json.dumps(recipe.health_benefits),
         allergens_json=json.dumps(recipe.allergens),
+        author=recipe.author,
+        image_url=recipe.image_url,
     )
     for ing in recipe.ingredients:
         db_recipe.ingredients.append(
@@ -1240,6 +1244,8 @@ def admin_update_recipe(recipe_id: int, recipe: RecipeCreate, admin: UserDB = De
     db_recipe.instructions_json = json.dumps(recipe.instructions)
     db_recipe.health_benefits_json = json.dumps(recipe.health_benefits)
     db_recipe.allergens_json = json.dumps(recipe.allergens)
+    db_recipe.author = recipe.author
+    db_recipe.image_url = recipe.image_url
 
     # Replace ingredients
     for old_ing in db_recipe.ingredients:

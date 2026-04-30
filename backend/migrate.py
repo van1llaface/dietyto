@@ -89,6 +89,16 @@ def migrate():
             cursor.execute("ALTER TABLE meal_plans ADD COLUMN user_id INTEGER DEFAULT NULL")
             print("[migrate] Added 'user_id' column to meal_plans")
 
+    # --- recipes: add author if missing ---
+    if table_exists(cursor, "recipes"):
+        cols = get_columns(cursor, "recipes")
+        if "author" not in cols:
+            cursor.execute("ALTER TABLE recipes ADD COLUMN author TEXT DEFAULT ''")
+            print("[migrate] Added 'author' column to recipes")
+        if "image_url" not in cols:
+            cursor.execute("ALTER TABLE recipes ADD COLUMN image_url TEXT DEFAULT ''")
+            print("[migrate] Added 'image_url' column to recipes")
+
     # --- user_profiles table ---
     if not table_exists(cursor, "user_profiles"):
         cursor.execute("""

@@ -12,5 +12,8 @@ ln -sf /data/longevity.db /app/backend/longevity.db
 # Run migrations (adds any new columns/tables safely)
 cd /app/backend && DB_PATH=/data/longevity.db python migrate.py
 
+# Re-seed recipes (updates recipes with latest data, images, etc.)
+cd /app/backend && python seed_recipes.py
+
 # Start supervisor (nginx + uvicorn)
 exec supervisord -c /etc/supervisor/supervisord.conf

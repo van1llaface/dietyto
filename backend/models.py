@@ -89,6 +89,8 @@ class Recipe(BaseModel):
     nutrients: Nutrients
     health_benefits: list[str]
     allergens: list[str] = []   # e.g. ["gluten", "dairy", "nuts", "fish", "soy"]
+    author: str = ""
+    image_url: str = ""
 
 
 class RecipeCreate(Recipe):
