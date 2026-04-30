@@ -89,9 +89,9 @@ recipes = [
         ],
         "ingredients": [
             {"name": "salmon fillet", "amount": 400, "unit": "g"},
-            {"name": "maple syrup", "amount": 2, "unit": "tsp"},
-            {"name": "soy sauce", "amount": 2, "unit": "tsp"},
-            {"name": "olive oil", "amount": 1, "unit": "tbsp"},
+            {"name": "maple syrup", "amount": 10, "unit": "ml"},
+            {"name": "soy sauce", "amount": 10, "unit": "ml"},
+            {"name": "olive oil", "amount": 15, "unit": "ml"},
         ]
     },
     {
@@ -114,7 +114,7 @@ recipes = [
             "Serve immediately garnished with fresh mint and a swirl of coconut milk."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 1, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 15, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "celery", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
@@ -144,7 +144,7 @@ recipes = [
             "Serve topped with a dollop of Greek yogurt and extra dill."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "leek", "amount": 1, "unit": "pcs"},
             {"name": "potato", "amount": 900, "unit": "g"},
             {"name": "chicken broth", "amount": 1200, "unit": "ml"},
@@ -171,7 +171,7 @@ recipes = [
             "Add shredded cabbage and cook 5 more minutes. Adjust seasoning and serve."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "celery", "amount": 2, "unit": "pcs"},
@@ -180,8 +180,8 @@ recipes = [
             {"name": "broccoli", "amount": 150, "unit": "g"},
             {"name": "cauliflower", "amount": 100, "unit": "g"},
             {"name": "cabbage", "amount": 100, "unit": "g"},
-            {"name": "tomatoes", "amount": 1, "unit": "can"},
-            {"name": "kidney beans", "amount": 1, "unit": "can"},
+            {"name": "tomatoes", "amount": 400, "unit": "g"},
+            {"name": "kidney beans", "amount": 400, "unit": "g"},
         ]
     },
     {
@@ -206,14 +206,14 @@ recipes = [
         "ingredients": [
             {"name": "quinoa", "amount": 180, "unit": "g"},
             {"name": "cucumber", "amount": 1, "unit": "pcs"},
-            {"name": "chickpeas", "amount": 1, "unit": "can"},
+            {"name": "chickpeas", "amount": 400, "unit": "g"},
             {"name": "edamame", "amount": 150, "unit": "g"},
             {"name": "feta", "amount": 100, "unit": "g"},
             {"name": "pistachios", "amount": 60, "unit": "g"},
             {"name": "avocado", "amount": 1, "unit": "pcs"},
-            {"name": "olive oil", "amount": 3, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 45, "unit": "ml"},
             {"name": "lemon", "amount": 1, "unit": "pcs"},
-            {"name": "honey", "amount": 1, "unit": "tbsp"},
+            {"name": "honey", "amount": 15, "unit": "ml"},
         ]
     },
     {
@@ -238,7 +238,7 @@ recipes = [
         "ingredients": [
             {"name": "salmon fillet", "amount": 500, "unit": "g"},
             {"name": "coconut milk", "amount": 400, "unit": "ml"},
-            {"name": "miso paste", "amount": 2, "unit": "tbsp"},
+            {"name": "miso paste", "amount": 30, "unit": "g"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
             {"name": "rice", "amount": 200, "unit": "g"},
@@ -264,13 +264,13 @@ recipes = [
             "Season with salt, pepper, and a squeeze of lemon. Serve warm."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "celery", "amount": 2, "unit": "pcs"},
             {"name": "potato", "amount": 2, "unit": "pcs"},
             {"name": "kale", "amount": 150, "unit": "g"},
-            {"name": "white beans", "amount": 1, "unit": "can"},
+            {"name": "white beans", "amount": 400, "unit": "g"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
         ]
     },
@@ -294,7 +294,7 @@ recipes = [
             "Blend partially for creaminess. Stir in lemon juice, salt, and pepper. Serve."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "celery", "amount": 1, "unit": "pcs"},
@@ -323,7 +323,7 @@ recipes = [
             "Serve with a drizzle of olive oil and fresh herbs."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "cauliflower", "amount": 600, "unit": "g"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 2, "unit": "pcs"},
@@ -351,7 +351,7 @@ recipes = [
             {"name": "greek yogurt", "amount": 200, "unit": "g"},
             {"name": "garlic", "amount": 2, "unit": "pcs"},
             {"name": "lemon", "amount": 1, "unit": "pcs"},
-            {"name": "olive oil", "amount": 1, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 15, "unit": "ml"},
         ]
     },
     {
@@ -379,7 +379,7 @@ recipes = [
             {"name": "coconut milk", "amount": 200, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -401,10 +401,10 @@ recipes = [
             "Pour dressing over and toss gently. Let marinate 10 minutes before serving."
         ],
         "ingredients": [
-            {"name": "kidney beans", "amount": 1, "unit": "can"},
-            {"name": "chickpeas", "amount": 1, "unit": "can"},
-            {"name": "black beans", "amount": 1, "unit": "can"},
-            {"name": "olive oil", "amount": 3, "unit": "tbsp"},
+            {"name": "kidney beans", "amount": 400, "unit": "g"},
+            {"name": "chickpeas", "amount": 400, "unit": "g"},
+            {"name": "black beans", "amount": 400, "unit": "g"},
+            {"name": "olive oil", "amount": 45, "unit": "ml"},
             {"name": "onion", "amount": 0.5, "unit": "pcs"},
         ]
     },
@@ -432,7 +432,7 @@ recipes = [
             {"name": "asparagus", "amount": 300, "unit": "g"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
             {"name": "lemon", "amount": 1, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -455,13 +455,13 @@ recipes = [
             "Season with salt, pepper, and a squeeze of lemon."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "celery", "amount": 2, "unit": "pcs"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
             {"name": "lentils", "amount": 300, "unit": "g"},
-            {"name": "tomatoes", "amount": 1, "unit": "can"},
+            {"name": "tomatoes", "amount": 400, "unit": "g"},
         ]
     },
     {
@@ -485,10 +485,10 @@ recipes = [
         ],
         "ingredients": [
             {"name": "sweet potato", "amount": 400, "unit": "g"},
-            {"name": "black beans", "amount": 1, "unit": "can"},
+            {"name": "black beans", "amount": 400, "unit": "g"},
             {"name": "corn", "amount": 150, "unit": "g"},
             {"name": "onion", "amount": 0.5, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "lime", "amount": 1, "unit": "pcs"},
         ]
     },
@@ -513,7 +513,7 @@ recipes = [
         "ingredients": [
             {"name": "chia seeds", "amount": 40, "unit": "g"},
             {"name": "coconut milk", "amount": 250, "unit": "ml"},
-            {"name": "honey", "amount": 1, "unit": "tbsp"},
+            {"name": "honey", "amount": 15, "unit": "ml"},
             {"name": "blueberries", "amount": 80, "unit": "g"},
         ]
     },
@@ -536,12 +536,12 @@ recipes = [
             "Drizzle with dressing and toss. Serve immediately or chill for later."
         ],
         "ingredients": [
-            {"name": "chickpeas", "amount": 1, "unit": "can"},
-            {"name": "kidney beans", "amount": 1, "unit": "can"},
+            {"name": "chickpeas", "amount": 400, "unit": "g"},
+            {"name": "kidney beans", "amount": 400, "unit": "g"},
             {"name": "cucumber", "amount": 1, "unit": "pcs"},
             {"name": "tomato", "amount": 2, "unit": "pcs"},
             {"name": "onion", "amount": 0.5, "unit": "pcs"},
-            {"name": "olive oil", "amount": 3, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 45, "unit": "ml"},
             {"name": "lemon", "amount": 1, "unit": "pcs"},
             {"name": "spinach", "amount": 50, "unit": "g"},
         ]
@@ -615,8 +615,8 @@ recipes = [
         ],
         "ingredients": [
             {"name": "cucumber", "amount": 3, "unit": "pcs"},
-            {"name": "soy sauce", "amount": 1, "unit": "tbsp"},
-            {"name": "honey", "amount": 1, "unit": "tsp"},
+            {"name": "soy sauce", "amount": 15, "unit": "ml"},
+            {"name": "honey", "amount": 5, "unit": "ml"},
             {"name": "sesame seeds", "amount": 10, "unit": "g"},
         ]
     },
@@ -644,7 +644,7 @@ recipes = [
             {"name": "cucumber", "amount": 1, "unit": "pcs"},
             {"name": "lime", "amount": 1, "unit": "pcs"},
             {"name": "onion", "amount": 0.25, "unit": "pcs"},
-            {"name": "olive oil", "amount": 1, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 15, "unit": "ml"},
         ]
     },
     {
@@ -670,7 +670,7 @@ recipes = [
             {"name": "cucumber", "amount": 1, "unit": "pcs"},
             {"name": "avocado", "amount": 1, "unit": "pcs"},
             {"name": "lemon", "amount": 1, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "garlic", "amount": 1, "unit": "pcs"},
             {"name": "walnuts", "amount": 30, "unit": "g"},
         ]
@@ -695,14 +695,14 @@ recipes = [
             "Season with salt and pepper. Serve with your favorite toppings."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "bell pepper", "amount": 2, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "garlic", "amount": 4, "unit": "pcs"},
-            {"name": "kidney beans", "amount": 1, "unit": "can"},
-            {"name": "black beans", "amount": 1, "unit": "can"},
-            {"name": "tomatoes", "amount": 2, "unit": "can"},
+            {"name": "kidney beans", "amount": 400, "unit": "g"},
+            {"name": "black beans", "amount": 400, "unit": "g"},
+            {"name": "tomatoes", "amount": 800, "unit": "g"},
             {"name": "corn", "amount": 150, "unit": "g"},
         ]
     },
@@ -728,8 +728,8 @@ recipes = [
             {"name": "lentils", "amount": 200, "unit": "g"},
             {"name": "apple", "amount": 1, "unit": "pcs"},
             {"name": "walnuts", "amount": 40, "unit": "g"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "honey", "amount": 1, "unit": "tsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "honey", "amount": 5, "unit": "ml"},
         ]
     },
     {
@@ -759,7 +759,7 @@ recipes = [
             {"name": "bell pepper", "amount": 1, "unit": "pcs"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
-            {"name": "olive oil", "amount": 3, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 45, "unit": "ml"},
         ]
     },
     {
@@ -810,13 +810,13 @@ recipes = [
             "Season with salt, pepper, and Italian herbs. Serve with parmesan."
         ],
         "ingredients": [
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "celery", "amount": 2, "unit": "pcs"},
             {"name": "carrot", "amount": 2, "unit": "pcs"},
             {"name": "zucchini", "amount": 1, "unit": "pcs"},
-            {"name": "tomatoes", "amount": 1, "unit": "can"},
-            {"name": "kidney beans", "amount": 1, "unit": "can"},
+            {"name": "tomatoes", "amount": 400, "unit": "g"},
+            {"name": "kidney beans", "amount": 400, "unit": "g"},
             {"name": "pasta", "amount": 100, "unit": "g"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
         ]
@@ -844,7 +844,7 @@ recipes = [
             {"name": "salmon fillet", "amount": 600, "unit": "g"},
             {"name": "garlic", "amount": 4, "unit": "pcs"},
             {"name": "lemon", "amount": 2, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -867,7 +867,7 @@ recipes = [
         ],
         "ingredients": [
             {"name": "brown rice", "amount": 150, "unit": "g"},
-            {"name": "black beans", "amount": 1, "unit": "can"},
+            {"name": "black beans", "amount": 400, "unit": "g"},
             {"name": "avocado", "amount": 1, "unit": "pcs"},
             {"name": "tomato", "amount": 1, "unit": "pcs"},
             {"name": "corn", "amount": 100, "unit": "g"},
@@ -896,7 +896,7 @@ recipes = [
         "ingredients": [
             {"name": "feta", "amount": 200, "unit": "g"},
             {"name": "cream cheese", "amount": 60, "unit": "g"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "lemon", "amount": 0.5, "unit": "pcs"},
             {"name": "garlic", "amount": 1, "unit": "pcs"},
         ]
@@ -925,9 +925,9 @@ recipes = [
             {"name": "avocado", "amount": 1, "unit": "pcs"},
             {"name": "blueberries", "amount": 150, "unit": "g"},
             {"name": "almond milk", "amount": 240, "unit": "ml"},
-            {"name": "honey", "amount": 1, "unit": "tbsp"},
-            {"name": "chia seeds", "amount": 1, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 1, "unit": "tbsp"},
+            {"name": "honey", "amount": 15, "unit": "ml"},
+            {"name": "chia seeds", "amount": 10, "unit": "g"},
+            {"name": "lemon juice", "amount": 15, "unit": "ml"},
         ]
     },
     {
@@ -953,11 +953,11 @@ recipes = [
             "Remove from heat and serve topped with soft-boiled eggs and remaining olive oil, add avocado slices on the side."
         ],
         "ingredients": [
-            {"name": "kale", "amount": 1, "unit": "bunch"},
-            {"name": "olive oil", "amount": 4, "unit": "tbsp"},
+            {"name": "kale", "amount": 200, "unit": "g"},
+            {"name": "olive oil", "amount": 60, "unit": "ml"},
             {"name": "garlic", "amount": 4, "unit": "pcs"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
-            {"name": "dried parsley", "amount": 1, "unit": "tsp"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
+            {"name": "dried parsley", "amount": 2, "unit": "g"},
             {"name": "eggs", "amount": 2, "unit": "pcs"},
             {"name": "avocado", "amount": 0.5, "unit": "pcs"},
         ]
@@ -981,13 +981,13 @@ recipes = [
             "Remove from heat and top with butter, blueberries, and cinnamon. Eat while warm."
         ],
         "ingredients": [
-            {"name": "wheat germ", "amount": 0.5, "unit": "cup"},
-            {"name": "almond flour", "amount": 0.5, "unit": "cup"},
+            {"name": "wheat germ", "amount": 60, "unit": "g"},
+            {"name": "almond flour", "amount": 50, "unit": "g"},
             {"name": "water", "amount": 240, "unit": "ml"},
             {"name": "heavy cream", "amount": 60, "unit": "ml"},
-            {"name": "butter", "amount": 1, "unit": "tbsp"},
+            {"name": "butter", "amount": 15, "unit": "g"},
             {"name": "blueberries", "amount": 75, "unit": "g"},
-            {"name": "cinnamon", "amount": 1, "unit": "pinch"},
+            {"name": "cinnamon", "amount": 1, "unit": "g"},
         ]
     },
     {
@@ -1010,12 +1010,12 @@ recipes = [
             "Serve chilled as a light meal or side."
         ],
         "ingredients": [
-            {"name": "lentils", "amount": 1, "unit": "cup"},
-            {"name": "broccoli sprouts", "amount": 1, "unit": "cup"},
-            {"name": "cherry tomatoes", "amount": 0.5, "unit": "cup"},
-            {"name": "cucumber", "amount": 0.25, "unit": "cup"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
+            {"name": "lentils", "amount": 200, "unit": "g"},
+            {"name": "broccoli sprouts", "amount": 30, "unit": "g"},
+            {"name": "cherry tomatoes", "amount": 75, "unit": "g"},
+            {"name": "cucumber", "amount": 35, "unit": "g"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -1038,12 +1038,12 @@ recipes = [
             "Serve chilled or at room temperature."
         ],
         "ingredients": [
-            {"name": "lentils", "amount": 1, "unit": "cup"},
-            {"name": "carrots", "amount": 1, "unit": "cup"},
-            {"name": "fresh parsley", "amount": 0.25, "unit": "cup"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+            {"name": "lentils", "amount": 200, "unit": "g"},
+            {"name": "carrots", "amount": 130, "unit": "g"},
+            {"name": "fresh parsley", "amount": 15, "unit": "g"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
             {"name": "garlic", "amount": 1, "unit": "pcs"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -1066,12 +1066,12 @@ recipes = [
             "Serve as a refreshing side dish or light meal."
         ],
         "ingredients": [
-            {"name": "pomegranate seeds", "amount": 1, "unit": "cup"},
+            {"name": "pomegranate seeds", "amount": 175, "unit": "g"},
             {"name": "spinach", "amount": 100, "unit": "g"},
-            {"name": "dried parsley", "amount": 0.25, "unit": "cup"},
-            {"name": "almonds", "amount": 0.25, "unit": "cup"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
+            {"name": "dried parsley", "amount": 5, "unit": "g"},
+            {"name": "almonds", "amount": 35, "unit": "g"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -1094,12 +1094,12 @@ recipes = [
             "Serve immediately for a healthy, protein-rich anti-aging meal."
         ],
         "ingredients": [
-            {"name": "sardines", "amount": 1, "unit": "can"},
+            {"name": "sardines", "amount": 120, "unit": "g"},
             {"name": "spinach", "amount": 60, "unit": "g"},
-            {"name": "walnuts", "amount": 0.25, "unit": "cup"},
+            {"name": "walnuts", "amount": 30, "unit": "g"},
             {"name": "red onion", "amount": 0.25, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -1125,8 +1125,8 @@ recipes = [
         "ingredients": [
             {"name": "purple sweet potato", "amount": 2, "unit": "pcs"},
             {"name": "garlic", "amount": 2, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "dried parsley", "amount": 0.25, "unit": "cup"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "dried parsley", "amount": 5, "unit": "g"},
         ]
     },
     {
@@ -1149,14 +1149,14 @@ recipes = [
             "Season with salt and pepper, and garnish with fresh cilantro before serving."
         ],
         "ingredients": [
-            {"name": "chickpeas", "amount": 1, "unit": "can"},
+            {"name": "chickpeas", "amount": 400, "unit": "g"},
             {"name": "purple sweet potato", "amount": 1, "unit": "pcs"},
             {"name": "coconut milk", "amount": 400, "unit": "ml"},
-            {"name": "curry powder", "amount": 1, "unit": "tbsp"},
+            {"name": "curry powder", "amount": 7, "unit": "g"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "garlic", "amount": 2, "unit": "pcs"},
-            {"name": "olive oil", "amount": 1, "unit": "tbsp"},
-            {"name": "cilantro", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 15, "unit": "ml"},
+            {"name": "cilantro", "amount": 5, "unit": "g"},
         ]
     },
     {
@@ -1183,9 +1183,9 @@ recipes = [
             {"name": "shiitake mushrooms", "amount": 150, "unit": "g"},
             {"name": "reishi mushrooms", "amount": 100, "unit": "g"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "dried rosemary", "amount": 1, "unit": "tsp"},
-            {"name": "fresh parsley", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "dried rosemary", "amount": 2, "unit": "g"},
+            {"name": "fresh parsley", "amount": 6, "unit": "g"},
         ]
     },
     {
@@ -1209,13 +1209,13 @@ recipes = [
             "Serve hot, garnished with fresh parsley if desired."
         ],
         "ingredients": [
-            {"name": "lentils", "amount": 1, "unit": "cup"},
+            {"name": "lentils", "amount": 200, "unit": "g"},
             {"name": "shiitake mushrooms", "amount": 200, "unit": "g"},
             {"name": "onion", "amount": 1, "unit": "pcs"},
             {"name": "carrots", "amount": 2, "unit": "pcs"},
-            {"name": "vegetable broth", "amount": 4, "unit": "cup"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "dried thyme", "amount": 1, "unit": "tsp"},
+            {"name": "vegetable broth", "amount": 960, "unit": "ml"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "dried thyme", "amount": 2, "unit": "g"},
         ]
     },
     {
@@ -1238,11 +1238,11 @@ recipes = [
             "Bake for 15-20 minutes, or until the salmon is cooked through and flakes easily with a fork."
         ],
         "ingredients": [
-            {"name": "salmon fillet", "amount": 2, "unit": "pcs"},
+            {"name": "salmon fillet", "amount": 400, "unit": "g"},
             {"name": "garlic", "amount": 3, "unit": "pcs"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "fresh rosemary", "amount": 1, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "fresh rosemary", "amount": 3, "unit": "g"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
         ]
     },
     {
@@ -1265,12 +1265,12 @@ recipes = [
             "Serve with raw carrot sticks for dipping, and garnish with parsley if desired."
         ],
         "ingredients": [
-            {"name": "carrots", "amount": 2, "unit": "cup"},
+            {"name": "carrots", "amount": 260, "unit": "g"},
             {"name": "garlic", "amount": 2, "unit": "pcs"},
-            {"name": "tahini", "amount": 0.25, "unit": "cup"},
-            {"name": "olive oil", "amount": 2, "unit": "tbsp"},
-            {"name": "lemon juice", "amount": 2, "unit": "tbsp"},
-            {"name": "fresh parsley", "amount": 1, "unit": "tbsp"},
+            {"name": "tahini", "amount": 60, "unit": "g"},
+            {"name": "olive oil", "amount": 30, "unit": "ml"},
+            {"name": "lemon juice", "amount": 30, "unit": "ml"},
+            {"name": "fresh parsley", "amount": 3, "unit": "g"},
         ]
     },
 ]
