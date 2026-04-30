@@ -13,9 +13,11 @@ from models import (
     MealSlot, SavedMealPlan,
     SignUpRequest, VerifyEmailRequest, LoginRequest, LoginResponse,
     ForgotPasswordRequest, ResetPasswordRequest,
+    HouseholdCreate, HouseholdJoin, HouseholdResponse, HouseholdMember,
 )
 from database import engine, get_db, Base
-from db_models import RecipeDB, IngredientDB, MealPlanDB, UserProfileDB, UserDB
+from datetime import datetime, timezone, timedelta
+from db_models import RecipeDB, IngredientDB, MealPlanDB, UserProfileDB, UserDB, HouseholdDB, WeightLogDB, MealRatingDB
 
 # Create all tables on startup (if they don't exist)
 Base.metadata.create_all(bind=engine)
@@ -192,7 +194,109 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
 @app.get("/auth/me")
 def get_me(user: UserDB = Depends(get_current_user)):
     """Returns the currently logged-in user's info."""
-    return {"username": user.username, "email": user.email, "role": user.role}
+    data = {"username": user.username, "email": user.email, "role": user.role, "household_id": user.household_id}
+    return data
+
+
+# ──────────────────────────────────────────────
+# Household endpoints (couples feature)
+# ──────────────────────────────────────────────
+
+def _household_response(household: HouseholdDB) -> HouseholdResponse:
+    """Convert a HouseholdDB row to the API response."""
+    members = [HouseholdMember(id=m.id, username=m.username) for m in household.members]
+    return HouseholdResponse(id=household.id, invite_code=household.invite_code, members=members)
+
+
+@app.post("/household", response_model=HouseholdResponse)
+def create_household(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Create a new household. The current user becomes the first member."""
+    if user.household_id:
+        raise HTTPException(400, "You are already in a household. Leave first.")
+    invite_code = secrets.token_urlsafe(4).upper()[:6]
+    # Ensure uniqueness
+    while db.query(HouseholdDB).filter(HouseholdDB.invite_code == invite_code).first():
+        invite_code = secrets.token_urlsafe(4).upper()[:6]
+    household = HouseholdDB(invite_code=invite_code)
+    db.add(household)
+    db.flush()
+    user.household_id = household.id
+    db.commit()
+    db.refresh(household)
+    return _household_response(household)
+
+
+@app.post("/household/join", response_model=HouseholdResponse)
+def join_household(req: HouseholdJoin, user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Join an existing household with an invite code."""
+    if user.household_id:
+        raise HTTPException(400, "You are already in a household. Leave first.")
+    household = db.query(HouseholdDB).filter(HouseholdDB.invite_code == req.invite_code.upper()).first()
+    if not household:
+        raise HTTPException(404, "Invalid invite code")
+    if len(household.members) >= 2:
+        raise HTTPException(400, "Household is full (max 2 members)")
+    user.household_id = household.id
+    db.commit()
+    db.refresh(household)
+    return _household_response(household)
+
+
+@app.get("/household", response_model=HouseholdResponse)
+def get_household(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get the current user's household info."""
+    if not user.household_id:
+        raise HTTPException(404, "You are not in a household")
+    household = db.query(HouseholdDB).filter(HouseholdDB.id == user.household_id).first()
+    return _household_response(household)
+
+
+@app.delete("/household/leave")
+def leave_household(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Leave the current household. If last member, household is deleted."""
+    if not user.household_id:
+        raise HTTPException(400, "You are not in a household")
+    household = db.query(HouseholdDB).filter(HouseholdDB.id == user.household_id).first()
+    user.household_id = None
+    db.flush()
+    # If no members left, delete the household
+    remaining = db.query(UserDB).filter(UserDB.household_id == household.id).count()
+    if remaining == 0:
+        db.delete(household)
+    db.commit()
+    return {"message": "Left household"}
+
+
+@app.get("/household/partner-profile")
+def get_partner_profile(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get the partner's profile + calorie targets (for dual planner view)."""
+    if not user.household_id:
+        raise HTTPException(404, "You are not in a household")
+    partner = db.query(UserDB).filter(
+        UserDB.household_id == user.household_id,
+        UserDB.id != user.id
+    ).first()
+    if not partner:
+        raise HTTPException(404, "No partner in household yet")
+    profile_row = db.query(UserProfileDB).filter(UserProfileDB.user_id == partner.id).first()
+    if not profile_row:
+        raise HTTPException(404, "Partner has not set up their profile yet")
+    profile = UserProfile(
+        gender=profile_row.gender, age=profile_row.age, weight_kg=profile_row.weight_kg,
+        target_weight_kg=profile_row.target_weight_kg, height_cm=profile_row.height_cm,
+        activity_level=profile_row.activity_level, weight_rate=profile_row.weight_rate,
+        intermittent_fasting=profile_row.intermittent_fasting,
+        exclude_allergens=json.loads(profile_row.exclude_allergens) if profile_row.exclude_allergens else [],
+    )
+    targets = calculate_calories(profile)
+    return {
+        "username": partner.username,
+        "daily_calories": targets["daily_calories"],
+        "protein_target_g": targets["protein_target_g"],
+        "carbs_target_g": targets["carbs_target_g"],
+        "fat_target_g": targets["fat_target_g"],
+        "exclude_allergens": profile.exclude_allergens,
+    }
 
 
 # ──────────────────────────────────────────────
@@ -243,7 +347,7 @@ def get_recipes(
     query = db.query(RecipeDB)
 
     if meal_type:
-        query = query.filter(RecipeDB.meal_type == meal_type)
+        query = query.filter(RecipeDB.meal_type.contains(meal_type))
     if category:
         query = query.filter(RecipeDB.category == category)
 
@@ -425,6 +529,99 @@ def generate_grocery_list(week_plan: WeekPlanCreate, db: Session = Depends(get_d
     return GroceryList(items=items)
 
 
+@app.get("/meal-plan/grocery-list/household", response_model=GroceryList)
+def household_grocery_list(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Generate a grocery list from both household members' saved meal plans.
+    Combines servings from both people for each recipe.
+    """
+    import re as _re
+
+    TO_ML = {"ml": 1, "tbsp": 15, "tsp": 5, "cups": 240}
+    TO_G = {"g": 1, "kg": 1000}
+
+    SYNONYMS = {
+        "cooked beet": "beet", "young potato with skin": "potato",
+        "plum tomatoes": "tomato", "plum tomato": "tomato",
+        "fresh rosemary sprig": "fresh rosemary", "fresh rosemary sprigs": "fresh rosemary",
+        "fresh thyme sprigs": "fresh thyme", "celery stalks": "celery",
+        "celery stalk": "celery", "garlic cloves": "garlic", "garlic clove": "garlic",
+        "sweet potatoes": "sweet potato", "date syrup or raw honey": "honey / date syrup",
+        "eggs (hard-boiled)": "egg",
+    }
+    KEEP_PLURAL = {"oats", "lentils", "beans", "peas", "chickpeas", "seeds", "berries",
+                   "sprouts", "groats", "nuts", "raisins", "hummus"}
+
+    def normalize_name(raw: str) -> str:
+        n = raw.lower().strip()
+        n = _re.sub(r"\s*\(.*?\)", "", n).strip()
+        if n in SYNONYMS: return SYNONYMS[n]
+        last_word = n.split()[-1]
+        if last_word in KEEP_PLURAL: return n
+        if n.endswith("oes"): return n[:-2]
+        if n.endswith(("shes", "ches", "xes", "zes")): return n[:-2]
+        if n.endswith("s") and not n.endswith("ss"): return n[:-1]
+        return n
+
+    def normalize_unit(amount, unit):
+        u = unit.lower()
+        if u in TO_ML: return amount * TO_ML[u], "ml"
+        if u in TO_G: return amount * TO_G[u], "g"
+        return amount, u
+
+    def friendly_unit(amount, unit):
+        if unit == "ml" and amount >= 1000: return round(amount / 1000, 2), "L"
+        if unit == "g" and amount >= 1000: return round(amount / 1000, 2), "kg"
+        return round(amount, 1), unit
+
+    # Gather all user IDs to include
+    user_ids = [user.id]
+    if user.household_id:
+        partner = db.query(UserDB).filter(
+            UserDB.household_id == user.household_id, UserDB.id != user.id
+        ).first()
+        if partner:
+            user_ids.append(partner.id)
+
+    # Load all meal plan rows for all members
+    all_rows = db.query(MealPlanDB).filter(MealPlanDB.user_id.in_(user_ids)).all()
+
+    grocery: dict[str, dict] = {}
+
+    for row in all_rows:
+        recipe = get_recipe_dict(db, row.recipe_id)
+        if not recipe:
+            continue
+        servings_base = recipe.get("servings", 1)
+        user_servings = row.servings
+
+        for ing in recipe["ingredients"]:
+            per_serving = ing["amount"] / servings_base
+            total_amount = per_serving * user_servings
+            normalized_amount, base_unit = normalize_unit(total_amount, ing["unit"])
+            key = normalize_name(ing["name"])
+
+            if key in grocery:
+                if grocery[key]["unit"] == base_unit:
+                    grocery[key]["total_amount"] += normalized_amount
+                else:
+                    alt_key = f"{key} ({base_unit})"
+                    if alt_key in grocery:
+                        grocery[alt_key]["total_amount"] += normalized_amount
+                    else:
+                        grocery[alt_key] = {"name": key, "total_amount": normalized_amount, "unit": base_unit}
+            else:
+                grocery[key] = {"name": key, "total_amount": normalized_amount, "unit": base_unit}
+
+    items = []
+    for item in grocery.values():
+        amount, unit = friendly_unit(item["total_amount"], item["unit"])
+        items.append({"name": item["name"], "total_amount": amount, "unit": unit})
+
+    items.sort(key=lambda x: x["name"])
+    return GroceryList(items=items)
+
+
 @app.post("/meal-plan/summary", response_model=WeekPlanResponse)
 def get_meal_plan_summary(week_plan: WeekPlanCreate, db: Session = Depends(get_db)):
     """Get total calories, macros, and allergen warnings for a week plan."""
@@ -490,9 +687,23 @@ def get_meal_plan_summary(week_plan: WeekPlanCreate, db: Session = Depends(get_d
 
 @app.get("/meal-plan/saved", response_model=SavedMealPlan)
 def load_meal_plan(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Load the saved meal plan for the logged-in user."""
+    """Load the saved meal plan for the logged-in user (with partner servings if in household)."""
     rows = db.query(MealPlanDB).filter(MealPlanDB.user_id == user.id).all()
-    slots = [MealSlot(day=r.day, meal=r.meal, recipe_id=r.recipe_id, servings=r.servings) for r in rows]
+    slots = []
+    # If in a household, also load partner's servings for same slots
+    partner_map = {}
+    if user.household_id:
+        partner = db.query(UserDB).filter(
+            UserDB.household_id == user.household_id, UserDB.id != user.id
+        ).first()
+        if partner:
+            partner_rows = db.query(MealPlanDB).filter(MealPlanDB.user_id == partner.id).all()
+            for r in partner_rows:
+                partner_map[(r.day, r.meal)] = r.servings
+
+    for r in rows:
+        ps = partner_map.get((r.day, r.meal))
+        slots.append(MealSlot(day=r.day, meal=r.meal, recipe_id=r.recipe_id, servings=r.servings, partner_servings=ps))
     return SavedMealPlan(slots=slots)
 
 
@@ -500,10 +711,23 @@ def load_meal_plan(user: UserDB = Depends(get_current_user), db: Session = Depen
 def save_meal_plan(plan: SavedMealPlan, user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Save (replace) the entire meal plan for the logged-in user.
+    If in a household, also saves partner's servings (same recipes, partner's portions).
     """
     db.query(MealPlanDB).filter(MealPlanDB.user_id == user.id).delete()
     for slot in plan.slots:
         db.add(MealPlanDB(user_id=user.id, day=slot.day, meal=slot.meal, recipe_id=slot.recipe_id, servings=slot.servings))
+
+    # If household + partner servings provided, save partner's plan too (same recipes)
+    if user.household_id and any(s.partner_servings is not None for s in plan.slots):
+        partner = db.query(UserDB).filter(
+            UserDB.household_id == user.household_id, UserDB.id != user.id
+        ).first()
+        if partner:
+            db.query(MealPlanDB).filter(MealPlanDB.user_id == partner.id).delete()
+            for slot in plan.slots:
+                ps = slot.partner_servings if slot.partner_servings is not None else slot.servings
+                db.add(MealPlanDB(user_id=partner.id, day=slot.day, meal=slot.meal, recipe_id=slot.recipe_id, servings=ps))
+
     db.commit()
     return {"message": "Meal plan saved", "slots": len(plan.slots)}
 
@@ -518,12 +742,14 @@ import random
 def generate_meal_plan(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Auto-generate a 7-day meal plan that fits the user's calorie & macro targets.
+    If in a household, also calculates partner's servings for the same recipes.
 
     Algorithm:
     1. Load user profile → calculate daily calorie/macro targets.
     2. Load all recipes, filter out excluded allergens.
     3. For each day, pick breakfast + lunch + dinner (+ snack if needed)
        that best match the daily targets, with variety across the week.
+    4. If household, calculate partner servings for the same recipe picks.
     """
     # 1. Load profile & targets
     row = db.query(UserProfileDB).filter(UserProfileDB.user_id == user.id).first()
@@ -546,7 +772,25 @@ def generate_meal_plan(user: UserDB = Depends(get_current_user), db: Session = D
     target_carbs = targets["carbs_target_g"]
     target_fat = targets["fat_target_g"]
 
-    # 2. Load recipes, exclude allergens
+    # 1b. Load partner profile if in household
+    partner_targets = None
+    if user.household_id:
+        partner = db.query(UserDB).filter(
+            UserDB.household_id == user.household_id, UserDB.id != user.id
+        ).first()
+        if partner:
+            p_row = db.query(UserProfileDB).filter(UserProfileDB.user_id == partner.id).first()
+            if p_row:
+                p_profile = UserProfile(
+                    gender=p_row.gender, age=p_row.age, weight_kg=p_row.weight_kg,
+                    target_weight_kg=p_row.target_weight_kg, height_cm=p_row.height_cm,
+                    activity_level=p_row.activity_level, weight_rate=p_row.weight_rate,
+                    intermittent_fasting=p_row.intermittent_fasting,
+                    exclude_allergens=json.loads(p_row.exclude_allergens) if p_row.exclude_allergens else [],
+                )
+                partner_targets = calculate_calories(p_profile)
+
+    # 2. Load recipes, exclude allergens (combine both people's allergens for filtering)
     all_recipes = [r.to_dict() for r in db.query(RecipeDB).all()]
     excluded = [a.lower() for a in profile.exclude_allergens]
     if excluded:
@@ -555,12 +799,21 @@ def generate_meal_plan(user: UserDB = Depends(get_current_user), db: Session = D
             if not any(a.lower() in excluded for a in r.get("allergens", []))
         ]
 
-    # Group by meal type
+    # Exclude recipes rated 1-2 stars by this user
+    low_rated = {r.recipe_id for r in db.query(MealRatingDB).filter(
+        MealRatingDB.user_id == user.id, MealRatingDB.rating <= 2
+    ).all()}
+    if low_rated:
+        all_recipes = [r for r in all_recipes if r["id"] not in low_rated]
+
+    # Group by meal type (meal_type can be comma-separated like "breakfast,lunch")
     by_type = {"breakfast": [], "lunch": [], "dinner": [], "snack": []}
     for r in all_recipes:
         mt = r["meal_type"]
-        if mt in by_type:
-            by_type[mt].append(r)
+        for t in mt.split(","):
+            t = t.strip()
+            if t in by_type:
+                by_type[t].append(r)
 
     # If a meal type has no recipes, allow any recipe for that slot
     for mt in ["breakfast", "lunch", "dinner"]:
@@ -643,7 +896,17 @@ def generate_meal_plan(user: UserDB = Depends(get_current_user), db: Session = D
                 if meal in best_combo:
                     rid = best_combo[meal]["id"]
                     s = best_servings.get(meal, 1.0)
-                    slots.append(MealSlot(day=day, meal=meal, recipe_id=rid, servings=s))
+                    # Calculate partner servings for same recipe
+                    ps = None
+                    if partner_targets:
+                        p_daily = partner_targets["daily_calories"]
+                        p_meal_cal = p_daily * MEAL_SHARE[meal]
+                        recipe_cal = best_combo[meal]["calories"]
+                        if recipe_cal > 0:
+                            ps = round_servings(p_meal_cal / recipe_cal)
+                        else:
+                            ps = 1.0
+                    slots.append(MealSlot(day=day, meal=meal, recipe_id=rid, servings=s, partner_servings=ps))
                     usage_count[rid] = usage_count.get(rid, 0) + 1
 
     return SavedMealPlan(slots=slots)
@@ -776,6 +1039,26 @@ def update_profile(profile: UserProfile, user: UserDB = Depends(get_current_user
         row = UserProfileDB(user_id=user.id)
         db.add(row)
 
+    # Log weight if it changed (or first time)
+    old_weight = row.weight_kg if row.weight_kg else None
+    if old_weight != profile.weight_kg:
+        # Only log if last entry is older than 1 day (avoid spam)
+        last_log = db.query(WeightLogDB).filter(
+            WeightLogDB.user_id == user.id
+        ).order_by(WeightLogDB.recorded_at.desc()).first()
+        should_log = True
+        if last_log:
+            try:
+                last_dt = datetime.fromisoformat(last_log.recorded_at)
+                if (datetime.now(timezone.utc) - last_dt) < timedelta(hours=12):
+                    # Update existing entry instead of creating new
+                    last_log.weight_kg = profile.weight_kg
+                    should_log = False
+            except (ValueError, TypeError):
+                pass
+        if should_log:
+            db.add(WeightLogDB(user_id=user.id, weight_kg=profile.weight_kg))
+
     row.gender = profile.gender
     row.age = profile.age
     row.weight_kg = profile.weight_kg
@@ -789,6 +1072,57 @@ def update_profile(profile: UserProfile, user: UserDB = Depends(get_current_user
 
     targets = calculate_calories(profile)
     return UserProfileResponse(**profile.model_dump(), **targets)
+
+
+@app.get("/profile/weight-history")
+def get_weight_history(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get weight log entries for the current user."""
+    logs = db.query(WeightLogDB).filter(
+        WeightLogDB.user_id == user.id
+    ).order_by(WeightLogDB.recorded_at.asc()).all()
+    return [{"weight_kg": l.weight_kg, "recorded_at": l.recorded_at} for l in logs]
+
+
+# ──────────────────────────────────────────────
+# Meal Ratings
+# ──────────────────────────────────────────────
+
+@app.post("/ratings")
+def rate_meal(data: dict, user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Rate a recipe 1-5 stars. Updates existing rating if already rated."""
+    recipe_id = data.get("recipe_id")
+    rating = data.get("rating")
+    if not recipe_id or not rating or rating < 1 or rating > 5:
+        raise HTTPException(400, "recipe_id and rating (1-5) required")
+    existing = db.query(MealRatingDB).filter(
+        MealRatingDB.user_id == user.id, MealRatingDB.recipe_id == recipe_id
+    ).first()
+    if existing:
+        existing.rating = rating
+        existing.rated_at = datetime.now(timezone.utc).isoformat()
+    else:
+        db.add(MealRatingDB(user_id=user.id, recipe_id=recipe_id, rating=rating))
+    db.commit()
+    return {"ok": True, "recipe_id": recipe_id, "rating": rating}
+
+
+@app.get("/ratings")
+def get_ratings(user: UserDB = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get all ratings for the current user."""
+    ratings = db.query(MealRatingDB).filter(MealRatingDB.user_id == user.id).all()
+    return [{"recipe_id": r.recipe_id, "rating": r.rating} for r in ratings]
+
+
+@app.get("/ratings/aggregate")
+def get_aggregate_ratings(db: Session = Depends(get_db)):
+    """Get average rating and vote count per recipe (all users)."""
+    from sqlalchemy import func
+    results = db.query(
+        MealRatingDB.recipe_id,
+        func.avg(MealRatingDB.rating).label("avg"),
+        func.count(MealRatingDB.id).label("count")
+    ).group_by(MealRatingDB.recipe_id).all()
+    return [{"recipe_id": r.recipe_id, "avg": round(r.avg, 1), "count": r.count} for r in results]
 
 
 # ──────────────────────────────────────────────

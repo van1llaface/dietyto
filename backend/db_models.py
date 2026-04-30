@@ -22,9 +22,24 @@ The "link" between tables is called a FOREIGN KEY.
 
 import json
 from typing import Optional
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from database import Base
+from datetime import datetime, timezone
+
+
+class HouseholdDB(Base):
+    """
+    A household — two people who cook and eat together.
+    One person creates it, the other joins with the invite code.
+    """
+    __tablename__ = "households"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    invite_code: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    created_at: Mapped[str] = mapped_column(String, default=lambda: datetime.now(timezone.utc).isoformat())
+
+    members = relationship("UserDB", back_populates="household")
 
 
 class UserDB(Base):
@@ -57,7 +72,9 @@ class UserDB(Base):
     reset_code: Mapped[Optional[str]] = mapped_column(String, nullable=True, default=None)
     auth_token: Mapped[Optional[str]] = mapped_column(String, nullable=True, index=True, default=None)
     role: Mapped[str] = mapped_column(String, default="user")  # "admin" or "user"
+    household_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("households.id"), nullable=True, default=None)
 
+    household = relationship("HouseholdDB", back_populates="members")
     profile = relationship("UserProfileDB", back_populates="user", uselist=False, cascade="all, delete-orphan")
     meal_plans = relationship("MealPlanDB", back_populates="user", cascade="all, delete-orphan")
 
@@ -99,6 +116,32 @@ class UserProfileDB(Base):
     exclude_allergens: Mapped[str] = mapped_column(Text, default="[]")
 
     user = relationship("UserDB", back_populates="profile")
+
+
+class WeightLogDB(Base):
+    """Tracks weight over time for progress graphs."""
+    __tablename__ = "weight_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    weight_kg: Mapped[float] = mapped_column(Float, nullable=False)
+    recorded_at: Mapped[str] = mapped_column(String, default=lambda: datetime.now(timezone.utc).isoformat())
+
+    user = relationship("UserDB")
+
+
+class MealRatingDB(Base):
+    """Stores user ratings for recipes (1-5 stars). Ratings 1-2 exclude from future plans."""
+    __tablename__ = "meal_ratings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    recipe_id: Mapped[int] = mapped_column(Integer, ForeignKey("recipes.id"), nullable=False)
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    rated_at: Mapped[str] = mapped_column(String, default=lambda: datetime.now(timezone.utc).isoformat())
+
+    user = relationship("UserDB")
+    recipe = relationship("RecipeDB")
 
 
 class RecipeDB(Base):

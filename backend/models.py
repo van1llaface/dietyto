@@ -78,8 +78,8 @@ class Recipe(BaseModel):
     """
     name: str
     description: str
-    category: str               # "anti-inflammatory", "heart-healthy", etc.
-    meal_type: str              # "breakfast", "lunch", "dinner", "snack"
+    category: str = ""          # health benefit: "anti-inflammatory", "heart-healthy", etc. (optional)
+    meal_type: str              # comma-separated: "breakfast", "lunch,dinner", etc.
     servings: int
     prep_time_min: int
     calories: int               # per serving
@@ -199,6 +199,7 @@ class MealSlot(BaseModel):
     meal: str
     recipe_id: int
     servings: float = 1.0
+    partner_servings: float | None = None  # partner's servings for same recipe (household mode)
 
 
 class SavedMealPlan(BaseModel):
@@ -277,3 +278,30 @@ class ResetPasswordRequest(BaseModel):
         if len(v) < 6:
             raise ValueError("Password must be at least 6 characters")
         return v
+
+
+# ──────────────────────────────────────────────
+# Household (couples) models
+# ──────────────────────────────────────────────
+
+class HouseholdCreate(BaseModel):
+    """Create a new household."""
+    pass  # no fields needed — server generates invite code
+
+
+class HouseholdJoin(BaseModel):
+    """Join an existing household with an invite code."""
+    invite_code: str
+
+
+class HouseholdMember(BaseModel):
+    """Info about a household member."""
+    id: int
+    username: str
+
+
+class HouseholdResponse(BaseModel):
+    """Full household info returned to the user."""
+    id: int
+    invite_code: str
+    members: list[HouseholdMember]
